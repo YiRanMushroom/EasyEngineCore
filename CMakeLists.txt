@@ -16,11 +16,14 @@ file(GLOB_RECURSE Core_SOURCES
         Easy/Core/*.cpp
 )
 
+file(GLOB VendorFiles glad/src/glad.c)
+
 file(GLOB_RECURSE PreCompiledHeaders
-        Easy/PCH/GLFW.pch
+        Easy/PCH/OpenGL.pch
 )
 
 add_library(${PROJECT_NAME}
+        ${VendorFiles}
         ${Core_MODULES}
         ${Core_SOURCES}
 )
@@ -55,6 +58,7 @@ target_precompile_headers(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         Easy/PCH
+        glad/include
 )
 
 target_link_libraries(${PROJECT_NAME}

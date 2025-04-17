@@ -1,6 +1,6 @@
 module;
 
-#include <GLFW.pch>
+#include <OpenGL.pch>
 
 module Easy.Core.Engine;
 
