@@ -2,7 +2,7 @@ module;
 
 export module Easy.Core.Basic;
 
-export import yrm.msvc.std;
+export import yrm.msvc.std.compat;
 
 namespace Easy {
     export {

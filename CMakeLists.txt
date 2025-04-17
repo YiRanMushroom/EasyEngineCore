@@ -61,6 +61,12 @@ add_library(${PROJECT_NAME}
         ${ImGuiGLFW_Sources}
 )
 
+target_compile_definitions(${PROJECT_NAME}
+        PUBLIC
+        "EZ_DEBUG=1"
+        "EZ_PLATFORM_WINDOWS"
+)
+
 target_compile_options(${PROJECT_NAME}
         PRIVATE
         -pedantic
@@ -84,8 +90,8 @@ target_sources(${PROJECT_NAME}
 )
 
 add_subdirectory(vendor/std_module)
-
 add_subdirectory(vendor/glfw)
+add_subdirectory(vendor/spdlog)
 
 target_precompile_headers(${PROJECT_NAME}
         PUBLIC
@@ -95,6 +101,7 @@ target_precompile_headers(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         Easy/PCH
+        Easy
         vendor/glad/include
         vendor/imgui
 )
@@ -103,4 +110,5 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC
         std_module
         glfw
+        spdlog::spdlog
 )

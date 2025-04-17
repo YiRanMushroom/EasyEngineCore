@@ -10,3 +10,6 @@
 	path = vendor/std_module
 	url = https://github.com/YiRanMushroom/std_module
 	branch = master
+[submodule "vendor/spdlog"]
+	path = vendor/spdlog
+	url = https://github.com/gabime/spdlog
