@@ -1,8 +1,8 @@
 module;
 
-export module Easy.Core.Defines;
+export module Easy.Core.Basic;
 
-import yrm.msvc.std;
+export import yrm.msvc.std;
 
 namespace Easy {
     export {

@@ -16,6 +16,10 @@ file(GLOB_RECURSE Core_SOURCES
         Easy/Core/*.cpp
 )
 
+file(GLOB_RECURSE PreCompiledHeaders
+        Easy/PCH/GLFW.pch
+)
+
 add_library(${PROJECT_NAME}
         ${Core_MODULES}
         ${Core_SOURCES}
@@ -41,7 +45,20 @@ target_sources(${PROJECT_NAME}
 
 add_subdirectory(std_module)
 
+add_subdirectory(glfw)
+
+target_precompile_headers(${PROJECT_NAME}
+        PUBLIC
+        ${PreCompiledHeaders}
+)
+
+target_include_directories(${PROJECT_NAME}
+        PUBLIC
+        Easy/PCH
+)
+
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
         std_module
+        glfw
 )
