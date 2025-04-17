@@ -4,3 +4,7 @@
 [submodule "glfw"]
 	path = glfw
 	url = https://github.com/YiRanMushroom/glfw
+[submodule "imgui"]
+	path = imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking

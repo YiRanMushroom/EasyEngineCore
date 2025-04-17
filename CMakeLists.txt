@@ -19,7 +19,7 @@ file(GLOB_RECURSE Core_SOURCES
 file(GLOB VendorFiles glad/src/glad.c)
 
 file(GLOB_RECURSE PreCompiledHeaders
-        Easy/PCH/OpenGL.pch
+        Easy/PCH/*.hpp
 )
 
 file(GLOB_RECURSE OPENGL_SOURCES
@@ -30,12 +30,23 @@ file(GLOB_RECURSE OPENGL_MODULES
         Easy/Platform/OpenGLEngineContext.ixx
 )
 
+file(GLOB ImGuiGLFW_Sources
+        imgui/imgui.cpp
+        imgui/imgui_draw.cpp
+        imgui/imgui_widgets.cpp
+        imgui/imgui_demo.cpp
+        imgui/imgui_tables.cpp
+        imgui/backends/imgui_impl_glfw.cpp
+        imgui/backends/imgui_impl_opengl3.cpp
+)
+
 add_library(${PROJECT_NAME}
         ${VendorFiles}
         ${Core_MODULES}
         ${Core_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
+        ${ImGuiGLFW_Sources}
 )
 
 target_compile_options(${PROJECT_NAME}
@@ -44,8 +55,11 @@ target_compile_options(${PROJECT_NAME}
         -Wall
         -Wextra
         -Wsign-conversion
-        -Wdouble-promotion
+        # integer conversion warnings
+        -Wconversion
         -Werror
+        -Wno-macro-redefined
+        -Wno-deprecated-declarations
 )
 
 target_sources(${PROJECT_NAME}
@@ -70,6 +84,7 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC
         Easy/PCH
         glad/include
+        imgui
 )
 
 target_link_libraries(${PROJECT_NAME}
