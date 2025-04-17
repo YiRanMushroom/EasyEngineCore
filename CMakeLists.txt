@@ -16,7 +16,7 @@ file(GLOB_RECURSE Core_SOURCES
         Easy/Core/*.cpp
 )
 
-file(GLOB VendorFiles glad/src/glad.c)
+file(GLOB VendorFiles vendor/glad/src/glad.c)
 
 file(GLOB_RECURSE PreCompiledHeaders
         Easy/PCH/*.hpp
@@ -31,13 +31,13 @@ file(GLOB_RECURSE OPENGL_MODULES
 )
 
 file(GLOB ImGuiGLFW_Sources
-        imgui/imgui.cpp
-        imgui/imgui_draw.cpp
-        imgui/imgui_widgets.cpp
-        imgui/imgui_demo.cpp
-        imgui/imgui_tables.cpp
-        imgui/backends/imgui_impl_glfw.cpp
-        imgui/backends/imgui_impl_opengl3.cpp
+        vendor/imgui/imgui.cpp
+        vendor/imgui/imgui_draw.cpp
+        vendor/imgui/imgui_widgets.cpp
+        vendor/imgui/imgui_demo.cpp
+        vendor/imgui/imgui_tables.cpp
+        vendor/imgui/backends/imgui_impl_glfw.cpp
+        vendor/imgui/backends/imgui_impl_opengl3.cpp
 )
 
 add_library(${PROJECT_NAME}
@@ -55,11 +55,10 @@ target_compile_options(${PROJECT_NAME}
         -Wall
         -Wextra
         -Wsign-conversion
-        # integer conversion warnings
         -Wconversion
-        -Werror
         -Wno-macro-redefined
         -Wno-deprecated-declarations
+        -Werror
 )
 
 target_sources(${PROJECT_NAME}
@@ -71,9 +70,9 @@ target_sources(${PROJECT_NAME}
         ${OPENGL_MODULES}
 )
 
-add_subdirectory(std_module)
+add_subdirectory(vendor/std_module)
 
-add_subdirectory(glfw)
+add_subdirectory(vendor/glfw)
 
 target_precompile_headers(${PROJECT_NAME}
         PUBLIC
@@ -83,8 +82,8 @@ target_precompile_headers(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
         PUBLIC
         Easy/PCH
-        glad/include
-        imgui
+        vendor/glad/include
+        vendor/imgui
 )
 
 target_link_libraries(${PROJECT_NAME}
