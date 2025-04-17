@@ -12,19 +12,10 @@ void Easy::Engine::run_test() {
     if (!glfwInit())
         return;
 
-    // cout << "default shader lang: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << endl;
-
-    // select opengl version
-    // int major, minor, rev;
-    // glfwGetVersion(&major, &minor, &rev);
-    // cout << "glfw major.minor " << major << "." << minor << "." << rev << endl;
-
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-
 
     window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
     if (!window)
@@ -34,7 +25,12 @@ void Easy::Engine::run_test() {
     }
     glfwMakeContextCurrent(window);
 
-    std::cout << "OpenGL shader language version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return;
+    }
 
     while (!glfwWindowShouldClose(window))
     {
