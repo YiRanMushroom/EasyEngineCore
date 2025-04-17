@@ -1,0 +1,3 @@
+[submodule "std_module"]
+	path = std_module
+	url = https://github.com/YiRanMushroom/std_module

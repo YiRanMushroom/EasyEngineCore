@@ -7,17 +7,28 @@ set(PROJECT_NAME EasyEngineCore)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include(FetchContent)
-
-FetchContent_Declare(
-        your_workbench_lib
-        URL https://github.com/YiRanMushroom/Your_Workbench_Lib/archive/master.zip
+file(GLOB_RECURSE Core_MODULES
+        Easy/Core/*.ixx
+        Easy/Core/*.cppm
 )
 
-FetchContent_MakeAvailable(your_workbench_lib)
+file(GLOB_RECURSE Core_SOURCES
+        Easy/Core/*.cpp
+)
 
 add_library(${PROJECT_NAME}
-        EZ/Core/Defines.ixx
+        ${Core_MODULES}
+        ${Core_SOURCES}
+)
+
+target_compile_options(${PROJECT_NAME}
+        PRIVATE
+        -pedantic
+        -Wall
+        -Wextra
+        -Wsign-conversion
+        -Wdouble-promotion
+        -Werror
 )
 
 target_sources(${PROJECT_NAME}
@@ -25,10 +36,12 @@ target_sources(${PROJECT_NAME}
         FILE_SET cxx_modules
         TYPE CXX_MODULES
         FILES
-        EZ/Core/Defines.ixx
+        ${Core_MODULES}
 )
+
+add_subdirectory(std_module)
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
-        your_workbench_lib
+        std_module
 )
