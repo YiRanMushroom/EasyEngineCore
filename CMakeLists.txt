@@ -22,10 +22,20 @@ file(GLOB_RECURSE PreCompiledHeaders
         Easy/PCH/OpenGL.pch
 )
 
+file(GLOB_RECURSE OPENGL_SOURCES
+        Easy/Platform/OpenGLEngineContext.cpp
+)
+
+file(GLOB_RECURSE OPENGL_MODULES
+        Easy/Platform/OpenGLEngineContext.ixx
+)
+
 add_library(${PROJECT_NAME}
         ${VendorFiles}
         ${Core_MODULES}
         ${Core_SOURCES}
+        ${OPENGL_SOURCES}
+        ${OPENGL_MODULES}
 )
 
 target_compile_options(${PROJECT_NAME}
@@ -44,6 +54,7 @@ target_sources(${PROJECT_NAME}
         TYPE CXX_MODULES
         FILES
         ${Core_MODULES}
+        ${OPENGL_MODULES}
 )
 
 add_subdirectory(std_module)
