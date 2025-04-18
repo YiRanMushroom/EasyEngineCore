@@ -10,7 +10,7 @@ export module Easy.Core.Log;
 import Easy.Core.Basic;
 
 namespace Easy {
-    export class MacroUtils
+    export class Log
     {
     public:
         static void Init() {

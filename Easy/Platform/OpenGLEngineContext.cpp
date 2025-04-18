@@ -22,10 +22,14 @@ namespace Easy {
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
         window = glfwCreateWindow(640, 480, "Simple example", NULL, NULL);
+
         if (!window) {
             glfwTerminate();
             return;
         }
+
+        m_Window = window;
+
         glfwMakeContextCurrent(window);
         glfwSwapInterval(1); // Enable vsync
 
@@ -53,8 +57,6 @@ namespace Easy {
         // Setup Platform/Renderer backends
         ImGui_ImplGlfw_InitForOpenGL(window, true);
         ImGui_ImplOpenGL3_Init("#version 130");
-
-        m_Window = window;
     }
 
     void OpenGLEngineContext::Destroy() {

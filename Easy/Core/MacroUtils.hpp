@@ -18,17 +18,17 @@ import Easy.Core.Log;
 #define EZ_DEBUGBREAK()
 #endif
 
-#define EZ_CORE_TRACE(...)    ::Hazel::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define EZ_CORE_INFO(...)     ::Hazel::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define EZ_CORE_WARN(...)     ::Hazel::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define EZ_CORE_ERROR(...)    ::Hazel::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define EZ_CORE_CRITICAL(...) ::Hazel::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define EZ_CORE_TRACE(...)    ::Easy::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define EZ_CORE_INFO(...)     ::Easy::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define EZ_CORE_WARN(...)     ::Easy::Log::GetCoreLogger()->warn(__VA_ARGS__)
+#define EZ_CORE_ERROR(...)    ::Easy::Log::GetCoreLogger()->error(__VA_ARGS__)
+#define EZ_CORE_CRITICAL(...) ::Easy::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
-#define EZ_TRACE(...)         ::Hazel::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define EZ_INFO(...)          ::Hazel::Log::GetClientLogger()->info(__VA_ARGS__)
-#define EZ_WARN(...)          ::Hazel::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define EZ_ERROR(...)         ::Hazel::Log::GetClientLogger()->error(__VA_ARGS__)
-#define EZ_CRITICAL(...)      ::Hazel::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define EZ_TRACE(...)         ::Easy::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define EZ_INFO(...)          ::Easy::Log::GetClientLogger()->info(__VA_ARGS__)
+#define EZ_WARN(...)          ::Easy::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define EZ_ERROR(...)         ::Easy::Log::GetClientLogger()->error(__VA_ARGS__)
+#define EZ_CRITICAL(...)      ::Easy::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 #if EZ_ENABLE_ASSERTS
 #define EZ_CORE_ASSERT(x, ...) { if(!(x)) { EZ_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); EZ_DEBUGBREAK(); } }

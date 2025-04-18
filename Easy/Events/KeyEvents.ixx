@@ -11,21 +11,21 @@ import Easy.Core.KeyCodes;
 namespace Easy {
     export class KeyEvent : public Event {
     public:
-        [[nodiscard]] KeyCode GetKeyCode() const { return m_KeyCode; }
+        [[nodiscard]] Key::KeyCode GetKeyCode() const { return m_KeyCode; }
 
         EVENT_CLASS_CATEGORY(EventCategory::EventCategoryInput | EventCategory::EventCategoryKeyboard)
 
     protected:
-        explicit KeyEvent(const KeyCode keyCode)
+        explicit KeyEvent(const Key::KeyCode keyCode)
             : m_KeyCode(keyCode) {}
 
     private:
-        KeyCode m_KeyCode;
+        Key::KeyCode m_KeyCode;
     };
 
     export class KeyPressedEvent : public KeyEvent {
     public:
-        explicit KeyPressedEvent(const KeyCode keyCode, bool isRepeat = false)
+        explicit KeyPressedEvent(const Key::KeyCode keyCode, bool isRepeat = false)
             : KeyEvent(keyCode), m_IsRepeat(isRepeat) {}
 
         [[nodiscard]] bool IsRepeat() const { return m_IsRepeat; }
@@ -44,7 +44,7 @@ namespace Easy {
 
     export class KeyReleasedEvent : public KeyEvent {
     public:
-        explicit KeyReleasedEvent(const KeyCode keyCode)
+        explicit KeyReleasedEvent(const Key::KeyCode keyCode)
             : KeyEvent(keyCode) {}
 
         [[nodiscard]] virtual std::string ToString() const override {
@@ -58,7 +58,7 @@ namespace Easy {
 
     export class KeyTypedEvent : public KeyEvent {
     public:
-        explicit KeyTypedEvent(const KeyCode keyCode)
+        explicit KeyTypedEvent(const Key::KeyCode keyCode)
             : KeyEvent(keyCode) {}
 
         [[nodiscard]] virtual std::string ToString() const override {

@@ -5,8 +5,8 @@ module;
 export module Easy.Events.MouseEvents;
 
 import yrm.msvc.std.compat;
+import Easy.Core.MouseCodes;
 import Easy.Events.Event;
-import Easy.Events.MouseCodes;
 
 namespace Easy {
     export class MouseMovedEvent : public Event {
@@ -59,7 +59,7 @@ namespace Easy {
 
     export class MouseButtonEvent : public Event {
     public:
-        [[nodiscard]] MouseCode GetMouseButton() const { return m_Button; }
+        [[nodiscard]] Mouse::MouseCode GetMouseButton() const { return m_Button; }
 
         [[nodiscard]] virtual std::string ToString() const override {
             std::ostringstream oss;
@@ -72,15 +72,15 @@ namespace Easy {
             EventCategory:: EventCategoryMouseButton)
 
     protected:
-        MouseCode m_Button;
+        Mouse::MouseCode m_Button;
 
-        explicit MouseButtonEvent(const MouseCode button)
+        explicit MouseButtonEvent(const Mouse::MouseCode button)
             : m_Button(button) {}
     };
 
     export class MouseButtonPressedEvent : public MouseButtonEvent {
     public:
-        MouseButtonPressedEvent(const MouseCode button)
+        MouseButtonPressedEvent(const Mouse::MouseCode button)
             : MouseButtonEvent(button) {}
 
         [[nodiscard]] virtual std::string ToString() const override {
@@ -94,7 +94,7 @@ namespace Easy {
 
     export class MouseButtonReleasedEvent : public MouseButtonEvent {
     public:
-        MouseButtonReleasedEvent(const MouseCode button)
+        MouseButtonReleasedEvent(const Mouse::MouseCode button)
             : MouseButtonEvent(button) {}
 
         [[nodiscard]] virtual std::string ToString() const override {
