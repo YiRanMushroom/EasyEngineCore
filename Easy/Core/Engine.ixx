@@ -20,6 +20,7 @@ namespace Easy {
     public:
         static Arc<Engine> FromContext(Arc<EngineContext> context) {
             auto engine = Arc<Engine>(new Engine());
+            EngineContext::SetCurrentContext(context.get());
             engine->m_EngineContext = std::move(context);
             engine->m_EngineContext->Init();
             return engine;

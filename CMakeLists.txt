@@ -26,6 +26,15 @@ file(GLOB_RECURSE Event_SOURCES
         Easy/Events/*.cpp
 )
 
+# ImGui
+file(GLOB_RECURSE ImGui_MODULES
+        Easy/ImGui/*.ixx
+        Easy/ImGui/*.cppm
+)
+file(GLOB_RECURSE ImGui_SOURCES
+        Easy/ImGui/*.cpp
+)
+
 file(GLOB VendorFiles vendor/glad/src/glad.c)
 
 file(GLOB_RECURSE PreCompiledHeaders
@@ -56,6 +65,8 @@ add_library(${PROJECT_NAME}
         ${Core_SOURCES}
         ${Event_MODULES}
         ${Event_SOURCES}
+        ${ImGui_MODULES}
+        ${ImGui_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
         ${ImGuiGLFW_Sources}
@@ -86,6 +97,7 @@ target_sources(${PROJECT_NAME}
         FILES
         ${Core_MODULES}
         ${Event_MODULES}
+        ${ImGui_MODULES}
         ${OPENGL_MODULES}
 )
 
