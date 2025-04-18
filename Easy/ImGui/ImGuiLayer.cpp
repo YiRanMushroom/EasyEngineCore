@@ -66,6 +66,8 @@ namespace Easy {
         ImGui::DestroyContext();
     }
 
+    bool s_UnblockEventsTemp = false;
+
     void ImGuiLayer::OnEvent(Event &e) {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent &event) {
@@ -74,10 +76,22 @@ namespace Easy {
                 EZ_CORE_INFO("ImGuiBlockEvents toggled, now ImGuiLayer::m_BlockEvents = {0}", this->m_BlockEvents);
                 return true;
             }
+            if (event.GetKeyCode() == g_TemporaryUnblockEventsKey) {
+                s_UnblockEventsTemp = true;
+                return true;
+            }
             return false;
         });
 
-        if (m_BlockEvents) {
+        dispatcher.Dispatch<KeyReleasedEvent>([&](KeyReleasedEvent &event) {
+            if (event.GetKeyCode() == g_TemporaryUnblockEventsKey) {
+                s_UnblockEventsTemp = false;
+                return true;
+            }
+            return false;
+        });
+
+        if (m_BlockEvents && !s_UnblockEventsTemp) {
             ImGuiIO &io = ImGui::GetIO();
             e.Handled |= e.IsInCategory(EventCategory::EventCategoryMouse) & io.WantCaptureMouse;
             e.Handled |= e.IsInCategory(EventCategory::EventCategoryKeyboard) & io.WantCaptureKeyboard;

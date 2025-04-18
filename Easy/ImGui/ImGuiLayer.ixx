@@ -29,4 +29,5 @@ namespace Easy {
     };
 
     export Key::KeyCode g_ToggleImGuiBlockEventsKey = Key::F5;
+    export Key::KeyCode g_TemporaryUnblockEventsKey = Key::LeftControl;
 }
