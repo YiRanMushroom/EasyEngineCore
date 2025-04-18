@@ -8,10 +8,14 @@ module;
 
 #include "imgui_internal.h"
 
+#include "Core/MacroUtils.hpp"
+
 module Easy.ImGui.ImGuiLayer;
 
 import Easy.Core.Basic;
 import Easy.Core.Application;
+import Easy.Core.KeyCodes;
+import Easy.Events.KeyEvents;
 
 namespace Easy {
     ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
@@ -63,6 +67,16 @@ namespace Easy {
     }
 
     void ImGuiLayer::OnEvent(Event &e) {
+        EventDispatcher dispatcher(e);
+        dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent &event) {
+            if (event.GetKeyCode() == g_ToggleImGuiBlockEventsKey) {
+                this->m_BlockEvents = !this->m_BlockEvents;
+                EZ_CORE_INFO("ImGuiBlockEvents toggled, now ImGuiLayer::m_BlockEvents = {0}", this->m_BlockEvents);
+                return true;
+            }
+            return false;
+        });
+
         if (m_BlockEvents) {
             ImGuiIO &io = ImGui::GetIO();
             e.Handled |= e.IsInCategory(EventCategory::EventCategoryMouse) & io.WantCaptureMouse;
@@ -78,9 +92,10 @@ namespace Easy {
 
     void ImGuiLayer::End() {
         ImGuiIO &io = ImGui::GetIO();
-        Application& app = Application::Get();
+        Application &app = Application::Get();
 
-        io.DisplaySize = ImVec2(static_cast<float>(app.GetWindow().GetWidth()), static_cast<float>(app.GetWindow().GetHeight()));
+        io.DisplaySize = ImVec2(static_cast<float>(app.GetWindow().GetWidth()),
+                                static_cast<float>(app.GetWindow().GetHeight()));
 
         // Rendering
         ImGui::Render();

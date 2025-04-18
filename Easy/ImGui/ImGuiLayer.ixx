@@ -1,6 +1,7 @@
 module;
 
 export module Easy.ImGui.ImGuiLayer;
+import Easy.Core.KeyCodes;
 import Easy.Core.Layer;
 import Easy.Events.Event;
 
@@ -26,4 +27,6 @@ namespace Easy {
     private:
         bool m_BlockEvents = true;
     };
+
+    export Key::KeyCode g_ToggleImGuiBlockEventsKey = Key::F5;
 }
