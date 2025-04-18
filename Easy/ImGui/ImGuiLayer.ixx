@@ -5,7 +5,7 @@ import Easy.Core.Layer;
 import Easy.Events.Event;
 
 namespace Easy {
-    class ImGuiLayer : public Layer
+    export class ImGuiLayer : public Layer
     {
     public:
         ImGuiLayer();

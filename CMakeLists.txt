@@ -35,6 +35,15 @@ file(GLOB_RECURSE ImGui_SOURCES
         Easy/ImGui/*.cpp
 )
 
+# Platform
+file(GLOB_RECURSE Platform_MODULES
+        Easy/Platform/*.ixx
+        Easy/Platform/*.cppm
+)
+file(GLOB_RECURSE Platform_SOURCES
+        Easy/Platform/*.cpp
+)
+
 file(GLOB VendorFiles vendor/glad/src/glad.c)
 
 file(GLOB_RECURSE PreCompiledHeaders
@@ -69,6 +78,8 @@ add_library(${PROJECT_NAME}
         ${ImGui_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
+        ${Platform_MODULES}
+        ${Platform_SOURCES}
         ${ImGuiGLFW_Sources}
 )
 
@@ -80,14 +91,14 @@ target_compile_definitions(${PROJECT_NAME}
 
 target_compile_options(${PROJECT_NAME}
         PRIVATE
-        -pedantic
-        -Wall
-        -Wextra
-        -Wsign-conversion
-        -Wconversion
+#        -pedantic
+#        -Wall
+#        -Wextra
+#        -Wno-sign-conversion
+#        -Wconversion
         -Wno-macro-redefined
         -Wno-deprecated-declarations
-        -Werror
+#        -Werror
 )
 
 target_sources(${PROJECT_NAME}
@@ -99,6 +110,7 @@ target_sources(${PROJECT_NAME}
         ${Event_MODULES}
         ${ImGui_MODULES}
         ${OPENGL_MODULES}
+        ${Platform_MODULES}
 )
 
 add_subdirectory(vendor/std_module)

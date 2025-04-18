@@ -5,7 +5,7 @@ import Easy.Core.Log;
 #if EZ_DEBUG
 
 #if defined(EZ_PLATFORM_WINDOWS)
-#define HZ_DEBUGBREAK() __debugbreak()
+#define EZ_DEBUGBREAK() __debugbreak()
 #elif defined(EZ_PLATFORM_LINUX)
 #include <signal.h>
 #define EZ_DEBUGBREAK() raise(SIGTRAP)

@@ -11,7 +11,7 @@ module;
 module Easy.ImGui.ImGuiLayer;
 
 import Easy.Core.Basic;
-import Easy.Core.Context;
+import Easy.Core.Application;
 
 namespace Easy {
     ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
@@ -47,7 +47,9 @@ namespace Easy {
         SetDarkThemeColors();
 
         // Application& app = Application::Get();
-        auto *glfwWindow = static_cast<GLFWwindow *>(EngineContext::GetCurrentContext()->GetNativeWindow());
+
+        // auto *glfwWindow = static_cast<GLFWwindow *>(EngineContext::GetCurrentContext()->GetNativeWindow());
+        auto glfwWindow = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());
 
         // Setup Platform/Renderer bindings
         ImGui_ImplGlfw_InitForOpenGL(glfwWindow, true);
@@ -76,10 +78,9 @@ namespace Easy {
 
     void ImGuiLayer::End() {
         ImGuiIO &io = ImGui::GetIO();
-        // Application& app = Application::Get();
-        // auto *glfwWindow = static_cast<GLFWwindow *>(EngineContext::GetCurrentContext()->GetNativeWindow());
+        Application& app = Application::Get();
 
-        // io.DisplaySize = ImVec2((float)app.GetWindow().GetWidth(), (float)app.GetWindow().GetHeight());
+        io.DisplaySize = ImVec2(static_cast<float>(app.GetWindow().GetWidth()), static_cast<float>(app.GetWindow().GetHeight()));
 
         // Rendering
         ImGui::Render();

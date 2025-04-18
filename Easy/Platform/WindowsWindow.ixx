@@ -5,6 +5,7 @@ module;
 
 export module Easy.Platform.WindowsWindow;
 
+import Easy.Core.Basic;
 import Easy.Events.Event;
 import Easy.Core.Window;
 
@@ -15,7 +16,7 @@ namespace Easy {
         EZ_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
-    class WindowsWindow : public Window {
+    export class WindowsWindow : public Window {
     public:
         explicit WindowsWindow(WindowProperties props, bool vSync = true,
                                std::move_only_function<void(Event &)> eventCallback = nullptr);
