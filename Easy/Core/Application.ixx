@@ -12,8 +12,6 @@ import Easy.ImGui.ImGuiLayer;
 import Easy.Events.ApplicationEvent;
 import Easy.Core.LayerStack;
 
-// int main(int argc, char** argv);
-
 namespace Easy {
 
     export struct ApplicationCommandLineArgs

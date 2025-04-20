@@ -5,22 +5,25 @@ module;
 #include <imgui.h>
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
-
-#include "imgui_internal.h"
+#include <imgui_internal.h>
 
 #include "Core/MacroUtils.hpp"
 
-module Easy.ImGui.ImGuiLayer;
+module Easy.Platform.Impl.OpenGLImGuiLayer;
 
 import Easy.Core.Basic;
 import Easy.Core.Application;
 import Easy.Core.KeyCodes;
 import Easy.Events.KeyEvents;
+import Easy.Core.Layer;
+import Easy.ImGui.ImGuiLayer;
+import Easy.Events.Event;
 
 namespace Easy {
-    ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
+    OpenGLImGuiLayer::OpenGLImGuiLayer() {}
+    OpenGLImGuiLayer::~OpenGLImGuiLayer() = default;
 
-    void ImGuiLayer::OnAttach() {
+    void OpenGLImGuiLayer::OnAttach() {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -60,7 +63,7 @@ namespace Easy {
         ImGui_ImplOpenGL3_Init("#version 410");
     }
 
-    void ImGuiLayer::OnDetach() {
+    void OpenGLImGuiLayer::OnDetach() {
         ImGui_ImplOpenGL3_Shutdown();
         ImGui_ImplGlfw_Shutdown();
         ImGui::DestroyContext();
@@ -68,15 +71,15 @@ namespace Easy {
 
     bool s_UnblockEventsTemp = false;
 
-    void ImGuiLayer::OnEvent(Event &e) {
+    void OpenGLImGuiLayer::OnEvent(Event &e) {
         EventDispatcher dispatcher(e);
         dispatcher.Dispatch<KeyPressedEvent>([this](KeyPressedEvent &event) {
-            if (event.GetKeyCode() == g_ToggleImGuiBlockEventsKey) {
+            if (event.GetKeyCode() == m_ToggleImGuiBlockEventsKey) {
                 this->m_BlockEvents = !this->m_BlockEvents;
                 EZ_CORE_INFO("ImGuiBlockEvents toggled, now ImGuiLayer::m_BlockEvents = {0}", this->m_BlockEvents);
                 return true;
             }
-            if (event.GetKeyCode() == g_TemporaryUnblockEventsKey) {
+            if (event.GetKeyCode() == m_TemporaryUnblockEventsKey) {
                 s_UnblockEventsTemp = true;
                 return true;
             }
@@ -84,7 +87,7 @@ namespace Easy {
         });
 
         dispatcher.Dispatch<KeyReleasedEvent>([&](KeyReleasedEvent &event) {
-            if (event.GetKeyCode() == g_TemporaryUnblockEventsKey) {
+            if (event.GetKeyCode() == m_TemporaryUnblockEventsKey) {
                 s_UnblockEventsTemp = false;
                 return true;
             }
@@ -98,13 +101,13 @@ namespace Easy {
         }
     }
 
-    void ImGuiLayer::Begin() {
+    void OpenGLImGuiLayer::Begin() {
         ImGui_ImplOpenGL3_NewFrame();
         ImGui_ImplGlfw_NewFrame();
         ImGui::NewFrame();
     }
 
-    void ImGuiLayer::End() {
+    void OpenGLImGuiLayer::End() {
         ImGuiIO &io = ImGui::GetIO();
         Application &app = Application::Get();
 
@@ -123,7 +126,11 @@ namespace Easy {
         }
     }
 
-    void ImGuiLayer::SetDarkThemeColors() {
+    void OpenGLImGuiLayer::BlockEvents(bool block) {
+        m_BlockEvents = block;
+    }
+
+    void OpenGLImGuiLayer::SetDarkThemeColors() {
         auto &colors = ImGui::GetStyle().Colors;
         colors[ImGuiCol_WindowBg] = ImVec4{0.1f, 0.105f, 0.11f, 1.0f};
 
@@ -155,7 +162,15 @@ namespace Easy {
         colors[ImGuiCol_TitleBgCollapsed] = ImVec4{0.15f, 0.1505f, 0.151f, 1.0f};
     }
 
-    uint32_t ImGuiLayer::GetActiveWidgetID() const {
+    uint32_t OpenGLImGuiLayer::GetActiveWidgetID() const {
         return GImGui->ActiveId;
+    }
+
+    void OpenGLImGuiLayer::SetToggleImGuiBlockEventsKey(Key::KeyCode key) {
+        m_ToggleImGuiBlockEventsKey = key;
+    }
+
+    void OpenGLImGuiLayer::SetTemporaryUnblockEventsKey(Key::KeyCode key) {
+        m_TemporaryUnblockEventsKey = key;
     }
 }

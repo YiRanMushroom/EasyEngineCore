@@ -1,7 +1,6 @@
 module;
 
 #include "MacroUtils.hpp"
-#include "GLFW/glfw3.h"
 
 module Easy.Core.Application;
 
@@ -13,6 +12,7 @@ import Easy.ImGui.ImGuiLayer;
 import Easy.Events.ApplicationEvent;
 import Easy.Core.LayerStack;
 import Easy.Platform.WindowsWindow;
+import Easy.Platform.Impl.OpenGLImGuiLayer;
 
 namespace Easy {
     Application *Application::s_Instance = nullptr;
@@ -38,7 +38,7 @@ namespace Easy {
 
         // Renderer::Init();
 
-        m_ImGuiLayer = Arc<ImGuiLayer>{new ImGuiLayer()};
+        m_ImGuiLayer = Arc<ImGuiLayer>{new OpenGLImGuiLayer()};
         PushOverlay(m_ImGuiLayer);
     }
 

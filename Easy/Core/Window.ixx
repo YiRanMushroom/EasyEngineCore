@@ -1,7 +1,5 @@
 module;
 
-#include <utility>
-
 #include "MacroUtils.hpp"
 
 export module Easy.Core.Window;
