@@ -127,9 +127,6 @@ namespace Easy {
             switch (action) {
                 case GLFW_PRESS: {
                     KeyPressedEvent event(key, 0);
-
-
-
                     win->EventCallback(event);
                     break;
                 }
