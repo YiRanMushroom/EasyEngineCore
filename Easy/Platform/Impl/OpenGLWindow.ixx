@@ -1,9 +1,8 @@
 module;
 
-#include <OpenGL.hpp>
 #include "Core/MacroUtils.hpp"
 
-export module Easy.Platform.WindowsWindow;
+export module Easy.Platform.Impl.OpenGLWindow;
 
 import Easy.Core.Basic;
 import Easy.Events.Event;
@@ -16,12 +15,12 @@ namespace Easy {
         EZ_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     }
 
-    export class WindowsWindow : public Window {
+    export class OpenGLWindow : public Window {
     public:
-        explicit WindowsWindow(WindowProperties props, bool vSync = true,
-                               std::move_only_function<void(Event &)> eventCallback = nullptr);
+        explicit OpenGLWindow(WindowProperties props, bool vSync = true,
+                               std::function<void(Event &)> eventCallback = nullptr);
 
-        virtual ~WindowsWindow() override;
+        virtual ~OpenGLWindow() override;
 
         void OnUpdate() override;
 
@@ -33,13 +32,13 @@ namespace Easy {
 
         [[nodiscard]] bool IsVSync() const override;
 
-        void SetEventCallback(std::move_only_function<void(Event &)> callback) override;
+        void SetEventCallback(std::function<void(Event &)> callback) override;
 
         [[nodiscard]] void *GetNativeWindow() const override;
 
-        WindowsWindow(const WindowsWindow &) = delete;
+        OpenGLWindow(const OpenGLWindow &) = delete;
 
-        WindowsWindow &operator=(const WindowsWindow &) = delete;
+        OpenGLWindow &operator=(const OpenGLWindow &) = delete;
 
     private:
         std::string Title;

@@ -3,7 +3,7 @@ module;
 #include <OpenGL.hpp>
 #include "Core/MacroUtils.hpp"
 
-module Easy.Platform.WindowsWindow;
+module Easy.Platform.Impl.OpenGLWindow;
 
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
@@ -14,14 +14,14 @@ import Easy.Events.ApplicationEvent;
 import Easy.Core.Window;
 
 namespace Easy {
-    WindowsWindow::WindowsWindow(WindowProperties properties, bool vSync,
-                                 std::move_only_function<void(Event &)> eventCallback)
+    OpenGLWindow::OpenGLWindow(WindowProperties properties, bool vSync,
+                                 std::function<void(Event &)> eventCallback)
         : Title(std::move(properties.Title)), Width(properties.Width), Height(properties.Height),
           VSync(vSync), EventCallback(std::move(eventCallback)) {
         Init();
     }
 
-    WindowsWindow::~WindowsWindow() {
+    OpenGLWindow::~OpenGLWindow() {
         glfwDestroyWindow(m_Window);
 
         --s_GLFWWindowCount;
@@ -30,21 +30,21 @@ namespace Easy {
         }
     }
 
-    void WindowsWindow::OnUpdate() {
+    void OpenGLWindow::OnUpdate() {
         glfwPollEvents();
 
         glfwSwapBuffers(m_Window);
     }
 
-    uint32_t WindowsWindow::GetWidth() const {
+    uint32_t OpenGLWindow::GetWidth() const {
         return Width;
     }
 
-    uint32_t WindowsWindow::GetHeight() const {
+    uint32_t OpenGLWindow::GetHeight() const {
         return Height;
     }
 
-    void WindowsWindow::SetVSync(bool enabled) {
+    void OpenGLWindow::SetVSync(bool enabled) {
         if (enabled) {
             glfwSwapInterval(1);
         } else {
@@ -52,17 +52,19 @@ namespace Easy {
         }
     }
 
-    bool WindowsWindow::IsVSync() const {
+    bool OpenGLWindow::IsVSync() const {
         return VSync;
     }
 
-    void WindowsWindow::SetEventCallback(std::move_only_function<void(Event &)> callback) {}
+    void OpenGLWindow::SetEventCallback(std::function<void(Event &)> callback) {
+        EventCallback = std::move(callback);
+    }
 
-    void *WindowsWindow::GetNativeWindow() const {
+    void *OpenGLWindow::GetNativeWindow() const {
         return m_Window;
     }
 
-    void WindowsWindow::Init() {
+    void OpenGLWindow::Init() {
         EZ_CORE_INFO("Creating window {0} ({1}, {2})", Title, Width, Height);
 
         if (s_GLFWWindowCount == 0) {
@@ -107,7 +109,7 @@ namespace Easy {
         glfwSetWindowUserPointer(m_Window, this);
 
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow *window, int width, int height) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             win->Width = width;
             win->Height = height;
             WindowResizeEvent event(width, height);
@@ -115,13 +117,13 @@ namespace Easy {
         });
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             WindowCloseEvent event;
             win->EventCallback(event);
         });
 
         glfwSetKeyCallback(m_Window, [](GLFWwindow *window, int key, int scancode, int action, int mods) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             switch (action) {
                 case GLFW_PRESS: {
                     KeyPressedEvent event(key, 0);
@@ -146,13 +148,13 @@ namespace Easy {
         });
 
         glfwSetCharCallback(m_Window, [](GLFWwindow *window, unsigned int keycode) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             KeyTypedEvent event(keycode);
             win->EventCallback(event);
         });
 
         glfwSetMouseButtonCallback(m_Window, [](GLFWwindow *window, int button, int action, int mods) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             switch (action) {
                 case GLFW_PRESS: {
                     MouseButtonPressedEvent event(button);
@@ -169,13 +171,13 @@ namespace Easy {
         });
 
         glfwSetScrollCallback(m_Window, [](GLFWwindow *window, double xOffset, double yOffset) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             MouseScrolledEvent event(static_cast<float>(xOffset), static_cast<float>(yOffset));
             win->EventCallback(event);
         });
 
         glfwSetCursorPosCallback(m_Window, [](GLFWwindow *window, double xPos, double yPos) {
-            auto *win = static_cast<WindowsWindow *>(glfwGetWindowUserPointer(window));
+            auto *win = static_cast<OpenGLWindow *>(glfwGetWindowUserPointer(window));
             MouseMovedEvent event(static_cast<float>(xPos), static_cast<float>(yPos));
             win->EventCallback(event);
         });

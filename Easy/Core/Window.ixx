@@ -36,7 +36,7 @@ namespace Easy {
         virtual void SetVSync(bool enabled) = 0;
         [[nodiscard]] virtual bool IsVSync() const = 0;
 
-        virtual void SetEventCallback(std::move_only_function<void(Event &)> callback) = 0;
+        virtual void SetEventCallback(std::function<void(Event &)> callback) = 0;
 
         [[nodiscard]] virtual void* GetNativeWindow() const = 0;
     };

@@ -7,12 +7,11 @@ module Easy.Core.Application;
 import Easy.Core.Basic;
 import Easy.Core.Window;
 import Easy.Core.Layer;
-import Easy.Events.Event;
-import Easy.ImGui.ImGuiLayer;
-import Easy.Events.ApplicationEvent;
 import Easy.Core.LayerStack;
-import Easy.Platform.WindowsWindow;
-import Easy.Platform.Impl.OpenGLImGuiLayer;
+import Easy.Core.Util;
+import Easy.Events.Event;
+import Easy.Events.ApplicationEvent;
+import Easy.ImGui.ImGuiLayer;
 
 namespace Easy {
     Application *Application::s_Instance = nullptr;
@@ -29,16 +28,14 @@ namespace Easy {
             std::filesystem::current_path(m_Specification.WorkingDirectory);
 
         // m_Window = Window::Create(WindowProps(m_Specification.Name));
-        m_Window = Arc<Window>{
-            new WindowsWindow(WindowProperties(m_Specification.Name), true,
-                              std::bind(&Application::OnEvent, this, std::placeholders::_1)
-            )
-        };
+
+        m_Window = m_Specification.WindowFactory(WindowProperties{m_Specification.Name}, true,
+                                                 std::bind(&Application::OnEvent, this, std::placeholders::_1));
         // m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
 
         // Renderer::Init();
 
-        m_ImGuiLayer = Arc<ImGuiLayer>{new OpenGLImGuiLayer()};
+        m_ImGuiLayer = specification.ImGuiLayerFactory();
         PushOverlay(m_ImGuiLayer);
     }
 
@@ -81,9 +78,7 @@ namespace Easy {
 
     void Application::Run() {
         while (m_Running) {
-            float time = glfwGetTime();
-            float timestep = time - m_LastFrameTime;
-            m_LastFrameTime = time;
+            float timestep = m_FrameTimer.GetDeltaTime().count();
 
             ExecuteMainThreadQueue();
 
@@ -91,14 +86,12 @@ namespace Easy {
                 {
                     // HZ_PROFILE_SCOPE("LayerStack OnUpdate");
 
-                    for (const auto& layer: m_LayerStack)
+                    for (const auto &layer: m_LayerStack)
                         layer->OnUpdate(timestep);
                 }
 
-                m_ImGuiLayer->Begin();
-                {
-
-                    for (const auto& layer: m_LayerStack)
+                m_ImGuiLayer->Begin(); {
+                    for (const auto &layer: m_LayerStack)
                         layer->OnImGuiRender();
                 }
                 m_ImGuiLayer->End();

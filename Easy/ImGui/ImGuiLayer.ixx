@@ -34,4 +34,12 @@ namespace Easy {
 
         virtual void SetTemporaryUnblockEventsKey(Key::KeyCode key) = 0;
     };
+
+    export class ImGuiDockerLayer : public Layer {
+    public:
+        virtual void OnDockerRenderAdditional() {
+
+        }
+        virtual void OnImGuiRender() override;
+    };
 }
