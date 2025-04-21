@@ -31,22 +31,12 @@ namespace Easy {
 
     export template<typename BuilderType>
     class Builder {
-    public:
-        using ValueType = typename BuilderType::ValueType;
+    // public:
+        // using ValueType = typename BuilderType::ValueType;
 
     protected:
         BuilderType &&Next() {
             return std::move(static_cast<BuilderType &&>(*this));
-        }
-
-    public:
-        BuilderType &&Finalize() {
-            AsBuilder().Verify();
-            return Next();
-        }
-
-        ValueType Build() {
-            return AsBuilder().BuildImpl();
         }
 
     private:

@@ -1,5 +1,7 @@
 module;
 
+#include <sys/stat.h>
+
 #include "MacroUtils.hpp"
 
 module Easy.Core.Application;
@@ -16,26 +18,26 @@ import Easy.ImGui.ImGuiLayer;
 namespace Easy {
     Application *Application::s_Instance = nullptr;
 
-    Application::Application(const ApplicationSpecification &specification)
-        : m_Specification(specification) {
-        EZ_CORE_ASSERT(!s_Instance, "Application already exists!");
-        s_Instance = this;
+    Application::Application(AppInfo info) : m_Specification{
+        std::move(info.Name), std::move(info.WorkingDirectory), std::move(info.CommandLineArgs)
+    } {
+        if (s_Instance) {
+            EZ_CORE_CRITICAL("Application already exists!");
+        }
 
+        s_Instance = this;
         Log::Init();
 
-        // Set working directory here
         if (!m_Specification.WorkingDirectory.empty())
             std::filesystem::current_path(m_Specification.WorkingDirectory);
 
-        // m_Window = Window::Create(WindowProps(m_Specification.Name));
+        m_Window = info.WindowFactory(WindowProperties(
+                                          info.WindowTitle ? info.WindowTitle.value() : m_Specification.Name,
+                                          static_cast<int>(info.Width),
+                                          static_cast<int>(info.Height)), info.VSyncEnabled,
+                                      std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
-        m_Window = m_Specification.WindowFactory(WindowProperties{m_Specification.Name}, true,
-                                                 std::bind(&Application::OnEvent, this, std::placeholders::_1));
-        // m_Window->SetEventCallback(HZ_BIND_EVENT_FN(Application::OnEvent));
-
-        // Renderer::Init();
-
-        m_ImGuiLayer = specification.ImGuiLayerFactory();
+        m_ImGuiLayer = info.ImGuiLayerFactory();
         PushOverlay(m_ImGuiLayer);
     }
 
