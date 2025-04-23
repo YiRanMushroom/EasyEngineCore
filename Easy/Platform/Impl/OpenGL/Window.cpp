@@ -3,7 +3,7 @@ module;
 #include <OpenGL.hpp>
 #include "Core/MacroUtils.hpp"
 
-module Easy.Platform.Impl.OpenGLWindow;
+module Easy.Platform.Impl.OpenGL.Window;
 
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;

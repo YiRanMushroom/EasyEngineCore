@@ -1,15 +1,9 @@
 module;
 
 #include <OpenGL.hpp>
-
-#include <imgui.h>
-#include <backends/imgui_impl_glfw.h>
-#include <backends/imgui_impl_opengl3.h>
-#include <imgui_internal.h>
-
 #include "Core/MacroUtils.hpp"
 
-module Easy.Platform.Impl.OpenGLImGuiLayer;
+module Easy.Platform.Impl.OpenGL.ImGuiLayer;
 
 import Easy.Core.Basic;
 import Easy.Core.Application;
@@ -18,6 +12,7 @@ import Easy.Events.KeyEvents;
 import Easy.Core.Layer;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Events.Event;
+import Easy.Platform.Impl.OpenGL.ImGui;
 
 namespace Easy {
     OpenGLImGuiLayer::OpenGLImGuiLayer() {}

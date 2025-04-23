@@ -2,7 +2,7 @@ module;
 
 #include "Core/MacroUtils.hpp"
 
-export module Easy.Platform.Impl.OpenGLWindow;
+export module Easy.Platform.Impl.OpenGL.Window;
 
 import Easy.Core.Basic;
 import Easy.Events.Event;
