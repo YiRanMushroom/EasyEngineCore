@@ -37,27 +37,32 @@ void Easy::ImGuiDockerLayer::OnImGuiRender() {
         // all active windows docked into it will lose their parent and become undocked.
         // We cannot preserve the docking relationship between an active window and an inactive docking, otherwise
         // any change of dockspace/settings would lead to windows being stuck in limbo and never being visible.
-        ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-        ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-        ImGui::PopStyleVar();
+        // set style
+        {
+            ImGui::SetNextWindowBgAlpha(0.0f);
+            ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+            ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
+            ImGui::PopStyleVar();
 
-        if (opt_fullscreen)
-            ImGui::PopStyleVar(2);
+            if (opt_fullscreen)
+                ImGui::PopStyleVar(2);
 
-        // DockSpace
-        ImGuiIO &io = ImGui::GetIO();
-        ImGuiStyle &style = ImGui::GetStyle();
-        float minWinSizeX = style.WindowMinSize.x;
-        style.WindowMinSize.x = 370.0f;
-        if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
-            ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-            ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+            // DockSpace
+            // ImGuiIO &io = ImGui::GetIO();
+            // ImGuiStyle &style = ImGui::GetStyle();
+            // float minWinSizeX = style.WindowMinSize.x;
+            // // style.Alpha = 0.f;
+            // if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable) {
+            //     // ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+            //     // ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
+            // }
+            // // style.Alpha = 1.f;
+            //
+            // style.WindowMinSize.x = minWinSizeX;
+
+            OnDockerRenderAdditional();
+
+            ImGui::End();
         }
-
-        style.WindowMinSize.x = minWinSizeX;
-
-        OnDockerRenderAdditional();
-
-        ImGui::End();
     }
 }
