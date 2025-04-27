@@ -44,6 +44,24 @@ file(GLOB_RECURSE Platform_SOURCES
         Easy/Platform/*.cpp
 )
 
+# Renderer
+file(GLOB_RECURSE Renderer_MODULES
+        Easy/Renderer/*.ixx
+        Easy/Renderer/*.cppm
+)
+file(GLOB_RECURSE Renderer_SOURCES
+        Easy/Renderer/*.cpp
+)
+
+# Vendor
+file(GLOB_RECURSE Vendor_MODULES
+        Easy/Vendor/*.ixx
+        Easy/Vendor/*.cppm
+)
+file(GLOB_RECURSE Vendor_SOURCES
+        Easy/Vendor/*.cpp
+)
+
 file(GLOB VendorFiles vendor/glad/src/glad.c)
 
 file(GLOB_RECURSE PreCompiledHeaders
@@ -80,6 +98,10 @@ add_library(${PROJECT_NAME}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Platform_SOURCES}
+        ${Renderer_MODULES}
+        ${Renderer_SOURCES}
+        ${Vendor_MODULES}
+        ${Vendor_SOURCES}
         ${ImGuiGLFW_Sources}
 )
 
@@ -91,14 +113,14 @@ target_compile_definitions(${PROJECT_NAME}
 
 target_compile_options(${PROJECT_NAME}
         PRIVATE
-#        -pedantic
-#        -Wall
-#        -Wextra
-#        -Wno-sign-conversion
-#        -Wconversion
+        #        -pedantic
+        #        -Wall
+        #        -Wextra
+        #        -Wno-sign-conversion
+        #        -Wconversion
         -Wno-macro-redefined
         -Wno-deprecated-declarations
-#        -Werror
+        #        -Werror
 )
 
 target_sources(${PROJECT_NAME}
@@ -111,11 +133,14 @@ target_sources(${PROJECT_NAME}
         ${ImGui_MODULES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
+        ${Renderer_MODULES}
+        ${Vendor_MODULES}
 )
 
 add_subdirectory(vendor/std_module)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/spdlog)
+add_subdirectory(vendor/glm)
 
 target_precompile_headers(${PROJECT_NAME}
         PUBLIC
@@ -135,4 +160,5 @@ target_link_libraries(${PROJECT_NAME}
         std_module
         glfw
         spdlog::spdlog
+        glm::glm
 )

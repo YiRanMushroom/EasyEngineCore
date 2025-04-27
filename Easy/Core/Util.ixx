@@ -31,7 +31,7 @@ namespace Easy {
 
     export template<typename BuilderType>
     class Builder {
-    // public:
+        // public:
         // using ValueType = typename BuilderType::ValueType;
 
     protected:
@@ -43,5 +43,147 @@ namespace Easy {
         BuilderType &AsBuilder() {
             return static_cast<BuilderType &>(*this);
         }
+    };
+
+    export class FnNothing {
+        void operator()(const auto &...) const {}
+    };
+
+    export template<typename T, typename DeleteType = FnNothing, T default_value = T{}>
+    class unique_owner_default {
+    public:
+        using value_type = T;
+        using delete_type = DeleteType;
+
+        constexpr unique_owner_default() : value{default_value} {}
+
+        constexpr static unique_owner_default from_exchanged(value_type &&value) {
+            return unique_owner_default{std::exchange(value, default_value)};
+        }
+
+        constexpr static unique_owner_default from_value(const value_type &value) {
+            return unique_owner_default{value};
+        }
+
+        constexpr unique_owner_default(const unique_owner_default &) = delete;
+
+        constexpr unique_owner_default(unique_owner_default &&other) noexcept : value{other.value} {
+            other.value = default_value;
+        }
+
+        constexpr unique_owner_default &operator=(const unique_owner_default &) = delete;
+
+        constexpr unique_owner_default &operator=(unique_owner_default &&other) noexcept {
+            if (this == &other) {
+                return *this;
+            }
+
+            this->reset();
+
+            this->value = std::exchange(other.value, default_value);
+
+            return *this;
+        }
+
+        constexpr auto operator<=>(const unique_owner_default &) const = default;
+
+        constexpr const value_type &get() const {
+            return value;
+        }
+
+        constexpr value_type &get() {
+            return value;
+        }
+
+        [[nodiscard]] constexpr bool has_value() const {
+            return value != default_value;
+        }
+
+        constexpr explicit operator bool() const { // NOLINT
+            return has_value();
+        }
+
+        constexpr void reset() {
+            if constexpr (!(std::is_same_v<delete_type, FnNothing> || std::is_same_v<delete_type, void>
+                            || std::is_same_v<delete_type, nullptr_t>)) {
+                if (value != default_value) {
+                    delete_type{}(std::exchange(value, default_value));
+                }
+            }
+        }
+
+        constexpr ~unique_owner_default() {
+            reset();
+        }
+
+        constexpr unique_owner_default(value_type value) : value{value} {}
+
+    private:
+        value_type value;
+    };
+
+    export template<typename T, typename DeleteType = FnNothing>
+    class unique_owner_optional {
+    public:
+        using value_type = T;
+        using delete_type = DeleteType;
+
+        constexpr unique_owner_optional() = default;
+
+        constexpr static unique_owner_optional from_exchanged(value_type &&value) {
+            return unique_owner_optional{std::exchange(value, std::nullopt)};
+        }
+
+        constexpr static unique_owner_optional from_value(const value_type &value) {
+            return unique_owner_optional{value};
+        }
+
+        constexpr unique_owner_optional(const unique_owner_optional &) = delete;
+
+        constexpr unique_owner_optional(unique_owner_optional &&other) noexcept : value{
+            std::exchange(other.value, std::optional<value_type>{})
+        } {}
+
+        constexpr unique_owner_optional &operator=(const unique_owner_optional &) = delete;
+
+        constexpr unique_owner_optional &operator=(unique_owner_optional &&other) noexcept {
+            if (this == &other) {
+                return *this;
+            }
+
+            this->reset();
+
+            value = std::exchange(other.value, std::optional<value_type>{});
+
+            return *this;
+        }
+
+        constexpr auto operator<=>(const unique_owner_optional &) const = default;
+
+        constexpr const value_type &get() const {
+            return *value;
+        }
+
+        constexpr bool has_value() const {
+            return value.has_value();
+        }
+
+        constexpr explicit operator bool() const {
+            return has_value();
+        }
+
+        constexpr void reset() {
+            if (value.has_value()) {
+                if constexpr (!(std::is_same_v<delete_type, FnNothing> || std::is_same_v<delete_type, void>
+                                || std::is_same_v<delete_type, nullptr_t>)) {
+                    delete_type{}(*std::exchange(value, std::optional<value_type>{}));
+                }
+            }
+        }
+
+        constexpr unique_owner_optional(value_type value) : value{value} {}
+
+    private:
+        std::optional<value_type> value;
     };
 }
