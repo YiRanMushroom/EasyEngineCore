@@ -1,7 +1,3 @@
-[submodule "vendor/imgui"]
-	path = vendor/imgui
-	url = https://github.com/ocornut/imgui
-	branch = docking
 [submodule "vendor/glfw"]
 	path = vendor/glfw
 	url = https://github.com/glfw/glfw
@@ -10,9 +6,6 @@
 	path = vendor/std_module
 	url = https://github.com/YiRanMushroom/std_module
 	branch = master
-[submodule "vendor/spdlog"]
-	path = vendor/spdlog
-	url = https://github.com/gabime/spdlog
 [submodule "vendor/glm"]
 	path = vendor/glm
 	url = https://github.com/icaven/glm
@@ -37,3 +30,10 @@
 	path = vendor/shaderc
 	url = https://github.com/YiRanMushroom/shaderc
 	branch = main
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/ocornut/imgui
+	branch = docking
+[submodule "vendor/spdlog"]
+	path = vendor/spdlog
+	url = https://github.com/gabime/spdlog
