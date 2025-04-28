@@ -37,3 +37,19 @@
 [submodule "vendor/spdlog"]
 	path = vendor/spdlog
 	url = https://github.com/gabime/spdlog
+[submodule "vendor/ImGuizmo"]
+	path = vendor/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo
+	branch = master
+[submodule "vendor/yaml-cpp"]
+	path = vendor/yaml-cpp
+	url = https://github.com/jbeder/yaml-cpp
+	branch = master
+[submodule "vendor/freetype"]
+	path = vendor/freetype
+	url = https://github.com/freetype/freetype
+	branch = master
+[submodule "vendor/msdf-atlas-gen"]
+	path = vendor/msdf-atlas-gen
+	url = https://github.com/Obscurs/msdf-atlas-gen
+	branch = main

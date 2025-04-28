@@ -84,6 +84,11 @@ file(GLOB ImGuiGLFW_Sources
         vendor/imgui/imgui_tables.cpp
         vendor/imgui/backends/imgui_impl_glfw.cpp
         vendor/imgui/backends/imgui_impl_opengl3.cpp
+        vendor/ImGuizmo/GraphEditor.cpp
+        vendor/ImGuizmo/ImCurveEdit.cpp
+        vendor/ImGuizmo/ImGradient.cpp
+        vendor/ImGuizmo/ImGuizmo.cpp
+        vendor/ImGuizmo/ImSequencer.cpp
 )
 
 add_library(${PROJECT_NAME}
@@ -147,10 +152,12 @@ add_subdirectory(vendor/SPIRV-Headers)
 add_subdirectory(vendor/SPIRV-Tools)
 add_subdirectory(vendor/SPIRV-Cross)
 add_subdirectory(vendor/glslang)
-
+add_subdirectory(vendor/yaml-cpp)
 set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building Shaderc tests")
 set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
 add_subdirectory(vendor/shaderc)
+
+add_subdirectory(vendor/msdf-atlas-gen)
 
 target_precompile_headers(${PROJECT_NAME}
         PUBLIC
@@ -164,6 +171,7 @@ target_include_directories(${PROJECT_NAME}
         vendor/glad/include
         vendor/imgui
         vendor/SPIRV-Cross
+        vendor/ImGuizmo
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -182,4 +190,6 @@ target_link_libraries(${PROJECT_NAME}
         spirv-cross-msl
         spirv-cross-hlsl
         spirv-cross-util
+        msdf-atlas-gen
+        yaml-cpp::yaml-cpp
 )
