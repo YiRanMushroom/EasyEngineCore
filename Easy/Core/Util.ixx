@@ -45,11 +45,15 @@ namespace Easy {
         }
     };
 
-    export class FnNothing {
+
+}
+
+namespace Easy {
+    export class fn_nothing {
         void operator()(const auto &...) const {}
     };
 
-    export template<typename T, typename DeleteType = FnNothing, T default_value = T{}>
+    export template<typename T, typename DeleteType = fn_nothing, T default_value = T{}>
     class unique_owner_default {
     public:
         using value_type = T;
@@ -104,7 +108,7 @@ namespace Easy {
         }
 
         constexpr void reset() {
-            if constexpr (!(std::is_same_v<delete_type, FnNothing> || std::is_same_v<delete_type, void>
+            if constexpr (!(std::is_same_v<delete_type, fn_nothing> || std::is_same_v<delete_type, void>
                             || std::is_same_v<delete_type, nullptr_t>)) {
                 if (value != default_value) {
                     delete_type{}(std::exchange(value, default_value));
@@ -122,7 +126,7 @@ namespace Easy {
         value_type value;
     };
 
-    export template<typename T, typename DeleteType = FnNothing>
+    export template<typename T, typename DeleteType = fn_nothing>
     class unique_owner_optional {
     public:
         using value_type = T;
@@ -174,7 +178,7 @@ namespace Easy {
 
         constexpr void reset() {
             if (value.has_value()) {
-                if constexpr (!(std::is_same_v<delete_type, FnNothing> || std::is_same_v<delete_type, void>
+                if constexpr (!(std::is_same_v<delete_type, fn_nothing> || std::is_same_v<delete_type, void>
                                 || std::is_same_v<delete_type, nullptr_t>)) {
                     delete_type{}(*std::exchange(value, std::optional<value_type>{}));
                 }

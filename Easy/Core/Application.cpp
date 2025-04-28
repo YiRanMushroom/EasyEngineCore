@@ -1,7 +1,5 @@
 module;
 
-#include <sys/stat.h>
-
 #include "MacroUtils.hpp"
 
 module Easy.Core.Application;
@@ -16,8 +14,6 @@ import Easy.Events.ApplicationEvent;
 import Easy.ImGui.ImGuiLayer;
 
 namespace Easy {
-    Application *Application::s_Instance = nullptr;
-
     Application::Application(AppInfo info) : m_Specification{
         std::move(info.Name), std::move(info.WorkingDirectory), std::move(info.CommandLineArgs)
     } {

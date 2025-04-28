@@ -13,17 +13,24 @@ namespace Easy {
         virtual ~OpenGLVertexArray() override = default;
 
         virtual void Bind() const override;
+
         virtual void Unbind() const override;
 
-        virtual void AddVertexBuffer(const Arc<VertexBuffer>& vertexBuffer) override;
-        virtual void SetIndexBuffer(const Arc<IndexBuffer>& indexBuffer) override;
+        virtual void AddVertexBuffer(const Arc<VertexBuffer> &vertexBuffer) override;
 
-        [[nodiscard]] virtual const std::vector<Arc<VertexBuffer>>& GetVertexBuffers() const { return m_VertexBuffers; }
-        [[nodiscard]] virtual const Arc<IndexBuffer>& GetIndexBuffer() const { return m_IndexBuffer; }
+        virtual void SetIndexBuffer(const Arc<IndexBuffer> &indexBuffer) override;
+
+        [[nodiscard]] virtual const std::vector<Arc<VertexBuffer>> &GetVertexBuffers() const override {
+            return m_VertexBuffers;
+        }
+
+        [[nodiscard]] virtual const Arc<IndexBuffer> &GetIndexBuffer() const override { return m_IndexBuffer; }
+
     private:
         struct VertexArrayDeleter {
             void operator()(uint32_t ptr) const;
         };
+
         // uint32_t m_RendererID;
         unique_owner_default<uint32_t, VertexArrayDeleter, 0> m_RendererID;
         uint32_t m_VertexBufferIndex = 0;

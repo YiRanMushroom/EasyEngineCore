@@ -12,10 +12,11 @@ import Easy.Events.KeyEvents;
 import Easy.Events.MouseEvents;
 import Easy.Events.ApplicationEvent;
 import Easy.Core.Window;
+import Easy.Renderer.RendererAPI;
 
 namespace Easy {
     OpenGLWindow::OpenGLWindow(WindowProperties properties, bool vSync,
-                                 std::function<void(Event &)> eventCallback)
+                               std::function<void(Event &)> eventCallback)
         : Title(std::move(properties.Title)), Width(properties.Width), Height(properties.Height),
           VSync(vSync), EventCallback(std::move(eventCallback)) {
         Init();
@@ -81,8 +82,8 @@ namespace Easy {
             glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
 
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
             glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -105,6 +106,8 @@ namespace Easy {
             glfwDestroyWindow(m_Window);
             glfwTerminate();
         }
+
+        // SetRendererAPI(RendererAPI::API::OpenGL);
 
         glfwSetWindowUserPointer(m_Window, this);
 
