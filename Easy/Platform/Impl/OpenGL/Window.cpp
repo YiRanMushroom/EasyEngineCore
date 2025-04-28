@@ -117,8 +117,6 @@ namespace Easy {
             win->Height = height;
             WindowResizeEvent event(width, height);
             win->EventCallback(event);
-
-            glViewport(0, 0, width, height);
         });
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow *window) {

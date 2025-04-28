@@ -111,7 +111,7 @@ namespace Easy {
         }
 
         m_Minimized = false;
-        // Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+        glViewport(0, 0, e.GetWidth(), e.GetHeight());
 
         return false;
     }
