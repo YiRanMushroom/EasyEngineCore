@@ -17,10 +17,6 @@
 	path = vendor/glm
 	url = https://github.com/icaven/glm
 	branch = master
-[submodule "vendor/shaderc"]
-	path = vendor/shaderc
-	url = https://github.com/google/shaderc
-	branch = main
 [submodule "vendor/SPIRV-Cross"]
 	path = vendor/SPIRV-Cross
 	url = https://github.com/KhronosGroup/SPIRV-Cross
@@ -36,4 +32,8 @@
 [submodule "vendor/glslang"]
 	path = vendor/glslang
 	url = https://github.com/KhronosGroup/glslang
+	branch = main
+[submodule "vendor/shaderc"]
+	path = vendor/shaderc
+	url = https://github.com/YiRanMushroom/shaderc
 	branch = main
