@@ -39,7 +39,6 @@ namespace Easy {
         }
 
         static const char *GetCacheDirectory() {
-            // TODO: make sure the assets directory is valid
             return "assets/cache/shader/opengl";
         }
 
