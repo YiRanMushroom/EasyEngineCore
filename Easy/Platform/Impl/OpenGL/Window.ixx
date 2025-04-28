@@ -7,6 +7,7 @@ export module Easy.Platform.Impl.OpenGL.Window;
 import Easy.Core.Basic;
 import Easy.Events.Event;
 import Easy.Core.Window;
+import Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
 namespace Easy {
     size_t s_GLFWWindowCount = 0;

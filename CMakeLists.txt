@@ -109,10 +109,12 @@ target_compile_definitions(${PROJECT_NAME}
         PUBLIC
         "EZ_DEBUG=1"
         "EZ_PLATFORM_WINDOWS"
+        "EZ_RENDERER_OPENGL"
+        "_CRT_SECURE_NO_WARNINGS"
 )
 
 target_compile_options(${PROJECT_NAME}
-        PRIVATE
+        PUBLIC
         #        -pedantic
         #        -Wall
         #        -Wextra
@@ -141,6 +143,14 @@ add_subdirectory(vendor/std_module)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glm)
+add_subdirectory(vendor/SPIRV-Headers)
+add_subdirectory(vendor/SPIRV-Tools)
+add_subdirectory(vendor/SPIRV-Cross)
+add_subdirectory(vendor/glslang)
+
+set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building Shaderc tests")
+set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
+add_subdirectory(vendor/shaderc)
 
 target_precompile_headers(${PROJECT_NAME}
         PUBLIC
@@ -153,6 +163,7 @@ target_include_directories(${PROJECT_NAME}
         Easy
         vendor/glad/include
         vendor/imgui
+        vendor/SPIRV-Cross
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -161,4 +172,14 @@ target_link_libraries(${PROJECT_NAME}
         glfw
         spdlog::spdlog
         glm::glm
+        shaderc
+        SPIRV
+        SPIRV-Headers::SPIRV-Headers
+        spirv-cross-core
+        spirv-cross-glsl
+        spirv-cross-cpp
+        spirv-cross-reflect
+        spirv-cross-msl
+        spirv-cross-hlsl
+        spirv-cross-util
 )

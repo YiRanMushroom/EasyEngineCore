@@ -4,6 +4,8 @@ module;
 
 export module Easy.Core.Application;
 
+export import Easy.Core.ApplicationContext;
+
 import Easy.Core.Basic;
 import Easy.Core.Window;
 import Easy.Core.Layer;
@@ -105,9 +107,7 @@ namespace Easy {
 
         std::vector<std::function<void()>> m_MainThreadQueue;
         std::mutex m_MainThreadQueueMutex;
-
-    private:
-        static Application *s_Instance;
+        inline static Application *s_Instance;
     };
 
     export class ApplicationBuilder : public Builder<ApplicationBuilder> {
