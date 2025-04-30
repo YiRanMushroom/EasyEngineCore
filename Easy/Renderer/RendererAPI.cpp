@@ -40,14 +40,14 @@ namespace Easy {
         }
     }
 
-    Arc<RendererAPI> RendererAPI::Create() {
+    Box<RendererAPI> RendererAPI::Create() {
         switch (ApplicationContext::GetApplicationRendererAPI()) {
             case RendererAPI::API::None:
                 EZ_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;
             case RendererAPI::API::OpenGL:
 #ifdef EZ_RENDERER_OPENGL
-                return MakeArc<OpenGLRendererAPI>();
+                return MakeBox<OpenGLRendererAPI>();
 #else
                 EZ_CORE_ASSERT(false, "OpenGL RendererAPI is not supported");
 #endif

@@ -46,7 +46,7 @@ namespace Easy {
 
         static API GetAPI() { return s_CurrentRendererAPI->GetInstanceAPI(); }
 
-        static Arc<RendererAPI> Create();
+        static Box<RendererAPI> Create();
 
     protected:
         inline static RendererAPI *s_CurrentRendererAPI;
