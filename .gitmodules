@@ -53,3 +53,7 @@
 	path = vendor/msdf-atlas-gen
 	url = https://github.com/Obscurs/msdf-atlas-gen
 	branch = main
+[submodule "vendor/box2d"]
+	path = vendor/box2d
+	url = https://github.com/TheCherno/box2d
+	branch = master

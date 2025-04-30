@@ -19,5 +19,7 @@ namespace Easy {
         virtual const std::vector<Arc<VertexBuffer>> &GetVertexBuffers() const = 0;
 
         virtual const Arc<IndexBuffer> &GetIndexBuffer() const = 0;
+
+        static Arc<VertexArray> Create();
     };
 }

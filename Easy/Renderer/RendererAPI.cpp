@@ -55,4 +55,6 @@ namespace Easy {
                 EZ_CORE_ASSERT(false, "Unknown RendererAPI");
         }
     }
+
+
 }

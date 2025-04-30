@@ -18,8 +18,14 @@ namespace glm {
 	export using glm::perspective;
 	export using glm::translate;
 	export using glm::rotate;
+	export using glm::scale;
+	export using glm::inverse;
+	export using glm::normalize;
+	export using glm::length;
+	export using glm::dot;
 	export using glm::toMat3;
 	export using glm::toMat4;
+	export using glm::radians;
 }
 
 export namespace glm {

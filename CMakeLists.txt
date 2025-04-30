@@ -62,6 +62,15 @@ file(GLOB_RECURSE Renderer_SOURCES
         Easy/Renderer/*.cpp
 )
 
+# Scene
+file(GLOB_RECURSE Scene_MODULES
+        Easy/Scene/*.ixx
+        Easy/Scene/*.cppm
+)
+file(GLOB_RECURSE Scene_SOURCES
+        Easy/Scene/*.cpp
+)
+
 # Vendor
 file(GLOB_RECURSE Vendor_MODULES
         Easy/Vendor/*.ixx
@@ -125,6 +134,8 @@ add_library(${PROJECT_NAME}
         ${Platform_SOURCES}
         ${Renderer_MODULES}
         ${Renderer_SOURCES}
+        ${Scene_MODULES}
+        ${Scene_SOURCES}
         ${Vendor_MODULES}
         ${Vendor_SOURCES}
         ${Windows_MODULES}
@@ -164,6 +175,7 @@ target_sources(${PROJECT_NAME}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Renderer_MODULES}
+        ${Scene_MODULES}
         ${Vendor_MODULES}
         ${Windows_MODULES}
 )
@@ -177,6 +189,10 @@ add_subdirectory(vendor/SPIRV-Tools)
 add_subdirectory(vendor/SPIRV-Cross)
 add_subdirectory(vendor/glslang)
 add_subdirectory(vendor/yaml-cpp)
+
+set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
+set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "Build the Box2D testbed" FORCE)
+add_subdirectory(vendor/box2d)
 set(SHADERC_SKIP_TESTS ON CACHE BOOL "Skip building Shaderc tests")
 set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
 add_subdirectory(vendor/shaderc)
@@ -220,4 +236,5 @@ target_link_libraries(${PROJECT_NAME}
         spirv-cross-util
         msdf-atlas-gen
         yaml-cpp::yaml-cpp
+        box2d
 )
