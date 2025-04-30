@@ -22,6 +22,8 @@ import Easy.Renderer.UniformBuffer;
 
 import Easy.Renderer.RenderCommand;
 
+import Easy.Renderer.ShaderSources;
+
 namespace Easy {
     struct QuadVertex {
         glm::vec3 Position;
@@ -210,6 +212,8 @@ namespace Easy {
         int32_t samplers[s_Data.MaxTextureSlots];
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
             samplers[i] = i;
+
+        GLShaderSources::Init();
 
         s_Data.QuadShader = Shader::Create("assets/shaders/Renderer2D_Quad.glsl");
         s_Data.CircleShader = Shader::Create("assets/shaders/Renderer2D_Circle.glsl");

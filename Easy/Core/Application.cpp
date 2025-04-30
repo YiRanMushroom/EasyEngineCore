@@ -12,6 +12,7 @@ import Easy.Core.Util;
 import Easy.Events.Event;
 import Easy.Events.ApplicationEvent;
 import Easy.ImGui.ImGuiLayer;
+import Easy.Renderer.Renderer;
 
 namespace Easy {
     Application::Application(AppInfo info) : m_Specification{
@@ -22,6 +23,11 @@ namespace Easy {
         }
 
         s_Instance = this;
+
+        Init(std::move(info));
+    }
+
+    void Application::Init(AppInfo info) {
         Log::Init();
 
         if (!m_Specification.WorkingDirectory.empty())
@@ -33,13 +39,15 @@ namespace Easy {
                                           static_cast<int>(info.Height)), info.VSyncEnabled,
                                       std::bind(&Application::OnEvent, this, std::placeholders::_1));
 
+        Renderer::Init();
+
         m_ImGuiLayer = info.ImGuiLayerFactory();
         PushOverlay(m_ImGuiLayer);
     }
 
     Application::~Application() {
         // ScriptEngine::Shutdown();
-        // Renderer::Shutdown();
+        Renderer::Shutdown();
     }
 
     void Application::PushLayer(Arc<Layer> layer) {

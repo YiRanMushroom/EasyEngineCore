@@ -96,6 +96,8 @@ namespace Easy {
 
         void ExecuteMainThreadQueue();
 
+        void Init(AppInfo info);
+
     private:
         ApplicationSpecification m_Specification;
         Arc<Window> m_Window;

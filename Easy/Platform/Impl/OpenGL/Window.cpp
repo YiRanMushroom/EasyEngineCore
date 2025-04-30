@@ -84,7 +84,7 @@ namespace Easy {
 
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+            glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
             glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
             m_Window = glfwCreateWindow(Width, Height, Title.c_str(), nullptr, nullptr);
