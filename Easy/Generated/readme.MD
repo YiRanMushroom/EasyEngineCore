@@ -1,0 +1,1 @@
+I don't know how to generate C++ files using CMake, the files should be deleted and automatically generated using Cmake. But we will leave them here for now.

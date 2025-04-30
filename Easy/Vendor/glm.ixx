@@ -3,14 +3,23 @@ module;
 // #define GLM_GTC_INLINE_NAMESPACE to inline glm::gtc into glm
 // #define GLM_EXT_INLINE_NAMESPACE to inline glm::ext into glm
 // #define GLM_GTX_INLINE_NAMESPACE to inline glm::gtx into glm
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+
+#include "glm/gtx/quaternion.hpp"
 
 export module easy.vendor.glm;
 
 namespace glm {
 	export using glm::value_ptr;
+	export using glm::ortho;
+	export using glm::perspective;
+	export using glm::translate;
+	export using glm::rotate;
+	export using glm::toMat3;
+	export using glm::toMat4;
 }
 
 export namespace glm {

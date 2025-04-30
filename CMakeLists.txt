@@ -26,6 +26,15 @@ file(GLOB_RECURSE Event_SOURCES
         Easy/Events/*.cpp
 )
 
+# Generated
+file(GLOB_RECURSE Generated_MODULES
+        Easy/Generated/*.ixx
+        Easy/Generated/*.cppm
+)
+file(GLOB_RECURSE Generated_SOURCES
+        Easy/Generated/*.cpp
+)
+
 # ImGui
 file(GLOB_RECURSE ImGui_MODULES
         Easy/ImGui/*.ixx
@@ -76,6 +85,15 @@ file(GLOB_RECURSE OPENGL_MODULES
         Easy/Platform/OpenGLEngineContext.ixx
 )
 
+file(GLOB_RECURSE Windows_MODULES
+        Easy/Platform/Windows/*.ixx
+        Easy/Platform/Windows/*.cppm
+)
+
+file(GLOB_RECURSE Windows_SOURCES
+        Easy/Platform/Windows/*.cpp
+)
+
 file(GLOB ImGuiGLFW_Sources
         vendor/imgui/imgui.cpp
         vendor/imgui/imgui_draw.cpp
@@ -97,6 +115,8 @@ add_library(${PROJECT_NAME}
         ${Core_SOURCES}
         ${Event_MODULES}
         ${Event_SOURCES}
+        ${Generated_MODULES}
+        ${Generated_SOURCES}
         ${ImGui_MODULES}
         ${ImGui_SOURCES}
         ${OPENGL_SOURCES}
@@ -107,6 +127,8 @@ add_library(${PROJECT_NAME}
         ${Renderer_SOURCES}
         ${Vendor_MODULES}
         ${Vendor_SOURCES}
+        ${Windows_MODULES}
+        ${Windows_SOURCES}
         ${ImGuiGLFW_Sources}
 )
 
@@ -137,11 +159,13 @@ target_sources(${PROJECT_NAME}
         FILES
         ${Core_MODULES}
         ${Event_MODULES}
+        ${Generated_MODULES}
         ${ImGui_MODULES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Renderer_MODULES}
         ${Vendor_MODULES}
+        ${Windows_MODULES}
 )
 
 add_subdirectory(vendor/std_module)
@@ -172,6 +196,10 @@ target_include_directories(${PROJECT_NAME}
         vendor/imgui
         vendor/SPIRV-Cross
         vendor/ImGuizmo
+        vendor/stb_image
+        vendor/msdf-atlas-gen/msdf-atlas-gen
+        vendor/msdf-atlas-gen/msdfgen
+        vendor/msdf-atlas-gen/msdfgen/include
 )
 
 target_link_libraries(${PROJECT_NAME}

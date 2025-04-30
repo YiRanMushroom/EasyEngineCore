@@ -190,4 +190,15 @@ namespace Easy {
     private:
         std::optional<value_type> value;
     };
+
+    export constexpr bool create_directory(const std::filesystem::path &path) {
+        // if directory is "" return true
+        if (path.empty()) {
+            return true;
+        }
+        if (std::filesystem::exists(path)) {
+            return true;
+        }
+        return std::filesystem::create_directories(path);
+    }
 }

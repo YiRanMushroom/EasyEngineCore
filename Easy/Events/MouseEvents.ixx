@@ -5,8 +5,8 @@ module;
 export module Easy.Events.MouseEvents;
 
 import yrm.msvc.std.compat;
-import Easy.Core.MouseCodes;
-import Easy.Events.Event;
+export import Easy.Core.MouseCodes;
+export import Easy.Events.Event;
 
 namespace Easy {
     export class MouseMovedEvent : public Event {

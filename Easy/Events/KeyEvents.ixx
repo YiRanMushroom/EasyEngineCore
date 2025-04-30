@@ -5,8 +5,8 @@ module;
 export module Easy.Events.KeyEvents;
 
 import yrm.msvc.std.compat;
-import Easy.Events.Event;
-import Easy.Core.KeyCodes;
+export import Easy.Core.KeyCodes;
+export import Easy.Events.Event;
 
 namespace Easy {
     export class KeyEvent : public Event {

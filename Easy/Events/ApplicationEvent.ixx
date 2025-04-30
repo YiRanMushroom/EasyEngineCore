@@ -5,7 +5,7 @@ module;
 export module Easy.Events.ApplicationEvent;
 
 import yrm.msvc.std.compat;
-import Easy.Events.Event;
+export import Easy.Events.Event;
 
 namespace Easy {
     export class WindowResizeEvent : public Event {

@@ -4,6 +4,10 @@ export module Easy.Core.Basic;
 
 export import yrm.msvc.std.compat;
 
+export namespace std {
+    using std::pair;
+}
+
 namespace Easy {
     export {
         template<typename T>
