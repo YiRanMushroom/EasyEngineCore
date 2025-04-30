@@ -119,6 +119,7 @@ namespace Easy {
     }
 
     void OpenGLVertexArray::VertexArrayDeleter::operator()(uint32_t ptr) const {
+        EZ_CORE_INFO("Deleting VertexArray {0}", ptr);
         glDeleteVertexArrays(1, &ptr);
     }
 }

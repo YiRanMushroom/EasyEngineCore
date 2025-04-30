@@ -4,6 +4,7 @@ import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
 import Easy.Core.Basic;
 import easy.vendor.glm;
+import Easy.Core.Util;
 
 namespace Easy {
     export class OpenGLShader : public Shader {
@@ -12,7 +13,7 @@ namespace Easy {
 
         OpenGLShader(const std::string &name, const std::string &vertexSrc, const std::string &fragmentSrc);
 
-        virtual ~OpenGLShader() override;
+        virtual ~OpenGLShader() override = default;
 
         virtual void Bind() const override;
 
@@ -64,7 +65,11 @@ namespace Easy {
         void Reflect(GLenum stage, const std::vector<uint32_t> &shaderData);
 
     private:
-        uint32_t m_RendererID;
+        struct ShaderDeleter {
+            void operator()(uint32_t shader) const;
+        };
+
+        unique_owner_default<uint32_t, ShaderDeleter, 0> m_RendererID;
         std::string m_FilePath;
         std::string m_Name;
 
