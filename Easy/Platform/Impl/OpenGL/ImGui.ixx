@@ -1,6 +1,6 @@
 module;
 
-import Easy.ImGui.ImGui;
+export import Easy.ImGui.ImGui;
 #include <backends/imgui_impl_glfw.h>
 #include <backends/imgui_impl_opengl3.h>
 

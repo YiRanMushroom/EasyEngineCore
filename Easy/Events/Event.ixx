@@ -55,11 +55,27 @@ namespace Easy {
             : m_Event(event) {}
 
         template<typename T, typename F>
-            requires std::derived_from<T, Event> && requires(F f, T &e) { f(e); }
+            requires std::derived_from<T, Event> && requires(F f, T &e) { { f(e) } -> std::convertible_to<bool>; }
         bool Dispatch(const F &func) {
             auto type = m_Event.GetEventType();
             if (type == T::GetStaticType()) {
                 m_Event.Handled |= func(static_cast<T &>(m_Event));
+                return true;
+            }
+            return false;
+        }
+
+    private:
+        template<typename T, typename Evt>
+        using member_fn_t = bool(T::*)(Evt &);
+
+    public:
+        template<typename T, typename Evt>
+            requires std::derived_from<Evt, Event>
+        bool Dispatch(member_fn_t<T, Evt> fn_ptr, T *obj) {
+            auto type = m_Event.GetEventType();
+            if (type == Evt::GetStaticType()) {
+                m_Event.Handled |= (obj->*fn_ptr)(static_cast<Evt &>(m_Event));
                 return true;
             }
             return false;

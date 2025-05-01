@@ -71,9 +71,10 @@ namespace Easy {
     void EditorCamera::OnEvent(Event &e) {
         EventDispatcher dispatcher(e);
         // dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
-        dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent &evt) {
-            return this->OnMouseScroll(evt);
-        });
+        // dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent &evt) {
+        //     return this->OnMouseScroll(evt);
+        // });
+        dispatcher.Dispatch(&EditorCamera::OnMouseScroll, this);
     }
 
     bool EditorCamera::OnMouseScroll(MouseScrolledEvent &e) {

@@ -72,8 +72,11 @@ namespace Easy {
 
     void Application::OnEvent(Event &e) {
         EventDispatcher dispatcher(e);
-        dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
-        dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+        // dispatcher.Dispatch<WindowResizeEvent>(std::bind(&Application::OnWindowResize, this, std::placeholders::_1));
+        // dispatcher.Dispatch<WindowCloseEvent>(std::bind(&Application::OnWindowClose, this, std::placeholders::_1));
+
+        dispatcher.Dispatch(&Application::OnWindowResize, this);
+        dispatcher.Dispatch(&Application::OnWindowClose, this);
 
         for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it) {
             if (e.Handled)
