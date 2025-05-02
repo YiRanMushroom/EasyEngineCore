@@ -41,7 +41,7 @@ namespace Easy {
     }
 
     Box<RendererAPI> RendererAPI::Create() {
-        switch (ApplicationContext::GetApplicationRendererAPI()) {
+        switch (ApplicationContext::ApplicationRendererAPI) {
             case RendererAPI::API::None:
                 EZ_CORE_ASSERT(false, "RendererAPI::None is not supported");
                 return nullptr;

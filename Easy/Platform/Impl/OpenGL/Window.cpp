@@ -7,10 +7,11 @@ module Easy.Platform.Impl.OpenGL.Window;
 
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
+import Easy.Core.ApplicationContext;
 import Easy.Events.Event;
 import Easy.Events.KeyEvents;
 import Easy.Events.MouseEvents;
-import Easy.Events.ApplicationEvent;
+import Easy.Events.ApplicationEvents;
 import Easy.Core.Window;
 import Easy.Renderer.RendererAPI;
 
@@ -23,6 +24,7 @@ namespace Easy {
     }
 
     OpenGLWindow::~OpenGLWindow() {
+        ApplicationContext::ApplicationRendererAPI = RendererAPI::API::None;
         glfwDestroyWindow(m_Window);
 
         --s_GLFWWindowCount;
@@ -99,6 +101,8 @@ namespace Easy {
         glfwMakeContextCurrent(m_Window);
 
         SetVSync(VSync);
+
+        ApplicationContext::ApplicationRendererAPI = RendererAPI::API::OpenGL;
 
         // Initialize Glad
         if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {

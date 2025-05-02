@@ -10,7 +10,7 @@ import Easy.Core.Layer;
 import Easy.Core.LayerStack;
 import Easy.Core.Util;
 import Easy.Events.Event;
-import Easy.Events.ApplicationEvent;
+import Easy.Events.ApplicationEvents;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Renderer.Renderer;
 

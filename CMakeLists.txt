@@ -141,6 +141,7 @@ add_library(${PROJECT_NAME}
         ${Windows_MODULES}
         ${Windows_SOURCES}
         ${ImGuiGLFW_Sources}
+        Easy/mod.ixx
 )
 
 target_compile_definitions(${PROJECT_NAME}
@@ -178,6 +179,7 @@ target_sources(${PROJECT_NAME}
         ${Scene_MODULES}
         ${Vendor_MODULES}
         ${Windows_MODULES}
+        Easy/mod.ixx
 )
 
 add_subdirectory(vendor/std_module)

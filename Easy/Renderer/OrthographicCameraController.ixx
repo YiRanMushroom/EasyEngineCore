@@ -5,7 +5,7 @@ import Easy.Core.Basic;
 import Easy.Core.Application;
 import Easy.Events.MouseEvents;
 import Easy.Events.KeyEvents;
-import Easy.Events.ApplicationEvent;
+import Easy.Events.ApplicationEvents;
 import Easy.Renderer.OrthographicCamera;
 
 namespace Easy {

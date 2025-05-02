@@ -2,7 +2,7 @@ module;
 
 #include "EventDefines.hpp"
 
-export module Easy.Events.ApplicationEvent;
+export module Easy.Events.ApplicationEvents;
 
 import yrm.msvc.std.compat;
 export import Easy.Events.Event;

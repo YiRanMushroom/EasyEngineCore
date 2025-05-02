@@ -12,7 +12,7 @@ import Easy.Core.Layer;
 import Easy.Core.Util;
 import Easy.Events.Event;
 import Easy.ImGui.ImGuiLayer;
-import Easy.Events.ApplicationEvent;
+import Easy.Events.ApplicationEvents;
 import Easy.Core.LayerStack;
 
 namespace Easy {

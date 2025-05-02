@@ -9,6 +9,7 @@ namespace Easy {
     export class RenderCommand {
     public:
         static void Init() {
+            s_RendererAPI = RendererAPI::Create();
             s_RendererAPI->Init();
         }
 
@@ -37,6 +38,6 @@ namespace Easy {
         }
 
     private:
-        inline static Box<RendererAPI> s_RendererAPI = RendererAPI::Create();
+        inline static Box<RendererAPI> s_RendererAPI;
     };
 }
