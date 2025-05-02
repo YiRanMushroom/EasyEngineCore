@@ -5,7 +5,7 @@ module;
 
 module Easy.Renderer.Renderer2D;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;

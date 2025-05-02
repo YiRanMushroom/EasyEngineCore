@@ -3,7 +3,7 @@ export module Easy.Core.Input;
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
 import Easy.Core.MouseCodes;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     export class Input {

@@ -7,7 +7,7 @@ module;
 module Easy.Platform.Impl.OpenGL.Renderer.Buffer;
 
 import Easy.Renderer.Buffer;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size) { {

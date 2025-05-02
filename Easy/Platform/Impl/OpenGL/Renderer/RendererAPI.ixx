@@ -4,7 +4,7 @@ import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
 import Easy.Core.Basic;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     export class OpenGLRendererAPI : public RendererAPI {

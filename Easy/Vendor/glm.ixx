@@ -10,7 +10,7 @@ module;
 
 #include "glm/gtx/quaternion.hpp"
 
-export module easy.vendor.glm;
+export module Easy.Vendor.glm;
 
 namespace glm {
     export using glm::value_ptr;

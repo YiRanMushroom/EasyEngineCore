@@ -1,4 +1,4 @@
-export module easy.vendor;
+export module Easy.Vendor;
 
-export import easy.vendor.entt;
-export import easy.vendor.glm;
+export import Easy.Vendor.entt;
+export import Easy.Vendor.glm;

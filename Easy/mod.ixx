@@ -6,4 +6,4 @@ export import Easy.ImGui;
 export import Easy.Platform;
 export import Easy.Renderer;
 export import Easy.Scene;
-export import easy.vendor;
+export import Easy.Vendor;

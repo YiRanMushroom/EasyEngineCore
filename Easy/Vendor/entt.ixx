@@ -26,7 +26,7 @@ module;
 #include <type_traits>
 #include <unordered_map>
 
-export module easy.vendor.entt;
+export module Easy.Vendor.entt;
 
 // #include "core/algorithm.hpp"
 #ifndef ENTT_CORE_ALGORITHM_HPP

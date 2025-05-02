@@ -1,6 +1,6 @@
 export module Easy.Renderer.RenderCommand;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Renderer.VertexArray;
 import Easy.Renderer.RendererAPI;

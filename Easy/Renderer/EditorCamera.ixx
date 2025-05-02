@@ -1,6 +1,6 @@
 export module Easy.Renderer.EditorCamera;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;
 import Easy.Events.Event;

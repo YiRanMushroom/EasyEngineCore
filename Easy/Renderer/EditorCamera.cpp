@@ -1,6 +1,6 @@
 module Easy.Renderer.EditorCamera;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Core.Input;
 import Easy.Core.KeyCodes;

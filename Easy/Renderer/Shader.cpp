@@ -5,7 +5,7 @@ module;
 module Easy.Renderer.Shader;
 
 import Easy.Core.Basic;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Renderer.RendererAPI;
 
 #if defined(EZ_RENDERER_OPENGL)

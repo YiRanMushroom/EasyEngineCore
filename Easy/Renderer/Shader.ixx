@@ -1,7 +1,7 @@
 export module Easy.Renderer.Shader;
 
 import Easy.Core.Basic;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     export class Shader {

@@ -1,6 +1,6 @@
 export module Easy.Renderer.OrthographicCamera;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     export class OrthographicCamera {

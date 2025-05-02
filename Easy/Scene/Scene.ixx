@@ -7,13 +7,11 @@ export module Easy.Scene.Scene;
 
 import Easy.Core.Basic;
 import Easy.Core.UUID;
-import easy.vendor.entt;
+import Easy.Vendor.entt;
 import Easy.Renderer.EditorCamera;
 import Easy.Core.Basic;
 import Easy.Core.UUID;
-import easy.vendor.entt;
-
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 import Easy.Core.Basic;
 import Easy.Core.UUID;

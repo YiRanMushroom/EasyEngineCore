@@ -1,6 +1,6 @@
 export module Easy.Renderer.Camera;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     export class Camera {

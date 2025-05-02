@@ -1,6 +1,6 @@
 module Easy.Renderer.OrthographicCamera;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
     OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)

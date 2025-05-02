@@ -2,7 +2,7 @@ module;
 
 module Easy.Renderer.Renderer;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.OrthographicCamera;

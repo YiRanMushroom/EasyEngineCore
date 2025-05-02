@@ -1,6 +1,6 @@
 export module Easy.Renderer.OrthographicCameraController;
 
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Core.Application;
 import Easy.Events.MouseEvents;

@@ -3,7 +3,7 @@ export module Easy.Platform.Impl.OpenGL.Renderer.Shader;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
 import Easy.Core.Basic;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Core.Util;
 
 namespace Easy {

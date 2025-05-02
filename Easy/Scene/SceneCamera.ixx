@@ -2,7 +2,7 @@ export module Easy.Scene.SceneCamera;
 
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 
 namespace Easy {
 

@@ -6,7 +6,7 @@ export module Easy.Renderer.RendererAPI;
 
 import Easy.Core.Basic;
 import Easy.Renderer.VertexArray;
-import easy.vendor.glm;
+import Easy.Vendor.glm;
 import Easy.Renderer.Shader;
 
 namespace Easy {
