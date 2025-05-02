@@ -1,3 +1,9 @@
+module;
+
+#include "ScriptableEntityInternal.h"
+
 export module Easy.Scene.ScriptableEntity;
 
-export import Easy.Scene.Scene;
+namespace Easy {
+    export using Easy::ScriptableEntity;
+}

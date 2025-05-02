@@ -1,5 +1,9 @@
 module;
 
+#include "EntityInternal.h"
+
 export module Easy.Scene.Entity;
 
-export import Easy.Scene.Scene;
+namespace Easy {
+    export using Easy::Entity;
+}
