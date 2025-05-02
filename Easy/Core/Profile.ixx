@@ -51,6 +51,7 @@ namespace Easy {
                     break;
                 }
             }
+            buffer[offset] = '\0'; // null-terminate the string
         }
     };
 
