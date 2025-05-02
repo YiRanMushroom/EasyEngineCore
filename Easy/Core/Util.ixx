@@ -44,8 +44,6 @@ namespace Easy {
             return static_cast<BuilderType &>(*this);
         }
     };
-
-
 }
 
 namespace Easy {
@@ -201,4 +199,42 @@ namespace Easy {
         }
         return std::filesystem::create_directories(path);
     }
+
+    export template<size_t v>
+    constexpr size_t StringLenOf = []() {
+        size_t res = 0;
+        size_t value = v;
+        while (value > 0) {
+            value /= 10;
+            res++;
+        }
+        return res;
+    }();
+
+    export template<size_t v>
+    constexpr auto SizeTToString = []() {
+        std::array<char, StringLenOf<v> + 1> buffer{0};
+        size_t value = v;
+        size_t index = StringLenOf<v>;
+        buffer[index] = '\0';
+        while (value > 0) {
+            --index;
+            buffer[index] = '0' + (value % 10);
+            value /= 10;
+        }
+        return buffer;
+    }();
+
+    export template<size_t N>
+    struct StringLiteral {
+        char Data[N];
+
+        constexpr size_t Length() const noexcept {
+            return N - 1;
+        }
+
+        consteval StringLiteral(const char (&str)[N]) : Data{} { // NOLINT
+            std::copy_n(str, N, Data);
+        }
+    };
 }

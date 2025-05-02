@@ -87,6 +87,7 @@ namespace Easy {
 
     void Application::Run() {
         while (m_Running) {
+            EZ_PROFILE_FRAME_START();
             float timestep = m_FrameTimer.GetDeltaTime().count();
 
             ExecuteMainThreadQueue();
@@ -107,6 +108,7 @@ namespace Easy {
             }
 
             m_Window->OnUpdate();
+            EZ_PROFILE_FRAME_END();
         }
     }
 
