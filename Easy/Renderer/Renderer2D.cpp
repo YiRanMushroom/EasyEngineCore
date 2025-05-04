@@ -72,6 +72,8 @@ namespace Easy {
         static const uint32_t MaxIndices = MaxQuads * 6;
         static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
 
+        static const uint32_t MaxLines = 40000;
+
         Arc<VertexArray> QuadVertexArray;
         Arc<VertexBuffer> QuadVertexBuffer;
         Arc<Shader> QuadShader;
@@ -241,9 +243,9 @@ namespace Easy {
         uint32_t whiteTextureData = 0xffffffff;
         s_Data.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
 
-        int32_t samplers[s_Data.MaxTextureSlots];
+        /*int32_t samplers[s_Data.MaxTextureSlots];
         for (uint32_t i = 0; i < s_Data.MaxTextureSlots; i++)
-            samplers[i] = i;
+            samplers[i] = i;*/
 
         GLShaderSources::Init();
 
@@ -533,6 +535,9 @@ namespace Easy {
     }
 
     void Renderer2D::DrawLine(const glm::vec3 &p0, glm::vec3 &p1, const glm::vec4 &color, int entityID) {
+        if (s_Data.LineVertexCount >= Renderer2DData::MaxVertices)
+            NextBatch();
+
         s_Data.LineVertexArrayData.push_back({
             .Position = p0,
             .Color = color,

@@ -7,6 +7,7 @@ export module Easy.Platform.Impl.OpenGL.Renderer.Texture;
 import Easy.Core.Basic;
 import Easy.Renderer.Texture;
 import Easy.Core.Util;
+import Easy.Renderer.RendererAPI;
 
 namespace Easy {
     export class OpenGLTexture2D : public Texture2D {
@@ -21,7 +22,6 @@ namespace Easy {
 
         virtual uint32_t GetWidth() const override { return m_Width; }
         virtual uint32_t GetHeight() const override { return m_Height; }
-        virtual uint32_t GetRendererID() const override { return m_RendererID.get(); }
 
         virtual const std::string &GetPath() const override { return m_Path; }
 
@@ -32,7 +32,13 @@ namespace Easy {
         virtual bool IsLoaded() const override { return m_IsLoaded; }
 
         virtual bool operator==(const Texture &other) const override {
-            return m_RendererID == other.GetRendererID();
+            if (other.GetAPI() != Easy::RendererAPI::API::OpenGL)
+                return false;
+            return m_RendererID == static_cast<const OpenGLTexture2D &>(other).m_RendererID;
+        }
+
+        virtual Easy::RendererAPI::API GetAPI() const override {
+            return Easy::RendererAPI::API::OpenGL;
         }
 
     private:

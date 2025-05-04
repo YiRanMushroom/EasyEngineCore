@@ -3,6 +3,7 @@ module;
 export module Easy.Renderer.Texture;
 
 import Easy.Core.Basic;
+import Easy.Renderer.RendererAPI;
 
 namespace Easy {
     export enum class ImageFormat {
@@ -30,8 +31,6 @@ namespace Easy {
 
         virtual uint32_t GetHeight() const = 0;
 
-        virtual uint32_t GetRendererID() const = 0;
-
         virtual const std::string &GetPath() const = 0;
 
         virtual void SetData(void *data, uint32_t size) = 0;
@@ -41,6 +40,8 @@ namespace Easy {
         virtual bool IsLoaded() const = 0;
 
         virtual bool operator==(const Texture &other) const = 0;
+
+        virtual Easy::RendererAPI::API GetAPI() const = 0;
     };
 
     export class Texture2D : public Texture {
