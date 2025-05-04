@@ -45,7 +45,7 @@ namespace Easy {
         glBufferSubData(GL_ARRAY_BUFFER, 0, size, data);
     }
 
-    OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t *indices, uint32_t count) : m_Count(count) {
+    OpenGLIndexBuffer::OpenGLIndexBuffer(const uint32_t *indices, uint32_t count) : m_Count(count) {
     // scope
         {
             uint32_t id;

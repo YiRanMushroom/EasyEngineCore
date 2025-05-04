@@ -30,7 +30,7 @@ namespace Easy {
         return nullptr;
     }
 
-    Arc<VertexBuffer> VertexBuffer::Create(float* vertices, uint32_t size)
+    Arc<VertexBuffer> VertexBuffer::Create(const float* vertices, uint32_t size)
     {
         switch (Renderer::GetAPI())
         {
@@ -47,7 +47,7 @@ namespace Easy {
         return nullptr;
     }
 
-    Arc<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t size)
+    Arc<IndexBuffer> IndexBuffer::Create(const uint32_t* indices, uint32_t size)
     {
         switch (Renderer::GetAPI())
         {

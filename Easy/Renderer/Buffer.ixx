@@ -109,7 +109,7 @@ namespace Easy {
         virtual void SetLayout(const BufferLayout &layout) = 0;
 
         static Arc<VertexBuffer> Create(uint32_t size);
-        static Arc<VertexBuffer> Create(float *vertices, uint32_t size);
+        static Arc<VertexBuffer> Create(const float *vertices, uint32_t size);
     };
 
     export class IndexBuffer {
@@ -122,6 +122,6 @@ namespace Easy {
 
         [[nodiscard]] virtual uint32_t GetCount() const = 0;
 
-        static Arc<IndexBuffer> Create(uint32_t *indices, uint32_t size);
+        static Arc<IndexBuffer> Create(const uint32_t *indices, uint32_t size);
     };
 }

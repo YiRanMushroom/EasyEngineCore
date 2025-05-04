@@ -130,6 +130,22 @@ namespace Easy {
 
     static Renderer2DData s_Data;
 
+    constexpr auto quadIndices = []() {
+        std::array<uint32_t, s_Data.MaxIndices> quadIndices;
+        uint32_t offset = 0;
+        for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6) {
+            quadIndices[i + 0] = offset + 0;
+            quadIndices[i + 1] = offset + 1;
+            quadIndices[i + 2] = offset + 2;
+
+            quadIndices[i + 3] = offset + 2;
+            quadIndices[i + 4] = offset + 3;
+            quadIndices[i + 5] = offset + 0;
+            offset += 4;
+        }
+        return quadIndices;
+    }();
+
     void Renderer2D::Init() {
         // EZ_PROFILE_FUNCTION();
 
@@ -150,24 +166,24 @@ namespace Easy {
         s_Data.QuadVertexArrayData.reserve(s_Data.MaxVertices);
 
         // uint32_t *quadIndices = new uint32_t[s_Data.MaxIndices];
-        std::vector<uint32_t> quadIndices;
-        quadIndices.reserve(s_Data.MaxIndices);
+        // std::vector<uint32_t> quadIndices;
+        // quadIndices.reserve(s_Data.MaxIndices);
 
         uint32_t offset = 0;
         for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6) {
             // quadIndices[i + 0] = offset + 0;
-            quadIndices.push_back(offset + 0);
+            // quadIndices.push_back(offset + 0);
             // quadIndices[i + 1] = offset + 1;
-            quadIndices.push_back(offset + 1);
+            // quadIndices.push_back(offset + 1);
             // quadIndices[i + 2] = offset + 2;
-            quadIndices.push_back(offset + 2);
+            // quadIndices.push_back(offset + 2);
 
             // quadIndices[i + 3] = offset + 2;
-            quadIndices.push_back(offset + 2);
+            // quadIndices.push_back(offset + 2);
             // quadIndices[i + 4] = offset + 3;
-            quadIndices.push_back(offset + 3);
+            // quadIndices.push_back(offset + 3);
             // quadIndices[i + 5] = offset + 0;
-            quadIndices.push_back(offset + 0);
+            // quadIndices.push_back(offset + 0);
             offset += 4;
         }
 
@@ -498,7 +514,7 @@ namespace Easy {
 
         // TODO: implement for circles
         // if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-        	// NextBatch();
+        // NextBatch();
 
         for (size_t i = 0; i < 4; i++) {
             s_Data.CircleVertexArrayData.push_back({
@@ -643,7 +659,8 @@ namespace Easy {
                 .Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f),
                 .Color = textParams.Color,
                 .TexCoord = {texCoordMin.x, texCoordMax.y},
-                .EntityID = entityID});
+                .EntityID = entityID
+            });
 
             s_Data.TextVertexArrayData.push_back({
                 .Position = transform * glm::vec4(quadMax, 0.0f, 1.0f),
