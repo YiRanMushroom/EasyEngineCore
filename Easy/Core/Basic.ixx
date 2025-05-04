@@ -6,6 +6,7 @@ export import yrm.msvc.std.compat;
 
 export namespace std {
     using std::pair;
+    using std::tuple;
 }
 
 namespace Easy {

@@ -44,6 +44,15 @@ file(GLOB_RECURSE ImGui_SOURCES
         Easy/ImGui/*.cpp
 )
 
+# Math
+file(GLOB_RECURSE Math_MODULES
+        Easy/Math/*.ixx
+        Easy/Math/*.cppm
+)
+file(GLOB_RECURSE Math_SOURCES
+        Easy/Math/*.cpp
+)
+
 # Platform
 file(GLOB_RECURSE Platform_MODULES
         Easy/Platform/*.ixx
@@ -128,6 +137,8 @@ add_library(${PROJECT_NAME}
         ${Generated_SOURCES}
         ${ImGui_MODULES}
         ${ImGui_SOURCES}
+        ${Math_MODULES}
+        ${Math_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
@@ -173,6 +184,7 @@ target_sources(${PROJECT_NAME}
         ${Event_MODULES}
         ${Generated_MODULES}
         ${ImGui_MODULES}
+        ${Math_MODULES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Renderer_MODULES}

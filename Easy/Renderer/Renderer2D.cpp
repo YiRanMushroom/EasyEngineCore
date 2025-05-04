@@ -90,20 +90,24 @@ namespace Easy {
         Arc<Shader> TextShader;
 
         uint32_t QuadIndexCount = 0;
-        QuadVertex *QuadVertexBufferBase = nullptr;
-        QuadVertex *QuadVertexBufferPtr = nullptr;
+        // QuadVertex *QuadVertexBufferBase = nullptr;
+        // QuadVertex *QuadVertexBufferPtr = nullptr;
+        std::vector<QuadVertex> QuadVertexArrayData;
 
         uint32_t CircleIndexCount = 0;
-        CircleVertex *CircleVertexBufferBase = nullptr;
-        CircleVertex *CircleVertexBufferPtr = nullptr;
+        // CircleVertex *CircleVertexBufferBase = nullptr;
+        // CircleVertex *CircleVertexBufferPtr = nullptr;
+        std::vector<CircleVertex> CircleVertexArrayData;
 
         uint32_t LineVertexCount = 0;
-        LineVertex *LineVertexBufferBase = nullptr;
-        LineVertex *LineVertexBufferPtr = nullptr;
+        // LineVertex *LineVertexBufferBase = nullptr;
+        // LineVertex *LineVertexBufferPtr = nullptr;
+        std::vector<LineVertex> LineVertexArrayData;
 
         uint32_t TextIndexCount = 0;
-        TextVertex *TextVertexBufferBase = nullptr;
-        TextVertex *TextVertexBufferPtr = nullptr;
+        // TextVertex *TextVertexBufferBase = nullptr;
+        // TextVertex *TextVertexBufferPtr = nullptr;
+        std::vector<TextVertex> TextVertexArrayData;
 
         float LineWidth = 2.0f;
 
@@ -142,26 +146,34 @@ namespace Easy {
         });
         s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
-        s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
+        // s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
+        s_Data.QuadVertexArrayData.reserve(s_Data.MaxVertices);
 
-        uint32_t *quadIndices = new uint32_t[s_Data.MaxIndices];
+        // uint32_t *quadIndices = new uint32_t[s_Data.MaxIndices];
+        std::vector<uint32_t> quadIndices;
+        quadIndices.reserve(s_Data.MaxIndices);
 
         uint32_t offset = 0;
         for (uint32_t i = 0; i < s_Data.MaxIndices; i += 6) {
-            quadIndices[i + 0] = offset + 0;
-            quadIndices[i + 1] = offset + 1;
-            quadIndices[i + 2] = offset + 2;
+            // quadIndices[i + 0] = offset + 0;
+            quadIndices.push_back(offset + 0);
+            // quadIndices[i + 1] = offset + 1;
+            quadIndices.push_back(offset + 1);
+            // quadIndices[i + 2] = offset + 2;
+            quadIndices.push_back(offset + 2);
 
-            quadIndices[i + 3] = offset + 2;
-            quadIndices[i + 4] = offset + 3;
-            quadIndices[i + 5] = offset + 0;
-
+            // quadIndices[i + 3] = offset + 2;
+            quadIndices.push_back(offset + 2);
+            // quadIndices[i + 4] = offset + 3;
+            quadIndices.push_back(offset + 3);
+            // quadIndices[i + 5] = offset + 0;
+            quadIndices.push_back(offset + 0);
             offset += 4;
         }
 
-        Arc<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
+        Arc<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices.data(), s_Data.MaxIndices);
         s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
-        delete[] quadIndices;
+        // delete[] quadIndices;
 
         // Circles
         s_Data.CircleVertexArray = VertexArray::Create();
@@ -177,7 +189,8 @@ namespace Easy {
         });
         s_Data.CircleVertexArray->AddVertexBuffer(s_Data.CircleVertexBuffer);
         s_Data.CircleVertexArray->SetIndexBuffer(quadIB); // Use quad IB
-        s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxVertices];
+        // s_Data.CircleVertexBufferBase = new CircleVertex[s_Data.MaxVertices];
+        s_Data.CircleVertexArrayData.reserve(s_Data.MaxVertices);
 
         // Lines
         s_Data.LineVertexArray = VertexArray::Create();
@@ -189,7 +202,9 @@ namespace Easy {
             {ShaderDataType::Int, "a_EntityID"}
         });
         s_Data.LineVertexArray->AddVertexBuffer(s_Data.LineVertexBuffer);
-        s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
+        s_Data.LineVertexArray->SetIndexBuffer(quadIB); // Use quad IB
+        // s_Data.LineVertexBufferBase = new LineVertex[s_Data.MaxVertices];
+        s_Data.LineVertexArrayData.reserve(s_Data.MaxVertices);
 
         // Text
         s_Data.TextVertexArray = VertexArray::Create();
@@ -203,7 +218,8 @@ namespace Easy {
         });
         s_Data.TextVertexArray->AddVertexBuffer(s_Data.TextVertexBuffer);
         s_Data.TextVertexArray->SetIndexBuffer(quadIB);
-        s_Data.TextVertexBufferBase = new TextVertex[s_Data.MaxVertices];
+        // s_Data.TextVertexBufferBase = new TextVertex[s_Data.MaxVertices];
+        s_Data.TextVertexArrayData.reserve(s_Data.MaxVertices);
 
         s_Data.WhiteTexture = Texture2D::Create(TextureSpecification());
         uint32_t whiteTextureData = 0xffffffff;
@@ -234,7 +250,7 @@ namespace Easy {
     void Renderer2D::Shutdown() {
         // EZ_PROFILE_FUNCTION();
 
-        delete[] s_Data.QuadVertexBufferBase;
+        // delete[] s_Data.QuadVertexBufferBase;
     }
 
     void Renderer2D::BeginScene(const OrthographicCamera &camera) {
@@ -272,25 +288,29 @@ namespace Easy {
 
     void Renderer2D::StartBatch() {
         s_Data.QuadIndexCount = 0;
-        s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+        // s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+        s_Data.QuadVertexArrayData.clear();
 
         s_Data.CircleIndexCount = 0;
-        s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
+        // s_Data.CircleVertexBufferPtr = s_Data.CircleVertexBufferBase;
+        s_Data.CircleVertexArrayData.clear();
 
         s_Data.LineVertexCount = 0;
-        s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+        // s_Data.LineVertexBufferPtr = s_Data.LineVertexBufferBase;
+        s_Data.LineVertexArrayData.clear();
 
         s_Data.TextIndexCount = 0;
-        s_Data.TextVertexBufferPtr = s_Data.TextVertexBufferBase;
+        // s_Data.TextVertexBufferPtr = s_Data.TextVertexBufferBase;
+        s_Data.TextVertexArrayData.clear();
+        s_Data.TextVertexArrayData.push_back({});
 
         s_Data.TextureSlotIndex = 1;
     }
 
     void Renderer2D::Flush() {
         if (s_Data.QuadIndexCount) {
-            uint32_t dataSize = (uint32_t)(
-                (uint8_t *) s_Data.QuadVertexBufferPtr - (uint8_t *) s_Data.QuadVertexBufferBase);
-            s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+            uint32_t dataSize = (uint32_t) (s_Data.QuadVertexArrayData.size() * sizeof(QuadVertex));
+            s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexArrayData.data(), dataSize);
 
             // Bind textures
             for (uint32_t i = 0; i < s_Data.TextureSlotIndex; i++)
@@ -302,32 +322,33 @@ namespace Easy {
         }
 
         if (s_Data.CircleIndexCount) {
-            uint32_t dataSize = (uint32_t)(
-                (uint8_t *) s_Data.CircleVertexBufferPtr - (uint8_t *) s_Data.CircleVertexBufferBase);
-            s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexBufferBase, dataSize);
+            uint32_t dataSize = (uint32_t) (s_Data.CircleVertexArrayData.size() * sizeof(CircleVertex));
+            s_Data.CircleVertexBuffer->SetData(s_Data.CircleVertexArrayData.data(), dataSize);
 
             s_Data.CircleShader->Bind();
-            RenderCommand::DrawIndexed(s_Data.CircleVertexArray, s_Data.CircleIndexCount);
+            RenderCommand::DrawIndexed(s_Data.CircleVertexArray,
+                                       s_Data.CircleIndexCount);
             s_Data.Stats.DrawCalls++;
         }
 
         if (s_Data.LineVertexCount) {
-            uint32_t dataSize = (uint32_t)(
-                (uint8_t *) s_Data.LineVertexBufferPtr - (uint8_t *) s_Data.LineVertexBufferBase);
-            s_Data.LineVertexBuffer->SetData(s_Data.LineVertexBufferBase, dataSize);
+            // EZ_CORE_INFO("Line Vertex Count: {0}", s_Data.LineVertexCount);
+            uint32_t dataSize = (uint32_t) (s_Data.LineVertexArrayData.size() * sizeof(LineVertex));
+            // EZ_CORE_INFO("Line Vertex Size: {0}", dataSize);
+            s_Data.LineVertexBuffer->SetData(s_Data.LineVertexArrayData.data(), dataSize);
 
             s_Data.LineShader->Bind();
             RenderCommand::SetLineWidth(s_Data.LineWidth);
+            // EZ_CORE_ASSERT(s_Data.LineVertexArray, "Line Vertex Array is null");
+            // EZ_CORE_ASSERT(s_Data.LineVertexArray->GetIndexBuffer(), "Line Vertex Array Index Buffer is null");
             RenderCommand::DrawLines(s_Data.LineVertexArray, s_Data.LineVertexCount);
             s_Data.Stats.DrawCalls++;
         }
 
         if (s_Data.TextIndexCount) {
-            uint32_t dataSize = (uint32_t)(
-                (uint8_t *) s_Data.TextVertexBufferPtr - (uint8_t *) s_Data.TextVertexBufferBase);
-            s_Data.TextVertexBuffer->SetData(s_Data.TextVertexBufferBase, dataSize);
+            uint32_t dataSize = (uint32_t) (s_Data.TextVertexArrayData.size() * sizeof(TextVertex));
+            s_Data.TextVertexBuffer->SetData(s_Data.TextVertexArrayData.data(), dataSize);
 
-            auto buf = s_Data.TextVertexBufferBase;
             s_Data.FontAtlasTexture->Bind(0);
 
             s_Data.TextShader->Bind();
@@ -381,13 +402,14 @@ namespace Easy {
             NextBatch();
 
         for (size_t i = 0; i < quadVertexCount; i++) {
-            s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-            s_Data.QuadVertexBufferPtr->Color = color;
-            s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-            s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-            s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-            s_Data.QuadVertexBufferPtr->EntityID = entityID;
-            s_Data.QuadVertexBufferPtr++;
+            s_Data.QuadVertexArrayData.push_back({
+                .Position = transform * s_Data.QuadVertexPositions[i],
+                .Color = color,
+                .TexCoord = textureCoords[i],
+                .TexIndex = textureIndex,
+                .TilingFactor = tilingFactor,
+                .EntityID = entityID
+            });
         }
 
         s_Data.QuadIndexCount += 6;
@@ -423,13 +445,14 @@ namespace Easy {
         }
 
         for (size_t i = 0; i < quadVertexCount; i++) {
-            s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPositions[i];
-            s_Data.QuadVertexBufferPtr->Color = tintColor;
-            s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-            s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-            s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-            s_Data.QuadVertexBufferPtr->EntityID = entityID;
-            s_Data.QuadVertexBufferPtr++;
+            s_Data.QuadVertexArrayData.push_back({
+                .Position = transform * s_Data.QuadVertexPositions[i],
+                .Color = tintColor,
+                .TexCoord = textureCoords[i],
+                .TexIndex = textureIndex,
+                .TilingFactor = tilingFactor,
+                .EntityID = entityID
+            });
         }
 
         s_Data.QuadIndexCount += 6;
@@ -475,16 +498,17 @@ namespace Easy {
 
         // TODO: implement for circles
         // if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
-        // 	NextBatch();
+        	// NextBatch();
 
         for (size_t i = 0; i < 4; i++) {
-            s_Data.CircleVertexBufferPtr->WorldPosition = transform * s_Data.QuadVertexPositions[i];
-            s_Data.CircleVertexBufferPtr->LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f;
-            s_Data.CircleVertexBufferPtr->Color = color;
-            s_Data.CircleVertexBufferPtr->Thickness = thickness;
-            s_Data.CircleVertexBufferPtr->Fade = fade;
-            s_Data.CircleVertexBufferPtr->EntityID = entityID;
-            s_Data.CircleVertexBufferPtr++;
+            s_Data.CircleVertexArrayData.push_back({
+                .WorldPosition = transform * s_Data.QuadVertexPositions[i],
+                .LocalPosition = s_Data.QuadVertexPositions[i] * 2.0f,
+                .Color = color,
+                .Thickness = thickness,
+                .Fade = fade,
+                .EntityID = entityID
+            });
         }
 
         s_Data.CircleIndexCount += 6;
@@ -493,15 +517,17 @@ namespace Easy {
     }
 
     void Renderer2D::DrawLine(const glm::vec3 &p0, glm::vec3 &p1, const glm::vec4 &color, int entityID) {
-        s_Data.LineVertexBufferPtr->Position = p0;
-        s_Data.LineVertexBufferPtr->Color = color;
-        s_Data.LineVertexBufferPtr->EntityID = entityID;
-        s_Data.LineVertexBufferPtr++;
+        s_Data.LineVertexArrayData.push_back({
+            .Position = p0,
+            .Color = color,
+            .EntityID = entityID
+        });
 
-        s_Data.LineVertexBufferPtr->Position = p1;
-        s_Data.LineVertexBufferPtr->Color = color;
-        s_Data.LineVertexBufferPtr->EntityID = entityID;
-        s_Data.LineVertexBufferPtr++;
+        s_Data.LineVertexArrayData.push_back({
+            .Position = p1,
+            .Color = color,
+            .EntityID = entityID
+        });
 
         s_Data.LineVertexCount += 2;
     }
@@ -606,29 +632,32 @@ namespace Easy {
             texCoordMax *= glm::vec2(texelWidth, texelHeight);
 
             // render here
-            s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin, 0.0f, 1.0f);
-            s_Data.TextVertexBufferPtr->Color = textParams.Color;
-            s_Data.TextVertexBufferPtr->TexCoord = texCoordMin;
-            s_Data.TextVertexBufferPtr->EntityID = entityID;
-            s_Data.TextVertexBufferPtr++;
+            s_Data.TextVertexArrayData.push_back({
+                .Position = transform * glm::vec4(quadMin, 0.0f, 1.0f),
+                .Color = textParams.Color,
+                .TexCoord = texCoordMin,
+                .EntityID = entityID
+            });
 
-            s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f);
-            s_Data.TextVertexBufferPtr->Color = textParams.Color;
-            s_Data.TextVertexBufferPtr->TexCoord = {texCoordMin.x, texCoordMax.y};
-            s_Data.TextVertexBufferPtr->EntityID = entityID;
-            s_Data.TextVertexBufferPtr++;
+            s_Data.TextVertexArrayData.push_back({
+                .Position = transform * glm::vec4(quadMin.x, quadMax.y, 0.0f, 1.0f),
+                .Color = textParams.Color,
+                .TexCoord = {texCoordMin.x, texCoordMax.y},
+                .EntityID = entityID});
 
-            s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax, 0.0f, 1.0f);
-            s_Data.TextVertexBufferPtr->Color = textParams.Color;
-            s_Data.TextVertexBufferPtr->TexCoord = texCoordMax;
-            s_Data.TextVertexBufferPtr->EntityID = entityID;
-            s_Data.TextVertexBufferPtr++;
+            s_Data.TextVertexArrayData.push_back({
+                .Position = transform * glm::vec4(quadMax, 0.0f, 1.0f),
+                .Color = textParams.Color,
+                .TexCoord = texCoordMax,
+                .EntityID = entityID
+            });
 
-            s_Data.TextVertexBufferPtr->Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f);
-            s_Data.TextVertexBufferPtr->Color = textParams.Color;
-            s_Data.TextVertexBufferPtr->TexCoord = {texCoordMax.x, texCoordMin.y};
-            s_Data.TextVertexBufferPtr->EntityID = entityID;
-            s_Data.TextVertexBufferPtr++;
+            s_Data.TextVertexArrayData.push_back({
+                .Position = transform * glm::vec4(quadMax.x, quadMin.y, 0.0f, 1.0f),
+                .Color = textParams.Color,
+                .TexCoord = {texCoordMax.x, texCoordMin.y},
+                .EntityID = entityID
+            });
 
             s_Data.TextIndexCount += 6;
             s_Data.Stats.QuadCount++;
