@@ -1,6 +1,18 @@
 module;
 
 #include "ComponentsInternal.h"
+#include "ScriptableEntityInternal.h"
+
+namespace Easy {
+    template<typename T>
+    void NativeScriptComponent::Bind() {
+        InstantiateScript = []() { return static_cast<ScriptableEntity *>(new T()); };
+        DestroyScript = [](NativeScriptComponent *nsc) {
+            delete nsc->Instance;
+            nsc->Instance = nullptr;
+        };
+    }
+}
 
 export module Easy.Scene.Components;
 

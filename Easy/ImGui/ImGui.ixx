@@ -973,6 +973,7 @@ export {
     using ::ImGuiDockNodeFlags_;
     using ::ImGuiDockNodeFlags_None ;
     using ::ImGuiDockNodeFlags_KeepAliveOnly ;
+    using ::ImGuiDockNodeFlags_NoDockingOverCentralNode;
     using ::ImGuiDockNodeFlags_PassthruCentralNode ;
     using ::ImGuiDockNodeFlags_NoDockingSplit ;
     using ::ImGuiDockNodeFlags_NoResize ;

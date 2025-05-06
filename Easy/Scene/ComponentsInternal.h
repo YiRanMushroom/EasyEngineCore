@@ -100,12 +100,10 @@ namespace Easy {
 		void (*DestroyScript)(NativeScriptComponent*);
 
 		template<typename T>
-		void Bind()
-		{
-			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			DestroyScript = [](NativeScriptComponent* nsc) { delete nsc->Instance; nsc->Instance = nullptr; };
-		}
+		void Bind();
 	};
+
+
 
 	// Physics
 
