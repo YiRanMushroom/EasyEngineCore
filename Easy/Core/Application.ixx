@@ -53,8 +53,8 @@ namespace Easy {
         std::string Name;
         std::string WorkingDirectory;
         ApplicationCommandLineArgs CommandLineArgs;
-        std::function<Arc<::Easy::Window>(WindowProperties, bool, std::function<void(Event &)>)> WindowFactory;
-        std::function<Arc<::Easy::ImGuiLayer>()> ImGuiLayerFactory;
+        std::function<Arc<Window>(WindowProperties, bool, std::function<void(Event &)>)> WindowFactory;
+        std::function<Arc<ImGuiLayer>()> ImGuiLayerFactory;
         bool VSync = true;
         std::optional<std::string> WindowTitle{};
         uint32_t Width = 1280;

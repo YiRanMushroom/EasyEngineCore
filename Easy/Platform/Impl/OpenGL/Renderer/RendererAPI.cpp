@@ -5,6 +5,7 @@ module;
 
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
+import Easy.Core.Application;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
@@ -44,6 +45,13 @@ namespace Easy {
     }
 
     void OpenGLRendererAPI::Init() {
+        // Initialize Glad
+        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
+            EZ_CORE_ERROR("Failed to initialize Glad");
+            glfwDestroyWindow(static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow()));
+            glfwTerminate();
+        }
+
         // EZ_PROFILE_FUNCTION();
 
 #ifdef EZ_DEBUG

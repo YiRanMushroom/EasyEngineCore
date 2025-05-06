@@ -18,26 +18,26 @@ namespace Easy {
     void OrthographicCameraController::OnUpdate(float ts) {
         // EZ_PROFILE_FUNCTION();
 
-        if (Input::IsKeyPressed(Key::A)) {
+        if (Input::Get()->IsKeyPressed(Key::A)) {
             m_CameraPosition.x -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
             m_CameraPosition.y -= sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-        } else if (Input::IsKeyPressed(Key::D)) {
+        } else if (Input::Get()->IsKeyPressed(Key::D)) {
             m_CameraPosition.x += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
             m_CameraPosition.y += sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
         }
 
-        if (Input::IsKeyPressed(Key::W)) {
+        if (Input::Get()->IsKeyPressed(Key::W)) {
             m_CameraPosition.x += -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
             m_CameraPosition.y += cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
-        } else if (Input::IsKeyPressed(Key::S)) {
+        } else if (Input::Get()->IsKeyPressed(Key::S)) {
             m_CameraPosition.x -= -sin(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
             m_CameraPosition.y -= cos(glm::radians(m_CameraRotation)) * m_CameraTranslationSpeed * ts;
         }
 
         if (m_Rotation) {
-            if (Input::IsKeyPressed(Key::Q))
+            if (Input::Get()->IsKeyPressed(Key::Q))
                 m_CameraRotation += m_CameraRotationSpeed * ts;
-            if (Input::IsKeyPressed(Key::E))
+            if (Input::Get()->IsKeyPressed(Key::E))
                 m_CameraRotation -= m_CameraRotationSpeed * ts;
 
             if (m_CameraRotation > 180.0f)

@@ -2,7 +2,7 @@ module;
 
 #include "Core/MacroUtils.hpp"
 
-export module Easy.Platform.Impl.OpenGL.Window;
+export module Easy.Platform.Impl.Windows.Window;
 
 import Easy.Core.Basic;
 import Easy.Events.Event;
@@ -35,7 +35,7 @@ namespace Easy {
 
         void SetEventCallback(std::function<void(Event &)> callback) override;
 
-        [[nodiscard]] void *GetNativeWindow() const override;
+        [[nodiscard]] GLFWwindow *GetNativeWindow() const override;
 
         OpenGLWindow(const OpenGLWindow &) = delete;
 

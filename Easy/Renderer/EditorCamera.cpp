@@ -52,16 +52,16 @@ namespace Easy {
     }
 
     void EditorCamera::OnUpdate(float ts) {
-        if (Input::IsKeyPressed(Key::LeftAlt)) {
-            const glm::vec2 &mouse{Input::GetMouseX(), Input::GetMouseY()};
+        if (Input::Get()->IsKeyPressed(Key::LeftAlt)) {
+            const glm::vec2 &mouse{Input::Get()->GetMouseX(), Input::Get()->GetMouseY()};
             glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
             m_InitialMousePosition = mouse;
 
-            if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
+            if (Input::Get()->IsMouseButtonPressed(Mouse::ButtonMiddle))
                 MousePan(delta);
-            else if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
+            else if (Input::Get()->IsMouseButtonPressed(Mouse::ButtonLeft))
                 MouseRotate(delta);
-            else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
+            else if (Input::Get()->IsMouseButtonPressed(Mouse::ButtonRight))
                 MouseZoom(delta.y);
         }
 

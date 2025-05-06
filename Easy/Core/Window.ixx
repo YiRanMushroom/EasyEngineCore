@@ -19,6 +19,22 @@ namespace Easy {
         }
     };
 
+    export class WindowAPI {
+    public:
+        enum class API {
+            None = 0,
+            Windows = 1,
+            MacOS = 2,
+            Linux = 3,
+        };
+
+        inline static API s_API;
+
+        static WindowAPI::API GetAPI() {
+            return s_API;
+        }
+    };
+
     export class Window {
     public:
         virtual ~Window() = default;
@@ -38,6 +54,6 @@ namespace Easy {
 
         virtual void SetEventCallback(std::function<void(Event &)> callback) = 0;
 
-        [[nodiscard]] virtual void* GetNativeWindow() const = 0;
+        [[nodiscard]] virtual GLFWwindow *GetNativeWindow() const = 0;
     };
 }

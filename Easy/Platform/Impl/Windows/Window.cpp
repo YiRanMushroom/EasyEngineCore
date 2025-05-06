@@ -3,11 +3,12 @@ module;
 #include <OpenGL.hpp>
 #include "Core/MacroUtils.hpp"
 
-module Easy.Platform.Impl.OpenGL.Window;
+module Easy.Platform.Impl.Windows.Window;
 
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
 import Easy.Core.ApplicationContext;
+import Easy.Core.Input;
 import Easy.Events.Event;
 import Easy.Events.KeyEvents;
 import Easy.Events.MouseEvents;
@@ -25,6 +26,9 @@ namespace Easy {
 
     OpenGLWindow::~OpenGLWindow() {
         ApplicationContext::ApplicationRendererAPI = RendererAPI::API::None;
+
+        Input::Shutdown();
+
         glfwDestroyWindow(m_Window);
 
         --s_GLFWWindowCount;
@@ -63,11 +67,13 @@ namespace Easy {
         EventCallback = std::move(callback);
     }
 
-    void *OpenGLWindow::GetNativeWindow() const {
+    GLFWwindow *OpenGLWindow::GetNativeWindow() const {
         return m_Window;
     }
 
     void OpenGLWindow::Init() {
+        WindowAPI::s_API = WindowAPI::API::Windows;
+
         EZ_CORE_INFO("Creating window {0} ({1}, {2})", Title, Width, Height);
 
         if (s_GLFWWindowCount == 0) {
@@ -100,16 +106,11 @@ namespace Easy {
 
         glfwMakeContextCurrent(m_Window);
 
+        Input::Init();
+
         SetVSync(VSync);
 
         ApplicationContext::ApplicationRendererAPI = RendererAPI::API::OpenGL;
-
-        // Initialize Glad
-        if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-            EZ_CORE_ERROR("Failed to initialize Glad");
-            glfwDestroyWindow(m_Window);
-            glfwTerminate();
-        }
 
         // SetRendererAPI(RendererAPI::API::OpenGL);
 
