@@ -61,3 +61,7 @@
 	path = vendor/LuaJIT
 	url = https://github.com/YiRanMushroom/LuaJIT
 	branch = v2.1
+[submodule "vendor/sol2"]
+	path = vendor/sol2
+	url = https://github.com/ThePhD/sol2
+	branch = main
