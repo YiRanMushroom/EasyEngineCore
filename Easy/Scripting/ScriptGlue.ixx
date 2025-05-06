@@ -1,6 +1,5 @@
 export module Easy.Scripting.ScriptGlue;
 
-
 namespace Easy {
     export class ScriptGlue {
     public:

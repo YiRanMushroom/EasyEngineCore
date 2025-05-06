@@ -11,15 +11,8 @@ module;
 export module Easy.Script.ScriptingEngine;
 
 import Easy.Core.Basic;
+import Easy.Scripting.ScriptGlue;
 
-
-/*export typedef struct _MonoClass MonoClass;
-export typedef struct _MonoObject MonoObject;
-export typedef struct _MonoMethod MonoMethod;
-export typedef struct _MonoAssembly MonoAssembly;
-export typedef struct _MonoImage MonoImage;
-export typedef struct _MonoClassField MonoClassField;
-export typedef struct _MonoString MonoString;*/
 export {
     using MonoClass = _MonoClass;
     using MonoObject = _MonoObject;

@@ -130,6 +130,15 @@ file(GLOB_RECURSE Windows_SOURCES
         Easy/Platform/Windows/*.cpp
 )
 
+# Project
+file(GLOB_RECURSE Project_MODULES
+        Easy/Project/*.ixx
+        Easy/Project/*.cppm
+)
+file(GLOB_RECURSE Project_SOURCES
+        Easy/Project/*.cpp
+)
+
 file(GLOB ImGuiGLFW_Sources
         vendor/imgui/imgui.cpp
         vendor/imgui/imgui_draw.cpp
@@ -163,6 +172,8 @@ add_library(${PROJECT_NAME}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Platform_SOURCES}
+        ${Project_MODULES}
+        ${Project_SOURCES}
         ${Renderer_MODULES}
         ${Renderer_SOURCES}
         ${Scene_MODULES}
@@ -210,6 +221,7 @@ target_sources(${PROJECT_NAME}
         ${Physics_MODULES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
+        ${Project_MODULES}
         ${Renderer_MODULES}
         ${Scene_MODULES}
         ${Scripting_MODULES}

@@ -1,5 +1,7 @@
 module;
 
+#include <cstring>
+
 #include "mono/jit/jit.h"
 #include "mono/metadata/assembly.h"
 #include "mono/metadata/object.h"
@@ -18,6 +20,7 @@ import Easy.Core.Basic;
 import Easy.Core.UUID;
 import Easy.Core.FileSystem;
 import Easy.Core.Application;
+import Easy.Project.Project;
 
 import Easy.Scripting.ScriptGlue;
 
@@ -64,7 +67,7 @@ namespace Easy {
                 if (std::filesystem::exists(pdbPath)) {
                     ScopedBuffer pdbFileData = FileSystem::ReadFileBinary(pdbPath);
                     mono_debug_open_image_from_memory(image, pdbFileData.As<const mono_byte>(), pdbFileData.Size());
-                    EZ_CORE_INFO("Loaded PDB {}", pdbPath);
+                    // EZ_CORE_INFO("Loaded PDB {}", pdbPath);
                 }
             }
 
@@ -217,7 +220,8 @@ namespace Easy {
 
     bool ScriptEngine::LoadAssembly(const std::filesystem::path &filepath) {
         // Create an App Domain
-        s_Data->AppDomain = mono_domain_create_appdomain("HazelScriptRuntime", nullptr);
+        static std::string friendly_name = "EasyScriptRuntime";
+        s_Data->AppDomain = mono_domain_create_appdomain(friendly_name.data(), nullptr);
         mono_domain_set(s_Data->AppDomain, true);
 
         s_Data->CoreAssemblyFilepath = filepath;
@@ -237,7 +241,7 @@ namespace Easy {
 
         s_Data->AppAssemblyImage = mono_assembly_get_image(s_Data->AppAssembly);
 
-        s_Data->AppAssemblyFileWatcher = CreateBox<filewatch::FileWatch<std::string>>(
+        s_Data->AppAssemblyFileWatcher = MakeBox<filewatch::FileWatch<std::string>>(
             filepath.string(), OnAppAssemblyFileSystemEvent);
         s_Data->AssemblyReloadPending = false;
         return true;
@@ -271,7 +275,7 @@ namespace Easy {
         if (ScriptEngine::EntityClassExists(sc.ClassName)) {
             UUID entityID = entity.GetUUID();
 
-            Arc<ScriptInstance> instance = CreateArc<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
+            Arc<ScriptInstance> instance = MakeArc<ScriptInstance>(s_Data->EntityClasses[sc.ClassName], entity);
             s_Data->EntityInstances[entityID] = instance;
 
             // Copy field values
@@ -291,7 +295,7 @@ namespace Easy {
             Arc<ScriptInstance> instance = s_Data->EntityInstances[entityUUID];
             instance->InvokeOnUpdate((float) ts);
         } else {
-            EZ_CORE_ERROR("Could not find ScriptInstance for entity {}", entityUUID);
+            EZ_CORE_ERROR("Could not find ScriptInstance for entity {}", static_cast<uint64_t>(entityUUID));
         }
     }
 
@@ -347,8 +351,8 @@ namespace Easy {
             const char *nameSpace = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
             const char *className = mono_metadata_string_heap(s_Data->AppAssemblyImage, cols[MONO_TYPEDEF_NAME]);
             std::string fullName;
-            if (strlen(nameSpace) != 0)
-                fullName = fmt::format("{}.{}", nameSpace, className);
+            if (std::strlen(nameSpace) != 0)
+                fullName = std::format("{}.{}", nameSpace, className);
             else
                 fullName = className;
 
@@ -361,7 +365,7 @@ namespace Easy {
             if (!isEntity)
                 continue;
 
-            Arc<ScriptClass> scriptClass = CreateArc<ScriptClass>(nameSpace, className);
+            Arc<ScriptClass> scriptClass = MakeArc<ScriptClass>(nameSpace, className);
             s_Data->EntityClasses[fullName] = scriptClass;
 
 
