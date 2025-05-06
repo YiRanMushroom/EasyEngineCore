@@ -42,6 +42,8 @@ namespace Easy {
         virtual bool operator==(const Texture &other) const = 0;
 
         virtual Easy::RendererAPI::API GetAPI() const = 0;
+
+        virtual uint32_t GetRendererID() const = 0;
     };
 
     export class Texture2D : public Texture {

@@ -41,6 +41,10 @@ namespace Easy {
             return Easy::RendererAPI::API::OpenGL;
         }
 
+        virtual uint32_t GetRendererID() const override {
+            return m_RendererID.get();
+        }
+
     private:
         struct TextureDeleter {
             void operator()(uint32_t textureID);
