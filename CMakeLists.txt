@@ -53,6 +53,15 @@ file(GLOB_RECURSE Math_SOURCES
         Easy/Math/*.cpp
 )
 
+# Physics
+file(GLOB_RECURSE Physics_MODULES
+        Easy/Physics/*.ixx
+        Easy/Physics/*.cppm
+)
+file(GLOB_RECURSE Physics_SOURCES
+        Easy/Physics/*.cpp
+)
+
 # Platform
 file(GLOB_RECURSE Platform_MODULES
         Easy/Platform/*.ixx
@@ -78,6 +87,15 @@ file(GLOB_RECURSE Scene_MODULES
 )
 file(GLOB_RECURSE Scene_SOURCES
         Easy/Scene/*.cpp
+)
+
+# Scripting
+file(GLOB_RECURSE Scripting_MODULES
+        Easy/Scripting/*.ixx
+        Easy/Scripting/*.cppm
+)
+file(GLOB_RECURSE Scripting_SOURCES
+        Easy/Scripting/*.cpp
 )
 
 # Vendor
@@ -139,6 +157,8 @@ add_library(${PROJECT_NAME}
         ${ImGui_SOURCES}
         ${Math_MODULES}
         ${Math_SOURCES}
+        ${Physics_MODULES}
+        ${Physics_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
@@ -147,6 +167,8 @@ add_library(${PROJECT_NAME}
         ${Renderer_SOURCES}
         ${Scene_MODULES}
         ${Scene_SOURCES}
+        ${Scripting_MODULES}
+        ${Scripting_SOURCES}
         ${Vendor_MODULES}
         ${Vendor_SOURCES}
         ${Windows_MODULES}
@@ -185,10 +207,12 @@ target_sources(${PROJECT_NAME}
         ${Generated_MODULES}
         ${ImGui_MODULES}
         ${Math_MODULES}
+        ${Physics_MODULES}
         ${OPENGL_MODULES}
         ${Platform_MODULES}
         ${Renderer_MODULES}
         ${Scene_MODULES}
+        ${Scripting_MODULES}
         ${Vendor_MODULES}
         ${Windows_MODULES}
         Easy/mod.ixx
@@ -230,6 +254,7 @@ target_include_directories(${PROJECT_NAME}
         vendor/msdf-atlas-gen/msdf-atlas-gen
         vendor/msdf-atlas-gen/msdfgen
         vendor/msdf-atlas-gen/msdfgen/include
+        vendor/mono/include
 )
 
 target_link_libraries(${PROJECT_NAME}
@@ -252,3 +277,17 @@ target_link_libraries(${PROJECT_NAME}
         yaml-cpp::yaml-cpp
         box2d
 )
+
+#
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    target_link_libraries(${PROJECT_NAME}
+            PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Debug/libmono-static-sgen.lib
+    )
+else()
+    target_link_libraries(${PROJECT_NAME}
+            PUBLIC
+            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Release/libmono-static-sgen.lib
+    )
+endif()

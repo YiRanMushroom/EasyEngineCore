@@ -236,5 +236,16 @@ namespace Easy {
         consteval StringLiteral(const char (&str)[N]) : Data{} { // NOLINT
             std::copy_n(str, N, Data);
         }
+
+        consteval StringLiteral() : Data{} {}
+
+        template<size_t OtherSize>
+        constexpr auto operator+(const StringLiteral<OtherSize> &other) const noexcept {
+            constexpr size_t newSize = N + OtherSize - 1;
+            StringLiteral<newSize> result{};
+            std::copy_n(Data, N - 1, result.Data);
+            std::copy_n(other.Data, OtherSize, result.Data + N - 1);
+            return result;
+        }
     };
 }

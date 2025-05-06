@@ -40,5 +40,7 @@ namespace Easy {
         Box<T> MakeBox(Args &&... args) {
             return std::make_unique<std::remove_reference_t<T>>(std::forward<Args>(args)...);
         }
+
+        using Timestep = float;
     }
 }
