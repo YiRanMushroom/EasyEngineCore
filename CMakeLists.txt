@@ -294,8 +294,8 @@ target_link_libraries(${PROJECT_NAME}
         msdf-atlas-gen
         yaml-cpp::yaml-cpp
         box2d
-        sol2
         libluajit
+        sol2
 )
 
 # mono link
