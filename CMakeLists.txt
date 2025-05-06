@@ -240,6 +240,11 @@ add_subdirectory(vendor/SPIRV-Cross)
 add_subdirectory(vendor/glslang)
 add_subdirectory(vendor/yaml-cpp)
 
+add_subdirectory(vendor/LuaJIT)
+
+set(SOL2_LUA_VERSION "luajit-2.1")
+add_subdirectory(vendor/sol2)
+
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "Build the Box2D testbed" FORCE)
 add_subdirectory(vendor/box2d)
@@ -266,8 +271,9 @@ target_include_directories(${PROJECT_NAME}
         vendor/msdf-atlas-gen/msdf-atlas-gen
         vendor/msdf-atlas-gen/msdfgen
         vendor/msdf-atlas-gen/msdfgen/include
-        vendor/mono/include
+#        vendor/mono/include
 )
+
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
@@ -288,18 +294,22 @@ target_link_libraries(${PROJECT_NAME}
         msdf-atlas-gen
         yaml-cpp::yaml-cpp
         box2d
+        sol2
+        libluajit
 )
 
-#
-
-if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-    target_link_libraries(${PROJECT_NAME}
-            PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Debug/libmono-static-sgen.lib
-    )
+# mono link
+#[[if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(mono_lib_dir "${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Debug")
 else()
-    target_link_libraries(${PROJECT_NAME}
-            PUBLIC
-            ${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Release/libmono-static-sgen.lib
-    )
+    set(mono_lib_dir "${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Release")
 endif()
+
+file(GLOB_RECURSE mono_libs
+        "${mono_lib_dir}/libmono-static-sgen.lib"
+)
+
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC
+        ${mono_libs}
+)]]

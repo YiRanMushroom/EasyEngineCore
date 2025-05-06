@@ -13,6 +13,7 @@ import Easy.Events.Event;
 import Easy.Events.ApplicationEvents;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Renderer.Renderer;
+import Easy.Script.ScriptingEngine;
 
 namespace Easy {
     Application::Application(AppInfo info) : m_Specification{
@@ -28,6 +29,7 @@ namespace Easy {
     }
 
     void Application::Init(AppInfo info) {
+        // ScriptEngine::Init();
         Log::Init();
 
         if (!m_Specification.WorkingDirectory.empty())
@@ -46,8 +48,8 @@ namespace Easy {
     }
 
     Application::~Application() {
-        // ScriptEngine::Shutdown();
         Renderer::Shutdown();
+        // ScriptEngine::Shutdown();
     }
 
     void Application::PushLayer(Arc<Layer> layer) {

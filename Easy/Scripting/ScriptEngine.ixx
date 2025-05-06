@@ -1,7 +1,17 @@
 module;
 
-#include "mono/metadata/object.h"
-#include "mono/metadata/reflection.h"
+// #include "mono/metadata/object.h"
+// #include "mono/metadata/reflection.h"
+
+extern "C" {
+    struct _MonoClass;
+    struct _MonoObject;
+    struct _MonoMethod;
+    struct _MonoAssembly;
+    struct _MonoImage;
+    struct _MonoClassField;
+    struct _MonoString;
+}
 
 #include <cstring>
 
@@ -12,6 +22,8 @@ export module Easy.Script.ScriptingEngine;
 
 import Easy.Core.Basic;
 import Easy.Scripting.ScriptGlue;
+
+
 
 export {
     using MonoClass = _MonoClass;

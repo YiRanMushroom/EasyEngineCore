@@ -1,3 +1,4 @@
+/*
 module;
 
 #include <cstring>
@@ -483,3 +484,4 @@ namespace Easy {
         return true;
     }
 }
+*/

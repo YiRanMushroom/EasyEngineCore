@@ -1,3 +1,4 @@
+/*
 module;
 
 #include "Scene/ComponentsInternal.h"
@@ -311,3 +312,4 @@ namespace Easy {
         EZ_ADD_INTERNAL_CALL(Input_IsKeyDown);
     }
 }
+*/
