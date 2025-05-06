@@ -12,7 +12,7 @@ import Easy.Core.MouseCodes;
 import Easy.Vendor.glm;
 
 namespace Easy {
-    export class WindowsInput : public Input {
+    export class WindowsInput : public InputCommand {
         bool IsKeyPressed(const Key::KeyCode key) override {
             auto *window = static_cast<GLFWwindow *>(Application::Get().GetWindow().GetNativeWindow());
             auto state = glfwGetKey(window, static_cast<int32_t>(key));

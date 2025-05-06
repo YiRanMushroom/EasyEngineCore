@@ -8,32 +8,37 @@ import Easy.Core.MouseCodes;
 import Easy.Vendor.glm;
 
 namespace Easy {
-    export class Input {
+    export class InputCommand {
     public:
-        virtual ~Input() = default;
-
+        virtual ~InputCommand() = default;
         virtual bool IsKeyPressed(Key::KeyCode key) = 0;
-
         virtual bool IsMouseButtonPressed(Mouse::MouseCode button) = 0;
-
         virtual glm::vec2 GetMousePosition() = 0;
-
         virtual float GetMouseX() = 0;
-
         virtual float GetMouseY() = 0;
 
-        static const Arc<Input>& Get() {
-            EZ_CORE_ASSERT(s_Input, "Input is not initialized!");
-            return s_Input;
+        static const Arc<InputCommand>& Get() {
+            EZ_CORE_ASSERT(s_InputCommand, "Input is not initialized!");
+            return s_InputCommand;
         }
 
-        static void Init();
+    public:
+        inline static Arc<InputCommand> s_InputCommand;
+    };
 
-        static void Shutdown() {
-            s_Input.reset();
-        }
+    export namespace Input {
+        bool IsKeyPressed(Key::KeyCode key);
 
-    private:
-        inline static Arc<Input> s_Input;
+        bool IsMouseButtonPressed(Mouse::MouseCode button);
+
+        glm::vec2 GetMousePosition();
+
+        float GetMouseX();
+
+        float GetMouseY();
+
+        void Init();
+
+        void Shutdown();
     };
 }
