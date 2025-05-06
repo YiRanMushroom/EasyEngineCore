@@ -57,10 +57,6 @@
 	path = vendor/box2d
 	url = https://github.com/TheCherno/box2d
 	branch = master
-[submodule "vendor/sol2"]
-	path = vendor/sol2
-	url = https://github.com/ThePhD/sol2
-	branch = main
 [submodule "vendor/LuaJIT"]
 	path = vendor/LuaJIT
 	url = https://github.com/YiRanMushroom/LuaJIT
