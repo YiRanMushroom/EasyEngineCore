@@ -607,30 +607,38 @@ namespace Easy::ScriptingEngine {
         // export template<typename Func>
         // using JNIInstanceFunctionType = typename JNIInstanceFunctionTypeImpl<Func>::Type;
 
-        template<auto *>
+        template<typename TInfo, auto *, typename Fn>
         struct WrapNativeToJNIStaticFunctionImpl {
             static_assert(false, "Not a function ptr");
         };
 
-        template<typename Ret, typename... Args, Ret(*func)(Args...)>
-        struct WrapNativeToJNIStaticFunctionImpl<func> {
-            constexpr static auto Wrap()
-                -> decltype(auto) {
-                constexpr static auto *ret = +[](JniEnv *env, jclass clazz, jvalue *args) -> typename Ret::JavaType {
-                    constexpr size_t argc = sizeof...(Args);
+        template<typename InfoT, typename Ret, typename... Args, auto *func, typename Ignore>
+        struct WrapNativeToJNIStaticFunctionImpl<InfoT, func, Ret(JNIEnv *, Ignore, Args...)> {
+            constexpr static auto Wrap() {
+                constexpr size_t argc = sizeof...(Args);
 
-                    return [=]<size_t... idx>(std::index_sequence<idx...>) {
-                        return func(env, clazz,
-                                    ClassInfoOf<Args>::FromJvalue(args[idx])...);
-                    }(std::make_index_sequence<argc>());
-                };
-                return ret;
+                return +[]<size_t... idx>(std::index_sequence<idx...>) {
+                    return +[](JNIEnv *env, jclass cls, jvalue *args) -> decltype(auto) {
+                        if constexpr (requires {
+                            func(env, InfoT::CastClass(cls),
+                                 ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                        }) {
+                            return func(env, InfoT::CastClass(cls),
+                                        ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                        } else {
+                            return func(env, cls,
+                                        ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                        }
+                    };
+                }(std::make_index_sequence<argc>());
             }
         };
 
-        export template<auto *func>
+        export template<typename T, auto *func>
         constexpr auto WrapNativeToJNIStaticFunction() {
-            return WrapNativeToJNIStaticFunctionImpl<func>::Wrap();
+            return WrapNativeToJNIStaticFunctionImpl<ClassInfoOf<T>, func, std::remove_pointer_t<std::remove_cv_t<
+                decltype(func
+                )>>>::Wrap();
         }
 
         template<typename T, auto *, typename Fn>
@@ -638,16 +646,16 @@ namespace Easy::ScriptingEngine {
             static_assert(false, "Not a function ptr");
         };
 
-        template<typename InfoT, typename Ret, typename... Args, auto *func, typename Ignore1, typename Ignore2>
-        struct WrapNativeToJNIInstanceFunctionImpl<InfoT, func, Ret(Ignore1, Ignore2, Args...)> {
-            static_assert(std::is_same_v<Ignore2, typename InfoT::NativeType>,
-                          "The first argument must be the instance type");
+        // template<typename InfoT, typename Ret, typename... Args, auto *func, typename Ignore>
+        // struct WrapNativeToJNIInstanceFunctionImpl<InfoT, func, Ret(JNIEnv *, Ignore, Args...)>
 
+        template<typename InfoT, typename Ret, typename... Args, auto *func, typename Ignore>
+        struct WrapNativeToJNIInstanceFunctionImpl<InfoT, func, Ret(JNIEnv *, Ignore, Args...)> {
             constexpr static auto Wrap() {
                 constexpr size_t argc = sizeof...(Args);
 
-                return [=]<size_t... idx>(std::index_sequence<idx...>) {
-                    return +[](JniEnv *env, jobject obj, jvalue *args) -> decltype(auto) {
+                return +[]<size_t... idx>(std::index_sequence<idx...>) {
+                    return +[](JNIEnv *env, jobject obj, jvalue *args) -> decltype(auto) {
                         return func(env, InfoT::CastToNative(obj),
                                     ClassInfoOf<Args>::FromJvalue(args[idx])...);
                     };
@@ -657,18 +665,26 @@ namespace Easy::ScriptingEngine {
 
         export template<typename T, auto *fn>
         constexpr auto WrapNativeToJNIInstanceFunction() {
-            return WrapNativeToJNIInstanceFunctionImpl<ClassInfoOf<T>, fn, std::remove_pointer_t<std::remove_cv_t<
-                decltype(fn
-                )>>>::Wrap();
+            return WrapNativeToJNIInstanceFunctionImpl<ClassInfoOf<T>, fn,
+                std::remove_pointer_t<std::remove_cv_t<decltype(fn)>>>::Wrap();
         }
 
         namespace Test {
-            constexpr void (*TestFnPtr)(JniEnv *, std::string, std::string, int) = nullptr;
+            constexpr void (*TestFnPtr2)(JNIEnv *, jclass, std::string, std::string, int) = nullptr;
+
+            constexpr auto TestFn2 = WrapNativeToJNIStaticFunction<std::string, TestFnPtr2>();
+
+            static_assert(
+                std::is_same_v<decltype(TestFn2), void(*const)(JNIEnv *, jclass, jvalue *)>,
+                "Test Function Type"
+            );
+
+            constexpr void (*TestFnPtr)(JNIEnv *, std::string, std::string, int) = nullptr;
 
             constexpr auto TestFn = WrapNativeToJNIInstanceFunction<std::string, TestFnPtr>();
 
             static_assert(
-                std::is_same_v<decltype(TestFn), void(*const)(JniEnv *, jobject, jvalue *)>,
+                std::is_same_v<decltype(TestFn), void(*const)(JNIEnv *, jobject, jvalue *)>,
                 "Test Function Type"
             );
         }
