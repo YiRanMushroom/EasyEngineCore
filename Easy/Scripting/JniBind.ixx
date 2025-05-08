@@ -209,6 +209,11 @@ namespace Easy::ScriptingEngine {
             }
         };
 
+        struct EmptyDef {};
+
+        template<>
+        struct Util::TypeDefinitions::ClassInfoOf<EmptyDef> {};
+
         template<>
         struct ClassInfoOf<JBox<int>> {
             using NativeType = int32_t;
@@ -505,7 +510,7 @@ namespace Easy::ScriptingEngine {
         template<>
         struct ClassInfoOf<std::string> {
             using NativeType = std::string;
-            using JavaType = jobject;
+            using JavaType = jstring;
             static constexpr char Signature[] = "Ljava/lang/String;";
 
             static inline NativeType CastToNative(JavaType obj) {
@@ -515,11 +520,11 @@ namespace Easy::ScriptingEngine {
 
             static inline JavaType CastToJava(NativeType value) {
                 LocalString str{value};
-                return static_cast<jobject>(static_cast<jstring>(str));
+                return static_cast<jstring>(str);
             }
 
             static inline NativeType FromJvalue(jvalue value) {
-                return CastToNative(value.l);
+                return CastToNative(static_cast<jstring>(value.l));
             }
         };
 
@@ -618,16 +623,22 @@ namespace Easy::ScriptingEngine {
                 constexpr size_t argc = sizeof...(Args);
 
                 return +[]<size_t... idx>(std::index_sequence<idx...>) {
-                    return +[](JNIEnv *env, jclass cls, jvalue *args) -> decltype(auto) {
+                    return +[](JNIEnv *env, jclass cls,
+                               typename ClassInfoOf<Args>::JavaType... args) -> decltype(auto) {
                         if constexpr (requires {
-                            func(env, InfoT::CastClass(cls),
-                                 ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                            InfoT::CastClass(cls);
                         }) {
-                            return func(env, InfoT::CastClass(cls),
-                                        ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                            std::tuple tup{
+                                env, InfoT::CastClass(cls),
+                                ClassInfoOf<Args>::CastToNative(args)...
+                            };
+                            return std::apply(func, std::move(tup));
                         } else {
-                            return func(env, cls,
-                                        ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                            std::tuple tup{
+                                env, cls, ClassInfoOf<Args>::CastToNative(args)...
+                            };
+
+                            return std::apply(func, std::move(tup));
                         }
                     };
                 }(std::make_index_sequence<argc>());
@@ -655,9 +666,13 @@ namespace Easy::ScriptingEngine {
                 constexpr size_t argc = sizeof...(Args);
 
                 return +[]<size_t... idx>(std::index_sequence<idx...>) {
-                    return +[](JNIEnv *env, jobject obj, jvalue *args) -> decltype(auto) {
-                        return func(env, InfoT::CastToNative(obj),
-                                    ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                    return +[](JNIEnv *env, typename InfoT::JavaType obj,
+                               typename ClassInfoOf<Args>::JavaType... args) -> decltype(auto) {
+                        std::tuple tup{
+                            env, InfoT::CastToNative(obj), ClassInfoOf<Args>::CastToNative(args)...
+                        };
+
+                        return std::apply(func, std::move(tup));
                     };
                 }(std::make_index_sequence<argc>());
             }
@@ -675,7 +690,7 @@ namespace Easy::ScriptingEngine {
             constexpr auto TestFn2 = WrapNativeToJNIStaticFunction<std::string, TestFnPtr2>();
 
             static_assert(
-                std::is_same_v<decltype(TestFn2), void(*const)(JNIEnv *, jclass, jvalue *)>,
+                std::is_same_v<decltype(TestFn2), void(*const)(JNIEnv *, jclass, jstring, jstring, jint)>,
                 "Test Function Type"
             );
 
@@ -684,9 +699,56 @@ namespace Easy::ScriptingEngine {
             constexpr auto TestFn = WrapNativeToJNIInstanceFunction<std::string, TestFnPtr>();
 
             static_assert(
-                std::is_same_v<decltype(TestFn), void(*const)(JNIEnv *, jobject, jvalue *)>,
+                std::is_same_v<decltype(TestFn), void(*const)(JNIEnv *, jstring, jstring, jint)>,
                 "Test Function Type"
             );
+        }
+
+        namespace Lib {
+            export template<typename T, auto * nativeFunc>
+            bool RegisterNativeFunctionRaw(
+                jclass clazz,
+                const char *name,
+                const char *signature
+            ) {
+                constexpr static auto func_to_reg = WrapNativeToJNIStaticFunction<T, nativeFunc>();
+
+                JNINativeMethod method{
+                    const_cast<char *>(name),
+                    const_cast<char *>(signature),
+                    reinterpret_cast<void *>(func_to_reg)
+                };
+
+                return env->RegisterNatives(
+                           clazz,
+                           &method,
+                           1
+                       ) == JNI_OK;
+            }
+
+            template<typename>
+            struct GetSigIgnoreFirstTwo {
+                static_assert(false, "Not a valid function type");
+            };
+
+            template<typename Ret, typename First, typename Second, typename... Args>
+            struct GetSigIgnoreFirstTwo<Ret(First, Second, Args...)> {
+                static constexpr auto Get() {
+                    return GetSignature<Ret(Args...)>();
+                }
+            };
+
+            export template<auto * nativeFunc>
+            bool RegisterSimpleClassStaticFunction(jclass clazz, const char *name) {
+                constexpr auto sig =
+                        GetSigIgnoreFirstTwo<std::remove_pointer_t<decltype(nativeFunc)>>::Get();
+
+                return RegisterNativeFunctionRaw<EmptyDef, nativeFunc>(
+                    clazz,
+                    name,
+                    sig.Data
+                );
+            }
         }
     }
 
