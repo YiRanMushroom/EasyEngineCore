@@ -216,14 +216,14 @@ namespace Easy::ScriptingEngine {
             using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Integer;";
 
-            static inline NativeType CastToNative(LocalObject<JTInteger> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTInteger>>(obj));
             }
 
             static inline JavaType CastToJava(NativeType value) {
-                static constexpr Class IntClass {
+                static constexpr Class IntClass{
                     "java/lang/Integer",
-                    Constructor {jint{}}
+                    Constructor{jint{}}
                 };
                 LocalObject<IntClass> obj{value};
                 return static_cast<jobject>(obj);
@@ -251,14 +251,14 @@ namespace Easy::ScriptingEngine {
             using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Float;";
 
-            inline static NativeType CastToNative(LocalObject<JTFloat> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            inline static NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTFloat>>(obj));
             }
 
             inline static JavaType CastToJava(NativeType value) {
-                static constexpr Class FloatClass {
+                static constexpr Class FloatClass{
                     "java/lang/Float",
-                    Constructor {jfloat{}}
+                    Constructor{jfloat{}}
                 };
                 LocalObject<FloatClass> obj{value};
                 return static_cast<jobject>(obj);
@@ -268,294 +268,208 @@ namespace Easy::ScriptingEngine {
         template<>
         struct ClassInfoOf<double> {
             using NativeType = double;
+            using JavaType = jdouble;
             static constexpr char Signature[] = "D";
 
-            static inline auto CastToNative(LocalObject<JTDouble> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType value) {
+                return value;
             }
 
-            static inline auto *StaticMethodOf() {
-                return +[](jclass cls, jmethodID methodId, jvalue *args) -> double {
-                    return env->CallStaticDoubleMethodA(cls, methodId, args);
-                };
-            }
-
-            static inline auto InstanceMethodOf() {
-                return +[](jobject obj, jmethodID methodId, jvalue *args) -> double {
-                    return env->CallDoubleMethodA(obj, methodId, args);
-                };
+            static inline JavaType CastToJava(NativeType value) {
+                return value;
             }
         };
 
         template<>
         struct ClassInfoOf<JBox<double>> {
             using NativeType = double;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Double;";
 
-
-            static inline auto *StaticMethodOf() {
-                return +[](jclass cls, jmethodID methodId, jvalue *args) -> double {
-                    LocalObject<JTDouble> obj = LocalObject<JTDouble>{
-                        env->CallStaticObjectMethodA(cls, methodId, args)
-                    };
-
-                    return ClassInfoOf<double>::CastToNative(LocalObject<JTDouble>(static_cast<jobject>(obj)));
-                };
+            inline static NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTDouble>>(obj));
             }
 
-            static inline auto InstanceMethodOf() {
-                return +[](jobject pobj, jmethodID methodId, jvalue *args) -> double {
-                    LocalObject<JTDouble> obj = LocalObject<JTDouble>{
-                        env->CallObjectMethodA(pobj, methodId, args)
-                    };
-
-                    return ClassInfoOf<double>::CastToNative(LocalObject<JTDouble>(static_cast<jobject>(obj)));
+            inline static JavaType CastToJava(NativeType value) {
+                static constexpr Class DoubleClass{
+                    "java/lang/Double",
+                    Constructor{jdouble{}}
                 };
+                LocalObject<DoubleClass> obj{value};
+                return static_cast<jobject>(obj);
             }
         };
 
         template<>
         struct ClassInfoOf<uint64_t> {
             using NativeType = int64_t;
+            using JavaType = jlong;
             static constexpr char Signature[] = "J";
 
-            static inline auto CastToNative(LocalObject<JTLong> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType value) {
+                return value;
             }
 
-            static inline auto *StaticMethodOf() {
-                return +[](jclass cls, jmethodID methodId, jvalue *args) -> int64_t {
-                    return env->CallStaticLongMethodA(cls, methodId, args);
-                };
-            }
-
-            static inline auto InstanceMethodOf() {
-                return +[](jobject obj, jmethodID methodId, jvalue *args) -> int64_t {
-                    return env->CallLongMethodA(obj, methodId, args);
-                };
+            static inline JavaType CastToJava(NativeType value) {
+                return value;
             }
         };
 
         template<>
         struct ClassInfoOf<JBox<uint64_t>> {
             using NativeType = int64_t;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Long;";
 
-            static inline auto *StaticMethodOf() {
-                return +[](jclass cls, jmethodID methodId, jvalue *args) -> int64_t {
-                    LocalObject<JTLong> obj = LocalObject<JTLong>{
-                        env->CallStaticObjectMethodA(cls, methodId, args)
-                    };
-
-                    return ClassInfoOf<uint64_t>::CastToNative(LocalObject<JTLong>(static_cast<jobject>(obj)));
-                };
+            static inline NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTLong>>(obj));
             }
 
-            static inline auto InstanceMethodOf() {
-                return +[](jobject pobj, jmethodID methodId, jvalue *args) -> int64_t {
-                    LocalObject<JTLong> obj = LocalObject<JTLong>{
-                        env->CallObjectMethodA(pobj, methodId, args)
-                    };
-
-                    return ClassInfoOf<uint64_t>::CastToNative(LocalObject<JTLong>(static_cast<jobject>(obj)));
+            static inline JavaType CastToJava(NativeType value) {
+                static constexpr Class LongClass{
+                    "java/lang/Long",
+                    Constructor{jlong{}}
                 };
+                LocalObject<LongClass> obj{value};
+                return static_cast<jobject>(obj);
             }
         };
 
         template<>
         struct ClassInfoOf<short> {
             using NativeType = int16_t;
+            using JavaType = jshort;
             static constexpr char Signature[] = "S";
 
-            static inline auto CastToNative(LocalObject<JTShort> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType value) {
+                return value;
             }
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> int16_t {
-            //         return env->CallStaticShortMethodA(cls, methodId, args);
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject obj, jmethodID methodId, jvalue *args) -> int16_t {
-            //         return env->CallShortMethodA(obj, methodId, args);
-            //     };
-            // }
+            static inline JavaType CastToJava(NativeType value) {
+                return value;
+            }
         };
 
         template<>
         struct ClassInfoOf<JBox<short>> {
             using NativeType = int16_t;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Short;";
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> int16_t {
-            //         LocalObject<JTShort> obj = LocalObject<JTShort>{
-            //             env->CallStaticObjectMethodA(cls, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<short>::CastToNative(LocalObject<JTShort>(static_cast<jobject>(obj)));
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject pobj, jmethodID methodId, jvalue *args) -> int16_t {
-            //         LocalObject<JTShort> obj = LocalObject<JTShort>{
-            //             env->CallObjectMethodA(pobj, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<short>::CastToNative(LocalObject<JTShort>(static_cast<jobject>(obj)));
-            // };
-            // }
+            static inline NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTShort>>(obj));
+            }
+
+            static inline JavaType CastToJava(NativeType value) {
+                static constexpr Class ShortClass{
+                    "java/lang/Short",
+                    Constructor{jshort{}}
+                };
+                LocalObject<ShortClass> obj{value};
+                return static_cast<jobject>(obj);
+            }
         };
 
         template<>
         struct ClassInfoOf<char> {
             using NativeType = char;
+            using JavaType = jchar;
             static constexpr char Signature[] = "C";
 
-            static inline char CastToNative(LocalObject<JChar> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType value) {
+                return value;
             }
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> char {
-            //         return env->CallStaticCharMethodA(cls, methodId, args);
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject obj, jmethodID methodId, jvalue *args) -> char {
-            //         return env->CallCharMethodA(obj, methodId, args);
-            //     };
-            // }
+            static inline JavaType CastToJava(NativeType value) {
+                return value;
+            }
         };
 
         template<>
         struct ClassInfoOf<JBox<char>> {
             using NativeType = char;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Character;";
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> char {
-            //         LocalObject<JChar> obj = LocalObject<JChar>{
-            //             env->CallStaticObjectMethodA(cls, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<char>::CastToNative(LocalObject<JChar>(static_cast<jobject>(obj)));
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject pobj, jmethodID methodId, jvalue *args) -> char {
-            //         LocalObject<JChar> obj = LocalObject<JChar>{
-            //             env->CallObjectMethodA(pobj, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<char>::CastToNative(LocalObject<JChar>(static_cast<jobject>(obj)));
-            //     };
-            // }
+            static inline NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JChar>>(obj));
+            }
+
+            static inline JavaType CastToJava(NativeType value) {
+                static constexpr Class CharClass{
+                    "java/lang/Character",
+                    Constructor{jchar{}}
+                };
+                LocalObject<CharClass> obj{value};
+                return static_cast<jobject>(obj);
+            }
         };
 
         template<>
         struct ClassInfoOf<bool> {
             using NativeType = bool;
+            using JavaType = jboolean;
             static constexpr char Signature[] = "Z";
 
-            static inline bool CastToNative(LocalObject<JTBoolean> obj) {
-                return Lib::UnBoxOrDefault(obj);
+            static inline NativeType CastToNative(JavaType value) {
+                return value;
             }
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> bool {
-            //         return env->CallStaticBooleanMethodA(cls, methodId, args);
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject obj, jmethodID methodId, jvalue *args) -> bool {
-            //         return env->CallBooleanMethodA(obj, methodId, args);
-            //     };
-            // }
+            static inline JavaType CastToJava(NativeType value) {
+                return value;
+            }
         };
 
         template<>
         struct ClassInfoOf<JBox<bool>> {
             using NativeType = bool;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Boolean;";
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> bool {
-            //         LocalObject<JTBoolean> obj = LocalObject<JTBoolean>{
-            //             env->CallStaticObjectMethodA(cls, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<bool>::CastToNative(LocalObject<JTBoolean>(static_cast<jobject>(obj)));
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject pobj, jmethodID methodId, jvalue *args) -> bool {
-            //         LocalObject<JTBoolean> obj = LocalObject<JTBoolean>{
-            //             env->CallObjectMethodA(pobj, methodId, args)
-            //         };
-            //
-            //         return ClassInfoOf<bool>::CastToNative(LocalObject<JTBoolean>(static_cast<jobject>(obj)));
-            //     };
-            // }
+            static inline NativeType CastToNative(JavaType obj) {
+                return Lib::UnBoxOrDefault(static_cast<LocalObject<JTBoolean>>(obj));
+            }
+
+            static inline JavaType CastToJava(NativeType value) {
+                static constexpr Class BooleanClass{
+                    "java/lang/Boolean",
+                    Constructor{jboolean{}}
+                };
+                LocalObject<BooleanClass> obj{value};
+                return static_cast<jobject>(obj);
+            }
         };
 
         template<>
         struct ClassInfoOf<void> {
             using NativeType = void;
+            using JavaType = void;
             static constexpr char Signature[] = "V";
 
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> void {
-            //         env->CallStaticVoidMethodA(cls, methodId, args);
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject obj, jmethodID methodId, jvalue *args) -> void {
-            //         env->CallVoidMethodA(obj, methodId, args);
-            //     };
-            // }
+            static inline NativeType CastToNative(JavaType) {
+                return;
+            }
+
+            static inline JavaType CastToJava(NativeType) {
+                return;
+            }
         };
 
         template<>
         struct ClassInfoOf<std::string> {
             using NativeType = std::string;
+            using JavaType = jstring;
             static constexpr char Signature[] = "Ljava/lang/String;";
 
-
-            static std::string CastToNative(LocalString obj) {
-                return {obj.Pin().ToString().data()};
+            static inline NativeType CastToNative(JavaType obj) {
+                LocalString str{obj};
+                return str.Pin().ToString().data();
             }
 
-            static std::string CastToNative(jstring obj) {
-                LocalString localString{obj};
-                return {localString.Pin().ToString().data()};
+            static inline JavaType CastToJava(NativeType value) {
+                LocalString str{value};
+                return static_cast<jstring>(str);
             }
-
-            static std::string CastToNative(const LocalObject<JTString> &obj) {
-                return CastToNative(static_cast<jstring>(static_cast<jobject>(obj)));
-            }
-
-            // static inline auto *StaticMethodOf() {
-            //     return +[](jclass cls, jmethodID methodId, jvalue *args) -> std::string {
-            //         return ClassInfoOf<std::string>::CastToNative(
-            //             static_cast<jstring>(env->CallStaticObjectMethodA(cls, methodId, args)));
-            //     };
-            // }
-            //
-            // static inline auto InstanceMethodOf() {
-            //     return +[](jobject pobj, jmethodID methodId, jvalue *args) -> std::string {
-            //         return ClassInfoOf<std::string>::CastToNative(
-            //             static_cast<jstring>(env->CallObjectMethodA(pobj, methodId, args)));
-            //     };
-            // }
         };
 
         template<typename>
