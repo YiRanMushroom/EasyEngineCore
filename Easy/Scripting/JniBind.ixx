@@ -1,4 +1,5 @@
 module;
+
 #include <cstddef>
 #include <utility>
 #include <tuple>
@@ -11,11 +12,12 @@ module;
 #include <mutex>
 #include <array>
 #include <functional>
-import Easy.Core.Basic;
 #include <jni_bind_release.h>
-// #include "Core/MacroUtils.hpp"
-export module Easy.Scripting.JniBind;
+#include "Core/MacroUtils.hpp"
 
+import Easy.Core.Basic;
+
+export module Easy.Scripting.JniBind;
 
 export {
     using ::JNIEnv;
@@ -93,53 +95,54 @@ namespace jni {
     };
 }
 
+using namespace jni;
 
-namespace Easy {
-    using namespace jni;
+namespace Easy::ScriptingEngine {
+    export inline JNIEnv *env;
+    export inline JavaVM *pjvm;
 
-    namespace ScriptEngine {
-        export inline JNIEnv *env;
-        export inline JavaVM *pjvm;
-
-        export class ECLib {
-        public:
-            static constexpr auto JniType = Class{
-                "com/easy/Lib",
-                Static{
-                    Method{"Init", Return{}, Params{}},
-                    Method{"GetClass", Return{JTClass}, Params{jstring{}}},
-                    Method{"PrintClassInfo", Return{}, Params{JTClass}},
-                    Method{
-                        "GetMethodFromClassAndFunctionName",
-                        Return{JTMethod}, Params{JTClass, jstring{}, Array{JTClass}}
-                    },
-                    Method{
-                        "CallStaticMethod",
-                        Return{JTObject}, Params{JTMethod, Array{JTObject}}
-                    },
+    namespace Lib {
+        export constexpr auto JniType = Class{
+            "com/easy/Lib",
+            Static{
+                Method{"Init", Return{}, Params{}},
+                Method{"GetClass", Return{JTClass}, Params{jstring{}}},
+                Method{"PrintClassInfo", Return{}, Params{JTClass}},
+                Method{
+                    "GetMethodFromClassAndFunctionName",
+                    Return{JTMethod}, Params{JTClass, jstring{}, Array{JTClass}}
                 },
-            };
-
-            // inline static constexpr auto StaticRef = jni::StaticRef<JniType>();
-
-            inline static GlobalObject<JTClass> JClassInstance = nullptr;
-
-            void Init();
-
-            void Shutdown();
+                Method{
+                    "CallStaticMethod",
+                    Return{JTObject}, Params{JTMethod, Array{JTObject}}
+                },
+            },
         };
 
-        export inline Box<jni::JvmRef<jni::kDefaultJvm>> jvm = nullptr;
-
-        export template<size_t N>
-        void Init(JavaVMInitArgs args, const JavaVMOption (&option)[N]) {
-            args.nOptions = N;
-            args.options = const_cast<JavaVMOption *>(option);
-            jint rc = JNI_CreateJavaVM(&pjvm, (void **) &env, &args);
-
-            // EZ_CORE_ASSERT(rc == Jni_Ok, "Failed to create Java VM");
-
-            jvm = MakeBox<jni::JvmRef<jni::kDefaultJvm>>(pjvm);
+        export constexpr const auto &StaticRef() {
+            constexpr static const auto &ret = jni::StaticRef<JniType>();
+            return ret;
         }
+
+        export inline GlobalObject<JTClass> JClassInstance = nullptr;
+        export void Init();
+        export void Shutdown();
     }
+
+    export inline Box<jni::JvmRef<jni::kDefaultJvm>> jvm = nullptr;
+
+    export template<size_t N>
+    void Init(JavaVMInitArgs args, const JavaVMOption (&option)[N]) {
+        args.nOptions = N;
+        args.options = const_cast<JavaVMOption *>(option);
+        jint rc = JNI_CreateJavaVM(&pjvm, (void **) &env, &args);
+
+        EZ_CORE_ASSERT(rc == Jni_Ok, "Failed to create Java VM");
+
+        jvm = MakeBox<jni::JvmRef<jni::kDefaultJvm>>(pjvm);
+
+        Lib::Init();
+    }
+
+    export void Shutdown();
 }

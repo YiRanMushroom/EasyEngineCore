@@ -23,8 +23,6 @@ export module Easy.Script.ScriptingEngine;
 import Easy.Core.Basic;
 import Easy.Scripting.ScriptGlue;
 
-
-
 export {
     using MonoClass = _MonoClass;
     using MonoObject = _MonoObject;
