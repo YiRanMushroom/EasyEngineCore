@@ -45,4 +45,9 @@ namespace Easy::ScriptingEngine {
         jvm.reset();
     }
 
+    namespace Util {
+        namespace TypeDefinitions {
+
+        }
+    };
 }

@@ -239,13 +239,49 @@ namespace Easy {
 
         consteval StringLiteral() : Data{} {}
 
-        template<size_t OtherSize>
-        constexpr auto operator+(const StringLiteral<OtherSize> &other) const noexcept {
-            constexpr size_t newSize = N + OtherSize - 1;
-            StringLiteral<newSize> result{};
-            std::copy_n(Data, N - 1, result.Data);
-            std::copy_n(other.Data, OtherSize, result.Data + N - 1);
-            return result;
+        consteval StringLiteral(char c) : Data{} {
+            Data[0] = c;
+            Data[1] = '\0';
         }
     };
+
+    StringLiteral(char) -> StringLiteral<2>;
+
+
+}
+
+using namespace Easy;
+
+export template<size_t MySize, size_t OtherSize>
+consteval auto operator+(StringLiteral<MySize> lhs, StringLiteral<OtherSize> rhs) {
+    constexpr size_t newSize = MySize + OtherSize - 1;
+    StringLiteral<newSize> result{};
+    std::copy_n(lhs.Data, MySize - 1, result.Data);
+    std::copy_n(rhs.Data, OtherSize, result.Data + MySize - 1);
+    return result;
+}
+
+export template<size_t MySize, size_t OtherSize>
+consteval bool operator==(StringLiteral<MySize> lhs, StringLiteral<OtherSize> rhs) noexcept {
+    return std::string_view{lhs.Data} == std::string_view{rhs.Data};
+}
+
+export template<size_t MySize, size_t OtherSize>
+consteval bool operator!=(StringLiteral<MySize> lhs, StringLiteral<OtherSize> rhs) noexcept {
+    return !(lhs == rhs);
+}
+
+export template<StringLiteral str>
+constexpr auto operator""_sl() {
+    return str;
+}
+
+export template<size_t MySize>
+consteval auto operator+(char lhs, StringLiteral<MySize> rhs) {
+    return StringLiteral{lhs} + rhs;
+}
+
+export template<size_t MySize>
+consteval auto operator+(StringLiteral<MySize> lhs, char rhs) {
+    return lhs + StringLiteral{rhs};
 }
