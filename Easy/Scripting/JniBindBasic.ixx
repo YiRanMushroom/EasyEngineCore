@@ -114,23 +114,45 @@ constexpr uint32_t M_JNI_VERSION_20 = JNI_VERSION_20;
 export constexpr uint32_t JNI_VERSION_20 = 0x00140000;
 
 namespace jni {
-    // JT+ClassName is a constexpr Class of jni_bind function.
-    export constexpr Class JTString{
-        "java/lang/String",
-        jni::Constructor{},
-        jni::Constructor{jstring{}},
-    };
+    export constexpr Class JTString = jni::kJavaLangString;
 
-    export constexpr Class JTClass{
-        "java/lang/Class"
-    };
+    export constexpr Class JTClass = jni::kJavaLangClass;
 
     export constexpr Class JTMethod{
         "java/lang/reflect/Method"
     };
 
-    export constexpr Class JTObject{
-        "java/lang/Object",
-        jni::Constructor{},
+    export constexpr Class JTObject = jni::kJavaLangObject;
+
+    export constexpr Class JTInteger{
+        "java/lang/Integer"
+    };
+
+    export constexpr Class JTBoolean{
+        "java/lang/Boolean"
+    };
+
+    export constexpr Class JTByte{
+        "java/lang/Byte"
+    };
+
+    export constexpr Class JTShort{
+        "java/lang/Short"
+    };
+
+    export constexpr Class JTLong{
+        "java/lang/Long"
+    };
+
+    export constexpr Class JTFloat{
+        "java/lang/Float"
+    };
+
+    export constexpr Class JTDouble{
+        "java/lang/Double"
+    };
+
+    export constexpr Class JChar{
+        "java/lang/Character"
     };
 }

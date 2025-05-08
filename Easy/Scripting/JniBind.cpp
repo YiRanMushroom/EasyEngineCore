@@ -44,4 +44,5 @@ namespace Easy::ScriptingEngine {
         Lib::Shutdown();
         jvm.reset();
     }
+
 }
