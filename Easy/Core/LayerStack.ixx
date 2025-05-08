@@ -8,7 +8,7 @@ namespace Easy {
     export class LayerStack {
     public:
         using value_type = Arc<Layer>;
-        using container_type = Vec<value_type>;
+        using container_type = std::vector<value_type>;
 
     public:
         LayerStack() = default;

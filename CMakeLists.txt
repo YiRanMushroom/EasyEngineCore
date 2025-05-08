@@ -245,6 +245,8 @@ add_subdirectory(vendor/LuaJIT)
 set(SOL2_LUA_VERSION "luajit-2.1")
 add_subdirectory(vendor/sol2)
 
+add_subdirectory(vendor/jni-bind)
+
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "Build the Box2D testbed" FORCE)
 add_subdirectory(vendor/box2d)
@@ -254,10 +256,10 @@ add_subdirectory(vendor/shaderc)
 
 add_subdirectory(vendor/msdf-atlas-gen)
 
-target_precompile_headers(${PROJECT_NAME}
-        PUBLIC
-        ${PreCompiledHeaders}
-)
+#target_precompile_headers(${PROJECT_NAME}
+#        PUBLIC
+#        ${PreCompiledHeaders}
+#)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC
@@ -296,20 +298,5 @@ target_link_libraries(${PROJECT_NAME}
         box2d
         libluajit
         sol2
+        jni_bind
 )
-
-# mono link
-#[[if (CMAKE_BUILD_TYPE STREQUAL "Debug")
-    set(mono_lib_dir "${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Debug")
-else()
-    set(mono_lib_dir "${CMAKE_CURRENT_SOURCE_DIR}/vendor/mono/lib/Release")
-endif()
-
-file(GLOB_RECURSE mono_libs
-        "${mono_lib_dir}/libmono-static-sgen.lib"
-)
-
-target_link_libraries(${PROJECT_NAME}
-        PUBLIC
-        ${mono_libs}
-)]]

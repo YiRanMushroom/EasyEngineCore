@@ -1,5 +1,6 @@
 export module Easy.Platform.Impl.OpenGL.Renderer.Buffer;
 
+import Easy.Core.Basic;
 import Easy.Renderer.Buffer;
 import Easy.Vendor.glm;
 import Easy.Core.Util;

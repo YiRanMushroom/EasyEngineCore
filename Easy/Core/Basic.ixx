@@ -17,12 +17,6 @@ namespace Easy {
         template<typename T>
         using Rc = std::shared_ptr<T>;
 
-        template<typename... Ts>
-        using Vec = std::vector<Ts...>;
-
-        template<typename T, size_t N>
-        using Array = std::array<T, N>;
-
         template<typename Tp, typename... Args>
         Arc<Tp> MakeArc(Args &&... args) {
             return std::make_shared<std::remove_reference_t<Tp>>(std::forward<Args>(args)...);

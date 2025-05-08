@@ -65,3 +65,7 @@
 	path = vendor/sol2
 	url = https://github.com/ThePhD/sol2
 	branch = main
+[submodule "vendor/jni-bind"]
+	path = vendor/jni-bind
+	url = https://github.com/YiRanMushroom/jni-bind
+	branch = main

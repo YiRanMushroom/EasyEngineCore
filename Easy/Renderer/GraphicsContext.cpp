@@ -1,6 +1,7 @@
 module;
 
 #include <Core/MacroUtils.hpp>
+#include <GLFW/glfw3.h>
 
 module Easy.Renderer.GraphicsContext;
 

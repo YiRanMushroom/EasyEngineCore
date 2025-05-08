@@ -1,4 +1,5 @@
 export module Easy.Platform.Impl.OpenGL.ImGuiLayer;
+import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Events.Event;

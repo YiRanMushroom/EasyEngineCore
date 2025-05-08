@@ -4,6 +4,8 @@ module;
 
 export module Easy.ImGui.ImGui;
 
+import Easy.Core.Basic;
+
 constexpr const char *ImGui_Version = IMGUI_VERSION;
 constexpr int ImGui_Version_Num = IMGUI_VERSION_NUM;
 

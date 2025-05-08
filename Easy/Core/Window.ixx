@@ -1,6 +1,7 @@
 module;
 
 #include "MacroUtils.hpp"
+#include "GLFW/glfw3.h"
 
 export module Easy.Core.Window;
 

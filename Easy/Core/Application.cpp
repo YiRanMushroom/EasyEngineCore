@@ -1,6 +1,7 @@
 module;
 
 #include "MacroUtils.hpp"
+#include <glad/glad.h>
 
 module Easy.Core.Application;
 

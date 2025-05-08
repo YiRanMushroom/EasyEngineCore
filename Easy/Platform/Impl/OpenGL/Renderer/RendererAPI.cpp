@@ -1,6 +1,7 @@
 module;
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <Core/MacroUtils.hpp>
 
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;

@@ -1,3 +1,5 @@
+
+
 export module Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
 import Easy.Renderer.Shader;
@@ -54,15 +56,15 @@ namespace Easy {
     private:
         std::string ReadFile(const std::string &filepath);
 
-        std::unordered_map<GLenum, std::string> PreProcess(const std::string &source);
+        std::unordered_map<uint32_t, std::string> PreProcess(const std::string &source);
 
-        void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string> &shaderSources);
+        void CompileOrGetVulkanBinaries(const std::unordered_map<uint32_t, std::string> &shaderSources);
 
         void CompileOrGetOpenGLBinaries();
 
         void CreateProgram();
 
-        void Reflect(GLenum stage, const std::vector<uint32_t> &shaderData);
+        void Reflect(uint32_t stage, const std::vector<uint32_t> &shaderData);
 
     private:
         struct ShaderDeleter {
@@ -73,9 +75,9 @@ namespace Easy {
         std::string m_FilePath;
         std::string m_Name;
 
-        std::unordered_map<GLenum, std::vector<uint32_t>> m_VulkanSPIRV;
-        std::unordered_map<GLenum, std::vector<uint32_t>> m_OpenGLSPIRV;
+        std::unordered_map<uint32_t, std::vector<uint32_t>> m_VulkanSPIRV;
+        std::unordered_map<uint32_t, std::vector<uint32_t>> m_OpenGLSPIRV;
 
-        std::unordered_map<GLenum, std::string> m_OpenGLSourceCode;
+        std::unordered_map<uint32_t, std::string> m_OpenGLSourceCode;
     };
 }
