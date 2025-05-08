@@ -185,11 +185,6 @@ namespace Easy::ScriptingEngine {
         export template<typename T>
         struct ClassInfoOf {
             static_assert(false, "Type needs to be specialized");
-
-            // NativeType
-            // ParameterType is Always jvalue
-            // Method to call when static
-            // Method to call when instance
         };
 
         export template<typename T>
@@ -207,6 +202,10 @@ namespace Easy::ScriptingEngine {
 
             static inline JavaType CastToJava(NativeType value) {
                 return value;
+            }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.i;
             }
         };
 
@@ -228,6 +227,10 @@ namespace Easy::ScriptingEngine {
                 LocalObject<IntClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
@@ -242,6 +245,10 @@ namespace Easy::ScriptingEngine {
 
             inline static JavaType CastToJava(NativeType value) {
                 return value;
+            }
+
+            inline static NativeType FromJvalue(jvalue value) {
+                return value.f;
             }
         };
 
@@ -263,6 +270,10 @@ namespace Easy::ScriptingEngine {
                 LocalObject<FloatClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            inline static NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
@@ -277,6 +288,10 @@ namespace Easy::ScriptingEngine {
 
             static inline JavaType CastToJava(NativeType value) {
                 return value;
+            }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.d;
             }
         };
 
@@ -298,10 +313,14 @@ namespace Easy::ScriptingEngine {
                 LocalObject<DoubleClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            inline static NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
-        struct ClassInfoOf<uint64_t> {
+        struct ClassInfoOf<int64_t> {
             using NativeType = int64_t;
             using JavaType = jlong;
             static constexpr char Signature[] = "J";
@@ -313,10 +332,14 @@ namespace Easy::ScriptingEngine {
             static inline JavaType CastToJava(NativeType value) {
                 return value;
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.j;
+            }
         };
 
         template<>
-        struct ClassInfoOf<JBox<uint64_t>> {
+        struct ClassInfoOf<JBox<int64_t>> {
             using NativeType = int64_t;
             using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Long;";
@@ -333,10 +356,14 @@ namespace Easy::ScriptingEngine {
                 LocalObject<LongClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
-        struct ClassInfoOf<short> {
+        struct ClassInfoOf<int16_t> {
             using NativeType = int16_t;
             using JavaType = jshort;
             static constexpr char Signature[] = "S";
@@ -348,10 +375,14 @@ namespace Easy::ScriptingEngine {
             static inline JavaType CastToJava(NativeType value) {
                 return value;
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.s;
+            }
         };
 
         template<>
-        struct ClassInfoOf<JBox<short>> {
+        struct ClassInfoOf<JBox<int16_t>> {
             using NativeType = int16_t;
             using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/Short;";
@@ -368,6 +399,10 @@ namespace Easy::ScriptingEngine {
                 LocalObject<ShortClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
@@ -382,6 +417,10 @@ namespace Easy::ScriptingEngine {
 
             static inline JavaType CastToJava(NativeType value) {
                 return value;
+            }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.c;
             }
         };
 
@@ -403,6 +442,10 @@ namespace Easy::ScriptingEngine {
                 LocalObject<CharClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
@@ -417,6 +460,10 @@ namespace Easy::ScriptingEngine {
 
             static inline JavaType CastToJava(NativeType value) {
                 return value;
+            }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return value.z;
             }
         };
 
@@ -438,6 +485,10 @@ namespace Easy::ScriptingEngine {
                 LocalObject<BooleanClass> obj{value};
                 return static_cast<jobject>(obj);
             }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
+            }
         };
 
         template<>
@@ -446,29 +497,29 @@ namespace Easy::ScriptingEngine {
             using JavaType = void;
             static constexpr char Signature[] = "V";
 
-            static inline NativeType CastToNative(JavaType) {
-                return;
-            }
+            static inline NativeType CastToNative(JavaType) {}
 
-            static inline JavaType CastToJava(NativeType) {
-                return;
-            }
+            static inline JavaType CastToJava(NativeType) {}
         };
 
         template<>
         struct ClassInfoOf<std::string> {
             using NativeType = std::string;
-            using JavaType = jstring;
+            using JavaType = jobject;
             static constexpr char Signature[] = "Ljava/lang/String;";
 
             static inline NativeType CastToNative(JavaType obj) {
-                LocalString str{obj};
+                LocalString str{static_cast<jstring>(obj)};
                 return str.Pin().ToString().data();
             }
 
             static inline JavaType CastToJava(NativeType value) {
                 LocalString str{value};
-                return static_cast<jstring>(str);
+                return static_cast<jobject>(static_cast<jstring>(str));
+            }
+
+            static inline NativeType FromJvalue(jvalue value) {
+                return CastToNative(value.l);
             }
         };
 
@@ -491,24 +542,136 @@ namespace Easy::ScriptingEngine {
         };
 
         template<typename>
-        struct NativeFunctionTypeImpl {
+        struct StaticNativeFunctionTypeImpl {
             static_assert(false, "Not a function type");
         };
 
         template<typename Ret, typename... Args>
-        struct NativeFunctionTypeImpl<Ret(Args...)> {
-            using Type = typename ClassInfoOf<Ret>::NativeType(typename ClassInfoOf<Args>::NativeType...);
+        struct StaticNativeFunctionTypeImpl<Ret(Args...)> {
+            using Type = typename ClassInfoOf<Ret>::NativeType(JNIEnv *, jclass,
+                                                               typename ClassInfoOf<Args>::NativeType...);
         };
 
         export template<typename T>
-        using NativeFunctionType = typename NativeFunctionTypeImpl<T>::Type;
+        using StaticNativeFunctionType = typename StaticNativeFunctionTypeImpl<T>::Type;
+
+        template<typename, typename>
+        struct InstanceNativeFunctionTypeImpl {
+            static_assert(false, "Second is not a function type");
+        };
+
+        template<typename InstanceType, typename Ret, typename... Args>
+        struct InstanceNativeFunctionTypeImpl<InstanceType, Ret(Args...)> {
+            using Type = typename ClassInfoOf<Ret>::NativeType(JNIEnv *, typename ClassInfoOf<InstanceType>::NativeType,
+                                                               typename ClassInfoOf<Args>::NativeType...);
+        };
+
+        export template<typename InstanceType, typename T>
+        using InstanceNativeFunctionType = typename InstanceNativeFunctionTypeImpl<InstanceType, T>::Type;
 
         static_assert(GetSignature<void(int)>() == "(I)V"_sl, "Signature Test");
         static_assert(GetSignature<std::string(JBox<double>, char, JBox<int>)>()
                       == "(Ljava/lang/Double;CLjava/lang/Integer;)Ljava/lang/String;"_sl, "Signature Test");
 
-        static_assert(std::is_same_v<NativeFunctionType<std::string(JBox<double>, char, JBox<int>)>,
-                          std::string(double, char, int)>, "Signature Test");
+        static_assert(std::is_same_v<StaticNativeFunctionType<std::string(JBox<double>, char, JBox<int>)>,
+                          std::string(JNIEnv *, jclass, double, char, int)>, "Signature Test");
+
+        static_assert(
+            std::is_same_v<InstanceNativeFunctionType<std::string, std::string(JBox<double>, char, JBox<int>)>,
+                std::string(JNIEnv *, std::string, double, char, int)>, "Signature Test");
+
+        template<typename>
+        struct JNIStaticFunctionTypeImpl {
+            static_assert(false, "Not a function type");
+        };
+
+        template<typename Ret, typename... Args>
+        struct JNIStaticFunctionTypeImpl<Ret(Args...)> {
+            using Type = typename ClassInfoOf<Ret>::JavaType(JNIEnv *, jclass, jvalue *);
+        };
+
+        template<typename>
+        struct JNIInstanceFunctionTypeImpl {
+            static_assert(false, "Second is not a function type");
+        };
+
+        template<typename Ret, typename... Args>
+        struct JNIInstanceFunctionTypeImpl<Ret(Args...)> {
+            using Type =
+            typename ClassInfoOf<Ret>::JavaType(JNIEnv *, jobject, jvalue *);
+        };
+
+        // export template<typename T>
+        // using JNIStaticFunctionType = typename JNIStaticFunctionTypeImpl<T>::Type;
+        //
+        // export template<typename Func>
+        // using JNIInstanceFunctionType = typename JNIInstanceFunctionTypeImpl<Func>::Type;
+
+        template<auto *>
+        struct WrapNativeToJNIStaticFunctionImpl {
+            static_assert(false, "Not a function ptr");
+        };
+
+        template<typename Ret, typename... Args, Ret(*func)(Args...)>
+        struct WrapNativeToJNIStaticFunctionImpl<func> {
+            constexpr static auto Wrap()
+                -> decltype(auto) {
+                constexpr static auto *ret = +[](JniEnv *env, jclass clazz, jvalue *args) -> typename Ret::JavaType {
+                    constexpr size_t argc = sizeof...(Args);
+
+                    return [=]<size_t... idx>(std::index_sequence<idx...>) {
+                        return func(env, clazz,
+                                    ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                    }(std::make_index_sequence<argc>());
+                };
+                return ret;
+            }
+        };
+
+        export template<auto *func>
+        constexpr auto WrapNativeToJNIStaticFunction() {
+            return WrapNativeToJNIStaticFunctionImpl<func>::Wrap();
+        }
+
+        template<typename T, auto *, typename Fn>
+        struct WrapNativeToJNIInstanceFunctionImpl {
+            static_assert(false, "Not a function ptr");
+        };
+
+        template<typename InfoT, typename Ret, typename... Args, auto *func, typename Ignore1, typename Ignore2>
+        struct WrapNativeToJNIInstanceFunctionImpl<InfoT, func, Ret(Ignore1, Ignore2, Args...)> {
+            static_assert(std::is_same_v<Ignore2, typename InfoT::NativeType>,
+                          "The first argument must be the instance type");
+
+            constexpr static auto Wrap() {
+                constexpr size_t argc = sizeof...(Args);
+
+                return [=]<size_t... idx>(std::index_sequence<idx...>) {
+                    return +[](JniEnv *env, jobject obj, jvalue *args) -> decltype(auto) {
+                        return func(env, InfoT::CastToNative(obj),
+                                    ClassInfoOf<Args>::FromJvalue(args[idx])...);
+                    };
+                }(std::make_index_sequence<argc>());
+            }
+        };
+
+        export template<typename T, auto *fn>
+        constexpr auto WrapNativeToJNIInstanceFunction() {
+            return WrapNativeToJNIInstanceFunctionImpl<ClassInfoOf<T>, fn, std::remove_pointer_t<std::remove_cv_t<
+                decltype(fn
+                )>>>::Wrap();
+        }
+
+        namespace Test {
+            constexpr void (*TestFnPtr)(JniEnv *, std::string, std::string, int) = nullptr;
+
+            constexpr auto TestFn = WrapNativeToJNIInstanceFunction<std::string, TestFnPtr>();
+
+            static_assert(
+                std::is_same_v<decltype(TestFn), void(*const)(JniEnv *, jobject, jvalue *)>,
+                "Test Function Type"
+            );
+        }
     }
 
     static_assert("Hello"_sl + "World"_sl == "HelloWorld"_sl, "String Literal Test");
