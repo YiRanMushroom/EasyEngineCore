@@ -12,52 +12,32 @@ namespace Easy::ScriptingEngine::JTypes {
         return 'L' + SimpleName + ';';
     }
 
-    template<typename DefType>
-    class ILocalObjectProvider {
-    public:
-        ILocalObjectProvider() = default;
+    export class Owned {};
 
-        virtual ~ILocalObjectProvider() = default;
-
-        constexpr static Class Definition = DefType::Definition;
-
-        ILocalObjectProvider(const ILocalObjectProvider &) = delete;
-
-        ILocalObjectProvider &operator=(const ILocalObjectProvider &) = delete;
-
-        ILocalObjectProvider(ILocalObjectProvider &&) = default;
-
-        ILocalObjectProvider &operator=(ILocalObjectProvider &&) = default;
-
-    public:
-        [[nodiscard]] virtual jobject GetObject() const = 0;
-
-        [[nodiscard]] virtual LocalObject<Definition> GetLocalObject() const {
-            return LocalObject<Definition>{GetObject()};
-        }
-    };
+    export class Borrowed {};
 
     template<typename DefType>
-    class OwnedLocalObjectProvider : public ILocalObjectProvider<DefType> {
+    class OwnedLocalObjectProvider {
     public:
         constexpr static Class Definition = DefType::Definition;
 
-        virtual jobject GetObject() const override {
-            return static_cast<jobject>(m_Object);
+        [[nodiscard]] jobject GetRawObject() const {
+            return static_cast<jobject>(*m_Object);
         }
 
-        explicit OwnedLocalObjectProvider(jobject obj) : m_Object(PromoteToGlobal{}, obj) {}
+        explicit OwnedLocalObjectProvider(jobject obj) : m_Object(
+            std::make_shared<GlobalObject<Definition>>(PromoteToGlobal{}, obj)) {}
 
     private:
-        GlobalObject<Definition> m_Object;
+        std::shared_ptr<GlobalObject<Definition>> m_Object;
     };
 
     template<typename DefType>
-    class BorrowedLocalObjectProvider : public ILocalObjectProvider<DefType> {
+    class BorrowedLocalObjectProvider {
     public:
         constexpr static Class Definition = DefType::Definition;
 
-        virtual jobject GetObject() const override {
+        [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(m_Object);
         }
 
@@ -67,9 +47,42 @@ namespace Easy::ScriptingEngine::JTypes {
         jobject m_Object;
     };
 
-    export class Owned {};
+    template<typename DefType>
+    class NullObjectProvider {
+    public:
+        constexpr static Class Definition = DefType::Definition;
 
-    export class Borrowed {};
+        [[nodiscard]] jobject GetRawObject() const {
+            return static_cast<jobject>(nullptr);
+        }
+
+        NullObjectProvider() = default;
+    };
+
+    template<typename DefType>
+    class LocalObjectProvider {
+    public:
+        LocalObjectProvider() : m_ObjectProvider(nullptr) {}
+
+        LocalObjectProvider(Owned, jobject obj) : m_ObjectProvider(OwnedLocalObjectProvider<DefType>{obj}) {}
+
+        LocalObjectProvider(Borrowed, jobject obj) : m_ObjectProvider(BorrowedLocalObjectProvider<DefType>{obj}) {}
+
+    public:
+        [[nodiscard]] jobject GetRawObject() const {
+            return std::visit([](auto &&provider) { return provider.GetRawObject(); }, m_ObjectProvider);
+        }
+
+        [[nodiscard]] LocalObject<DefType::Definition> GetObject() const {
+            return LocalObject<DefType::Definition>{GetRawObject()};
+        }
+
+    private:
+        std::variant<OwnedLocalObjectProvider<DefType>, BorrowedLocalObjectProvider<DefType>, NullObjectProvider<
+            DefType>>
+        m_ObjectProvider;
+    };
+
 
     export class JString {
     public:
@@ -86,17 +99,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
 
         JString(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JString>>(obj)),
+            : m_ObjectProvider(Owned{}, obj),
               m_NativeCopy(std::make_shared<std::string>(LocalString{static_cast<jstring>(obj)}.Pin().ToString())) {}
 
         JString(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JString>>(obj)),
+            : m_ObjectProvider(Borrowed{}, obj),
               m_NativeCopy(std::make_shared<std::string>(LocalString{static_cast<jstring>(obj)}.Pin().ToString())) {}
 
         explicit JString(std::string_view str)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JString>>(
-                  static_cast<jobject>(static_cast<jstring>(LocalString{str}))
-              )),
+            : m_ObjectProvider(Owned{}, static_cast<jobject>(static_cast<jstring>(LocalString{str}))),
               m_NativeCopy(std::make_shared<std::string>(str)) {}
 
         char operator[](size_t index) const {
@@ -111,8 +122,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_NativeCopy->c_str();
         }
 
-        auto operator<=>(const JString &other) const = default;
-
         auto begin() const {
             return m_NativeCopy->begin();
         }
@@ -122,7 +131,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_ObjectProvider->GetObject();
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -132,7 +141,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::shared_ptr<ILocalObjectProvider<JString>> m_ObjectProvider{};
+        LocalObjectProvider<JString> m_ObjectProvider{};
         std::shared_ptr<const std::string> m_NativeCopy{};
     };
 
@@ -185,17 +194,16 @@ namespace Easy::ScriptingEngine::JTypes {
 
         JInteger(int value)
             : m_ObjectProvider(
-                  std::make_shared<OwnedLocalObjectProvider<JInteger>>(
-                      static_cast<jobject>(LocalObject<Definition>{value})
-                  )), m_Value(value) {}
+                  Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+              m_Value(value) {}
 
         JInteger(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JInteger>>(obj)),
-              m_Value(std::make_optional<int>(m_ObjectProvider->GetLocalObject().Call<"intValue">())) {}
+            : m_ObjectProvider(Owned{}, obj),
+              m_Value(std::make_optional<int>(m_ObjectProvider.GetObject().Call<"intValue">())) {}
 
         JInteger(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JInteger>>(obj)),
-              m_Value(std::make_optional<int>(m_ObjectProvider->GetLocalObject().Call<"intValue">())) {}
+            : m_ObjectProvider(Borrowed{}, obj),
+              m_Value(std::make_optional<int>(m_ObjectProvider.GetObject().Call<"intValue">())) {}
 
         [[nodiscard]] int GetOrDefault() const {
             return m_Value.value_or(0);
@@ -206,7 +214,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_ObjectProvider ? m_ObjectProvider->GetObject() : nullptr;
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -216,7 +224,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::shared_ptr<ILocalObjectProvider<JInteger>> m_ObjectProvider{};
+        // std::shared_ptr<ILocalObjectProvider<JInteger>> m_ObjectProvider{};
+        LocalObjectProvider<JInteger> m_ObjectProvider{};
         std::optional<const int> m_Value{};
     };
 
@@ -267,18 +276,16 @@ namespace Easy::ScriptingEngine::JTypes {
         JFloat() = default;
 
         explicit JFloat(float value)
-            : m_ObjectProvider(
-                  std::make_shared<OwnedLocalObjectProvider<JFloat>>(
-                      static_cast<jobject>(LocalObject<Definition>{value})
-                  )), m_Value(value) {}
+            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+              m_Value(value) {}
 
         explicit JFloat(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JFloat>>(obj)),
-              m_Value(std::make_optional<float>(m_ObjectProvider->GetLocalObject().Call<"floatValue">())) {}
+            : m_ObjectProvider(Owned{}, obj),
+              m_Value(std::make_optional<float>(m_ObjectProvider.GetObject().Call<"floatValue">())) {}
 
         explicit JFloat(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JFloat>>(obj)),
-              m_Value(std::make_optional<float>(m_ObjectProvider->GetLocalObject().Call<"floatValue">())) {}
+            : m_ObjectProvider(Borrowed{}, obj),
+              m_Value(std::make_optional<float>(m_ObjectProvider.GetObject().Call<"floatValue">())) {}
 
         [[nodiscard]] float GetOrDefault() const {
             return m_Value.value_or(0.0f);
@@ -289,8 +296,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            // return m_JFloatCopy ? static_cast<jobject>(*m_JFloatCopy) : nullptr;
-            return m_ObjectProvider ? m_ObjectProvider->GetObject() : nullptr;
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -300,7 +306,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::shared_ptr<ILocalObjectProvider<JFloat>> m_ObjectProvider{};
+        LocalObjectProvider<JFloat> m_ObjectProvider{};
         std::optional<const float> m_Value{};
     };
 
@@ -350,18 +356,16 @@ namespace Easy::ScriptingEngine::JTypes {
         JDouble() = default;
 
         JDouble(double value)
-            : m_ObjectProvider(
-                  std::make_shared<OwnedLocalObjectProvider<JDouble>>(
-                      static_cast<jobject>(LocalObject<Definition>{value})
-                  )), m_Value(value) {}
+            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+              m_Value(value) {}
 
         JDouble(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JDouble>>(obj)),
-              m_Value(std::make_optional<double>(m_ObjectProvider->GetLocalObject().Call<"doubleValue">())) {}
+            : m_ObjectProvider(Owned{}, obj),
+              m_Value(std::make_optional<double>(m_ObjectProvider.GetObject().Call<"doubleValue">())) {}
 
         JDouble(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JDouble>>(obj)),
-              m_Value(std::make_optional<double>(m_ObjectProvider->GetLocalObject().Call<"doubleValue">())) {}
+            : m_ObjectProvider(Borrowed{}, obj),
+              m_Value(std::make_optional<double>(m_ObjectProvider.GetObject().Call<"doubleValue">())) {}
 
         [[nodiscard]] double GetOrDefault() const {
             return m_Value.value_or(0.0);
@@ -372,8 +376,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            // return m_JDoubleCopy ? static_cast<jobject>(*m_JDoubleCopy) : nullptr;
-            return m_ObjectProvider ? m_ObjectProvider->GetObject() : nullptr;
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -383,8 +386,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        // std::shared_ptr<GlobalObject<Definition>> m_JDoubleCopy{};
-        std::shared_ptr<ILocalObjectProvider<JDouble>> m_ObjectProvider{};
+        LocalObjectProvider<JDouble> m_ObjectProvider{};
         std::optional<const double> m_Value{};
     };
 
@@ -436,18 +438,17 @@ namespace Easy::ScriptingEngine::JTypes {
         JLong() = default;
 
         explicit JLong(int64_t value) : m_ObjectProvider(
-                                            std::make_shared<OwnedLocalObjectProvider<JLong>>(
-                                                static_cast<jobject>(LocalObject<Definition>{value})
-                                            )), m_Value(value) {}
+                                            Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+                                        m_Value(value) {}
 
 
         explicit JLong(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JLong>>(obj)),
-              m_Value(std::make_optional<int64_t>(m_ObjectProvider->GetLocalObject().Call<"longValue">())) {}
+            : m_ObjectProvider(Owned{}, obj),
+              m_Value(std::make_optional<int64_t>(m_ObjectProvider.GetObject().Call<"longValue">())) {}
 
         explicit JLong(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JLong>>(obj)),
-              m_Value(std::make_optional<int64_t>(m_ObjectProvider->GetLocalObject().Call<"longValue">())) {}
+            : m_ObjectProvider(Borrowed{}, obj),
+              m_Value(std::make_optional<int64_t>(m_ObjectProvider.GetObject().Call<"longValue">())) {}
 
         [[nodiscard]] int64_t GetOrDefault() const {
             return m_Value.value_or(0);
@@ -458,8 +459,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            // return m_JLongCopy ? static_cast<jobject>(*m_JLongCopy) : nullptr;
-            return m_ObjectProvider ? m_ObjectProvider->GetObject() : nullptr;
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -469,7 +469,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::shared_ptr<ILocalObjectProvider<JLong>> m_ObjectProvider{};
+        LocalObjectProvider<JLong> m_ObjectProvider{};
         std::optional<const int64_t> m_Value{};
     };
 
@@ -520,18 +520,16 @@ namespace Easy::ScriptingEngine::JTypes {
         JBoolean() = default;
 
         explicit JBoolean(bool value)
-            : m_ObjectProvider(
-                  std::make_shared<OwnedLocalObjectProvider<JBoolean>>(
-                      static_cast<jobject>(LocalObject<Definition>{value})
-                  )), m_Value(value) {}
+            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+              m_Value(value) {}
 
         explicit JBoolean(Owned, jobject obj)
-            : m_ObjectProvider(std::make_shared<OwnedLocalObjectProvider<JBoolean>>(obj)),
-              m_Value(std::make_optional<bool>(m_ObjectProvider->GetLocalObject().Call<"booleanValue">())) {}
+            : m_ObjectProvider(Owned{}, obj),
+              m_Value(std::make_optional<bool>(m_ObjectProvider.GetObject().Call<"booleanValue">())) {}
 
         explicit JBoolean(Borrowed, jobject obj)
-            : m_ObjectProvider(std::make_shared<BorrowedLocalObjectProvider<JBoolean>>(obj)),
-              m_Value(std::make_optional<bool>(m_ObjectProvider->GetLocalObject().Call<"booleanValue">())) {}
+            : m_ObjectProvider(Borrowed{}, obj),
+              m_Value(std::make_optional<bool>(m_ObjectProvider.GetObject().Call<"booleanValue">())) {}
 
         [[nodiscard]] bool GetOrDefault() const {
             return m_Value.value_or(false);
@@ -542,8 +540,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            // return m_JBooleanCopy ? static_cast<jobject>(*m_JBooleanCopy) : nullptr;
-            return m_ObjectProvider ? m_ObjectProvider->GetObject() : nullptr;
+            return m_ObjectProvider.GetRawObject();
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -553,8 +550,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        // std::shared_ptr<GlobalObject<Definition>> m_JBooleanCopy{};
-        std::shared_ptr<ILocalObjectProvider<JBoolean>> m_ObjectProvider{};
+        LocalObjectProvider<JBoolean> m_ObjectProvider{};
         std::optional<const bool> m_Value{};
     };
 }
