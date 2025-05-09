@@ -16,13 +16,17 @@ namespace Easy::ScriptingEngine::JTypes {
 
     export class Borrowed {};
 
-    template<const auto& Def>
+    template<const auto &Def>
     class OwnedLocalObjectProvider {
     public:
-        constexpr static Class Definition = Def;
+        constexpr static const auto &Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(*m_Object);
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return LocalObject<Definition>(GetRawObject());
         }
 
         explicit OwnedLocalObjectProvider(jobject obj) : m_Object(
@@ -32,13 +36,17 @@ namespace Easy::ScriptingEngine::JTypes {
         std::shared_ptr<GlobalObject<Definition>> m_Object;
     };
 
-    template<const auto& Def>
+    template<const auto &Def>
     class BorrowedLocalObjectProvider {
     public:
-        constexpr static Class Definition = Def;
+        constexpr static const auto &Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(m_Object);
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return LocalObject<Definition>(GetRawObject());
         }
 
         explicit BorrowedLocalObjectProvider(jobject obj) : m_Object(obj) {}
@@ -47,19 +55,23 @@ namespace Easy::ScriptingEngine::JTypes {
         jobject m_Object;
     };
 
-    template<const auto& Def>
+    template<const auto &Def>
     class NullObjectProvider {
     public:
-        constexpr static Class Definition = Def;
+        constexpr static const auto &Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(nullptr);
         }
 
+        LocalObject<Definition> GetObject() const {
+            return LocalObject<Definition>(GetRawObject());
+        }
+
         NullObjectProvider() = default;
     };
 
-    template<const auto& Def>
+    template<const auto &Def>
     class LocalObjectProvider {
     public:
         LocalObjectProvider() : m_ObjectProvider(nullptr) {}
@@ -74,7 +86,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] LocalObject<Def> GetObject() const {
-            return LocalObject<Def>{GetRawObject()};
+            return std::visit([](auto &&provider) { return provider.GetObject(); }, m_ObjectProvider);
         }
 
     private:
