@@ -21,43 +21,43 @@ namespace Easy::ScriptingEngine::JTypes {
 
         JString() = default;
 
-        explicit JString(jobject obj) : m_Copy(
-            std::make_shared<const std::string>(LocalString{static_cast<jstring>(obj)}.Pin().ToString())) {}
+        explicit JString(jobject obj) : m_JStringCopy(std::make_shared<GlobalString>(
+                                            PromoteToGlobal{}, static_cast<jstring>(obj)
+                                        )), m_NativeCopy(
+                                            std::make_shared<std::string>(m_JStringCopy->Pin().ToString())) {}
 
-        explicit JString(jstring obj) : m_Copy(
-            std::make_shared<const std::string>(LocalString{obj}.Pin().ToString())) {}
-
-        JString(const JString &other) : m_Copy(other.m_Copy) {}
-
-        JString(std::string_view str) : m_Copy(
-            std::make_shared<const std::string>(str)) {}
+        explicit JString(std::string_view str)
+            : m_JStringCopy(std::make_shared<GlobalString>(
+                  PromoteToGlobal{}, static_cast<jstring>(LocalString{str.data()})
+              )), m_NativeCopy(std::make_shared<std::string>(str)) {}
 
         char operator[](size_t index) const {
-            return m_Copy->at(index);
+            return m_NativeCopy->at(index);
         }
 
         [[nodiscard]] int Length() const {
-            return static_cast<int>(m_Copy->length());
+            return static_cast<int>(m_NativeCopy->length());
         }
 
         [[nodiscard]] const char *CStr() const {
-            return m_Copy->c_str();
+            return m_NativeCopy->c_str();
         }
 
         auto operator<=>(const JString &other) const = default;
 
         auto begin() const {
-            return m_Copy->begin();
+            return m_NativeCopy->begin();
         }
 
         auto end() const {
-            return m_Copy->end();
+            return m_NativeCopy->end();
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return static_cast<jstring>(
-                LocalString{*m_Copy}
-            );
+            if (m_JStringCopy) {
+                return static_cast<jobject>(static_cast<jstring>(*m_JStringCopy));
+            }
+            return nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -67,7 +67,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::shared_ptr<const std::string> m_Copy{};
+        std::shared_ptr<GlobalString> m_JStringCopy{};
+        std::shared_ptr<const std::string> m_NativeCopy{};
     };
 
     export class Jint {
@@ -94,6 +95,7 @@ namespace Easy::ScriptingEngine::JTypes {
             value.i = ToJava();
             return value;
         }
+
     private:
         int m_Value{};
     };
@@ -116,11 +118,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         JInteger() = default;
 
-        JInteger(jobject obj) {
-            if (obj != nullptr) {
-                m_Value = LocalObject<Definition>{obj}.Call<"intValue">();
-            }
-        }
+        explicit JInteger(jobject obj)
+            : m_JIntegerCopy(
+                  obj
+                      ? std::make_shared<GlobalObject<Definition>>(
+                          PromoteToGlobal{}, static_cast<jobject>(obj)
+                      )
+                      : nullptr
+              ),
+              m_Value(m_JIntegerCopy ? m_JIntegerCopy->Call<"intValue">() : std::optional<const int>{}) {}
+
+        explicit JInteger(int value)
+            : m_Value(value),
+              m_JIntegerCopy(std::make_shared<GlobalObject<Definition>>(
+                  PromoteToGlobal{}, static_cast<jobject>(LocalObject<Definition>{value})
+              )) {}
 
         [[nodiscard]] int GetOrDefault() const {
             return m_Value.value_or(0);
@@ -131,7 +143,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+            return m_JIntegerCopy ? static_cast<jobject>(*m_JIntegerCopy) : nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -141,7 +153,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::optional<int> m_Value{};
+        std::shared_ptr<GlobalObject<Definition>> m_JIntegerCopy{};
+        std::optional<const int> m_Value{};
     };
 
     export class Jfloat {
@@ -191,11 +204,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         JFloat() = default;
 
-        JFloat(jobject obj) {
-            if (obj != nullptr) {
-                m_Value = LocalObject<Definition>{obj}.Call<"floatValue">();
-            }
-        }
+        JFloat(jobject obj)
+            : m_JFloatCopy(
+                  obj
+                      ? std::make_shared<GlobalObject<Definition>>(
+                          PromoteToGlobal{}, static_cast<jobject>(obj)
+                      )
+                      : nullptr
+              ), m_Value(m_JFloatCopy ? m_JFloatCopy->Call<"floatValue">() : std::optional<const float>{}) {}
+
+        JFloat(float value)
+            : m_JFloatCopy(
+                  std::make_shared<GlobalObject<Definition>>(
+                      PromoteToGlobal{}, static_cast<jobject>(LocalObject<Definition>{value})
+                  )),
+              m_Value(value) {}
 
         [[nodiscard]] float GetOrDefault() const {
             return m_Value.value_or(0.0f);
@@ -206,7 +229,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+            return m_JFloatCopy ? static_cast<jobject>(*m_JFloatCopy) : nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -216,7 +239,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::optional<float> m_Value{};
+        std::shared_ptr<GlobalObject<Definition>> m_JFloatCopy{};
+        std::optional<const float> m_Value{};
     };
 
     export class Jdouble {
@@ -265,11 +289,22 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         JDouble() = default;
 
-        JDouble(jobject obj) {
-            if (obj != nullptr) {
-                m_Value = LocalObject<Definition>{obj}.Call<"doubleValue">();
-            }
-        }
+        JDouble(jobject obj)
+            : m_JDoubleCopy(obj
+                                ? std::make_shared<GlobalObject<Definition>>(
+                                    PromoteToGlobal{}, static_cast<jobject>(obj)
+                                )
+                                : nullptr
+              ),
+              m_Value(m_JDoubleCopy
+                          ? m_JDoubleCopy->Call<"doubleValue">()
+                          : std::optional<const double>{}) {}
+
+        JDouble(double value) : m_JDoubleCopy(
+                                    std::make_shared<GlobalObject<Definition>>(
+                                        PromoteToGlobal{}, static_cast<jobject>(LocalObject<Definition>{value})
+                                    )),
+                                m_Value(value) {}
 
         [[nodiscard]] double GetOrDefault() const {
             return m_Value.value_or(0.0);
@@ -280,7 +315,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+            return m_JDoubleCopy ? static_cast<jobject>(*m_JDoubleCopy) : nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -290,7 +325,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::optional<double> m_Value{};
+        std::shared_ptr<GlobalObject<Definition>> m_JDoubleCopy{};
+        std::optional<const double> m_Value{};
     };
 
     // long
@@ -341,11 +377,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         JLong() = default;
 
-        JLong(jobject obj) {
-            if (obj != nullptr) {
-                m_Value = LocalObject<Definition>{obj}.Call<"longValue">();
-            }
-        }
+        JLong(jobject obj) : m_JLongCopy(
+                                 obj
+                                     ? std::make_shared<GlobalObject<Definition>>(
+                                         PromoteToGlobal{}, static_cast<jobject>(obj)
+                                     )
+                                     : nullptr
+                             ), m_Value(m_JLongCopy
+                                            ? m_JLongCopy->Call<"longValue">()
+                                            : std::optional<const int64_t>{}) {}
+
+        JLong(int64_t value) : m_JLongCopy(
+                                   std::make_shared<GlobalObject<Definition>>(
+                                       PromoteToGlobal{}, static_cast<jobject>(LocalObject<Definition>{value})
+                                   )),
+                               m_Value(value) {}
 
         [[nodiscard]] int64_t GetOrDefault() const {
             return m_Value.value_or(0);
@@ -356,7 +402,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+            return m_JLongCopy ? static_cast<jobject>(*m_JLongCopy) : nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -366,7 +412,8 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::optional<int64_t> m_Value{};
+        std::shared_ptr<GlobalObject<Definition>> m_JLongCopy{};
+        std::optional<const int64_t> m_Value{};
     };
 
     export class Jboolean {
@@ -393,6 +440,7 @@ namespace Easy::ScriptingEngine::JTypes {
             value.z = ToJava();
             return value;
         }
+
     private:
         bool m_Value{};
     };
@@ -415,11 +463,22 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         JBoolean() = default;
 
-        JBoolean(jobject obj) {
-            if (obj != nullptr) {
-                m_Value = LocalObject<Definition>{obj}.Call<"booleanValue">();
-            }
-        }
+        JBoolean(jobject obj)
+            : m_JBooleanCopy(obj
+                                 ? std::make_shared<GlobalObject<Definition>>(
+                                     PromoteToGlobal{}, static_cast<jobject>(obj)
+                                 )
+                                 : nullptr
+              ), m_Value(m_JBooleanCopy
+                             ? m_JBooleanCopy->Call<"booleanValue">()
+                             : std::optional<const bool>{}) {}
+
+        JBoolean(bool value)
+            : m_JBooleanCopy(
+                  std::make_shared<GlobalObject<Definition>>(
+                      PromoteToGlobal{}, static_cast<jobject>(LocalObject<Definition>{value})
+                  )),
+              m_Value(value) {}
 
         [[nodiscard]] bool GetOrDefault() const {
             return m_Value.value_or(false);
@@ -430,7 +489,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
         [[nodiscard]] jobject ToJava() const {
-            return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+            return m_JBooleanCopy ? static_cast<jobject>(*m_JBooleanCopy) : nullptr;
         }
 
         [[nodiscard]] jvalue ToJvalue() const {
@@ -440,12 +499,12 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        std::optional<bool> m_Value{};
+        std::shared_ptr<GlobalObject<Definition>> m_JBooleanCopy{};
+        std::optional<const bool> m_Value{};
     };
 }
 
 namespace Easy::ScriptingEngine::MethodResolver {
-
     template<typename>
     struct ResolveSigExactImpl {
         static_assert(false, "Not a function type");
