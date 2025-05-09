@@ -29,38 +29,6 @@ namespace Easy::ScriptingEngine {
                     "CallStaticMethod",
                     Return{JTObject}, Params{JTMethod, Array{JTObject}}
                 },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jint{}}, Params{JTInteger}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jfloat{}}, Params{JTFloat}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jdouble{}}, Params{JTDouble}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jlong{}}, Params{JTLong}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jshort{}}, Params{JTShort}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jbyte{}}, Params{JTByte}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jchar{}}, Params{JChar}
-                // },
-                // Method{
-                //     "UnBoxOrDefault",
-                //     Return{jboolean{}}, Params{JTBoolean}
-                // },
                 Method{
                     "UnBoxOrDefault",
                     Overload{
@@ -546,6 +514,13 @@ namespace Easy::ScriptingEngine {
             }
         };
 
+        export template<typename... Args>
+        struct GetSignatureImpl<void(Args...)> {
+            static consteval auto Get() {
+                return '(' + ((StringLiteral{ClassInfoOf<Args>::Signature}) + ... ) + ')' + 'V';
+            }
+        };
+
         template<typename>
         struct StaticNativeFunctionTypeImpl {
             static_assert(false, "Not a function type");
@@ -605,12 +580,6 @@ namespace Easy::ScriptingEngine {
             using Type =
             typename ClassInfoOf<Ret>::JavaType(JNIEnv *, jobject, jvalue *);
         };
-
-        // export template<typename T>
-        // using JNIStaticFunctionType = typename JNIStaticFunctionTypeImpl<T>::Type;
-        //
-        // export template<typename Func>
-        // using JNIInstanceFunctionType = typename JNIInstanceFunctionTypeImpl<Func>::Type;
 
         template<typename TInfo, auto *, typename Fn>
         struct WrapNativeToJNIStaticFunctionImpl {
