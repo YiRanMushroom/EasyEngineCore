@@ -14,7 +14,7 @@ namespace Easy::ScriptingEngine::JTypes {
 
     export class JString {
     public:
-        using JavaType = jstring;
+        using JavaType = jobject;
 
         constexpr static StringLiteral SimpleName = "java/lang/String";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
@@ -54,10 +54,16 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Copy->end();
         }
 
-        [[nodiscard]] jstring ToJava() const {
+        [[nodiscard]] jobject ToJava() const {
             return static_cast<jstring>(
                 LocalString{*m_Copy}
             );
+        }
+
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
         }
 
     private:
@@ -83,6 +89,11 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.i = ToJava();
+            return value;
+        }
     private:
         int m_Value{};
     };
@@ -123,6 +134,12 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
+        }
+
     private:
         std::optional<int> m_Value{};
     };
@@ -144,6 +161,12 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jfloat ToJava() const {
             return m_Value;
+        }
+
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.f = ToJava();
+            return value;
         }
 
     private:
@@ -182,8 +205,14 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value;
         }
 
-        jobject ToJava() const {
+        [[nodiscard]] jobject ToJava() const {
             return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
+        }
+
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
         }
 
     private:
@@ -206,6 +235,12 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jdouble ToJava() const {
             return m_Value;
+        }
+
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.d = ToJava();
+            return value;
         }
 
     private:
@@ -248,6 +283,12 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
+        }
+
     private:
         std::optional<double> m_Value{};
     };
@@ -270,6 +311,12 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jlong ToJava() const {
             return m_Value;
+        }
+
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.j = ToJava();
+            return value;
         }
 
     private:
@@ -312,6 +359,12 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
+        }
+
     private:
         std::optional<int64_t> m_Value{};
     };
@@ -335,6 +388,11 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.z = ToJava();
+            return value;
+        }
     private:
         bool m_Value{};
     };
@@ -375,6 +433,12 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_Value ? static_cast<jobject>(LocalObject<Definition>{*m_Value}) : nullptr;
         }
 
+        [[nodiscard]] jvalue ToJvalue() const {
+            jvalue value{};
+            value.l = ToJava();
+            return value;
+        }
+
     private:
         std::optional<bool> m_Value{};
     };
@@ -406,6 +470,20 @@ namespace Easy::ScriptingEngine::MethodResolver {
     constexpr auto ResolveSigExact() {
         return ResolveSigExactImpl<T>::Get();
     }
+
+    template<typename Ret>
+    struct ResolveSigExactImpl<Ret()> {
+        static consteval auto Get() {
+            return "()"_sl + Ret::FullName;
+        }
+    };
+
+    template<>
+    struct ResolveSigExactImpl<void()> {
+        static consteval auto Get() {
+            return "()V"_sl;
+        }
+    };
 
     template<typename>
     struct ResolveSigStaticImpl {
