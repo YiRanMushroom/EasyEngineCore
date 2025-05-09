@@ -16,10 +16,10 @@ namespace Easy::ScriptingEngine::JTypes {
 
     export class Borrowed {};
 
-    template<typename DefType>
+    template<const auto& Def>
     class OwnedLocalObjectProvider {
     public:
-        constexpr static Class Definition = DefType::Definition;
+        constexpr static Class Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(*m_Object);
@@ -32,10 +32,10 @@ namespace Easy::ScriptingEngine::JTypes {
         std::shared_ptr<GlobalObject<Definition>> m_Object;
     };
 
-    template<typename DefType>
+    template<const auto& Def>
     class BorrowedLocalObjectProvider {
     public:
-        constexpr static Class Definition = DefType::Definition;
+        constexpr static Class Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(m_Object);
@@ -47,10 +47,10 @@ namespace Easy::ScriptingEngine::JTypes {
         jobject m_Object;
     };
 
-    template<typename DefType>
+    template<const auto& Def>
     class NullObjectProvider {
     public:
-        constexpr static Class Definition = DefType::Definition;
+        constexpr static Class Definition = Def;
 
         [[nodiscard]] jobject GetRawObject() const {
             return static_cast<jobject>(nullptr);
@@ -59,27 +59,27 @@ namespace Easy::ScriptingEngine::JTypes {
         NullObjectProvider() = default;
     };
 
-    template<typename DefType>
+    template<const auto& Def>
     class LocalObjectProvider {
     public:
         LocalObjectProvider() : m_ObjectProvider(nullptr) {}
 
-        LocalObjectProvider(Owned, jobject obj) : m_ObjectProvider(OwnedLocalObjectProvider<DefType>{obj}) {}
+        LocalObjectProvider(Owned, jobject obj) : m_ObjectProvider(OwnedLocalObjectProvider<Def>{obj}) {}
 
-        LocalObjectProvider(Borrowed, jobject obj) : m_ObjectProvider(BorrowedLocalObjectProvider<DefType>{obj}) {}
+        LocalObjectProvider(Borrowed, jobject obj) : m_ObjectProvider(BorrowedLocalObjectProvider<Def>{obj}) {}
 
     public:
         [[nodiscard]] jobject GetRawObject() const {
             return std::visit([](auto &&provider) { return provider.GetRawObject(); }, m_ObjectProvider);
         }
 
-        [[nodiscard]] LocalObject<DefType::Definition> GetObject() const {
-            return LocalObject<DefType::Definition>{GetRawObject()};
+        [[nodiscard]] LocalObject<Def> GetObject() const {
+            return LocalObject<Def>{GetRawObject()};
         }
 
     private:
-        std::variant<OwnedLocalObjectProvider<DefType>, BorrowedLocalObjectProvider<DefType>, NullObjectProvider<
-            DefType>>
+        std::variant<OwnedLocalObjectProvider<Def>, BorrowedLocalObjectProvider<Def>, NullObjectProvider<
+            Def>>
         m_ObjectProvider;
     };
 
@@ -141,7 +141,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        LocalObjectProvider<JString> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::shared_ptr<const std::string> m_NativeCopy{};
     };
 
@@ -225,7 +225,7 @@ namespace Easy::ScriptingEngine::JTypes {
 
     private:
         // std::shared_ptr<ILocalObjectProvider<JInteger>> m_ObjectProvider{};
-        LocalObjectProvider<JInteger> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const int> m_Value{};
     };
 
@@ -306,7 +306,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        LocalObjectProvider<JFloat> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const float> m_Value{};
     };
 
@@ -386,7 +386,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        LocalObjectProvider<JDouble> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const double> m_Value{};
     };
 
@@ -469,7 +469,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        LocalObjectProvider<JLong> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const int64_t> m_Value{};
     };
 
@@ -550,7 +550,7 @@ namespace Easy::ScriptingEngine::JTypes {
         }
 
     private:
-        LocalObjectProvider<JBoolean> m_ObjectProvider{};
+        LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const bool> m_Value{};
     };
 }
