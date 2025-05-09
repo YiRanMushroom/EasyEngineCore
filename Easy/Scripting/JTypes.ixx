@@ -381,6 +381,32 @@ namespace Easy::ScriptingEngine::JTypes {
 }
 
 namespace Easy::ScriptingEngine::MethodResolver {
+
+    template<typename>
+    struct ResolveSigExactImpl {
+        static_assert(false, "Not a function type");
+    };
+
+    template<typename Ret, typename... Args>
+    struct ResolveSigExactImpl<Ret(Args...)> {
+        static consteval auto Get() {
+            return '(' + ((Args::FullName) + ... ) + ')' +
+                   Ret::FullName;
+        }
+    };
+
+    template<typename... Args>
+    struct ResolveSigExactImpl<void(Args...)> {
+        static consteval auto Get() {
+            return '(' + ((Args::FullName) + ... ) + ')' + 'V';
+        }
+    };
+
+    export template<typename T>
+    constexpr auto ResolveSigExact() {
+        return ResolveSigExactImpl<T>::Get();
+    }
+
     template<typename>
     struct ResolveSigStaticImpl {
         static_assert(false, "Not a function type");
@@ -389,15 +415,7 @@ namespace Easy::ScriptingEngine::MethodResolver {
     template<typename Ret, typename... Args>
     struct ResolveSigStaticImpl<Ret(JNIEnv *, jclass, Args...)> {
         static consteval auto Get() {
-            return '(' + ((Args::FullName) + ... ) + ')' +
-                   Ret::FullName;
-        }
-    };
-
-    template<typename... Args>
-    struct ResolveSigStaticImpl<void(JNIEnv *, jclass, Args...)> {
-        static consteval auto Get() {
-            return '(' + ((Args::FullName) + ... ) + ')' + 'V';
+            return ResolveSigExact<Ret(Args...)>();
         }
     };
 
@@ -406,8 +424,22 @@ namespace Easy::ScriptingEngine::MethodResolver {
         return ResolveSigStaticImpl<T>::Get();
     }
 
-    // static_assert(ResolveSigStatic<JTypes::JInteger(JTypes::JString, JTypes::Jint)>() ==
-    //               "(Ljava/lang/String;I)Ljava/lang/Integer;"_sl, "Signature Test");
+    template<typename>
+    struct ResolveSigInstanceImpl {
+        static_assert(false, "Not a function type");
+    };
+
+    template<typename Ret, typename... Args>
+    struct ResolveSigInstanceImpl<Ret(JNIEnv *, Args...)> : ResolveSigExactImpl<Ret(Args...)> {
+        static consteval auto Get() {
+            return ResolveSigExactImpl<Ret(Args...)>::Get();
+        }
+    };
+
+    template<typename T>
+    consteval auto ResolveSigInstance() {
+        return ResolveSigInstanceImpl<T>::Get();
+    }
 
     template<typename>
     struct ResolveJNIFuncTypeStaticImpl {
@@ -442,13 +474,15 @@ namespace Easy::ScriptingEngine::MethodResolver {
 
     // Wrap Native Func into JNI Function
     template<auto *, typename>
-    struct WrapNativeToJNIStaticFunctionImpl;
+    struct WrapNativeToJNIStaticFunctionImpl {
+        static_assert(false, "Function type mismatch");
+    };
 
     template<auto *nativeFunc, typename Ret, typename... Args>
     struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, Ret(JNIEnv *, jclass, Args...)> {
         static typename Ret::JavaType Call(JNIEnv *env, jclass clazz, typename Args::JavaType... args) {
             auto argTup = std::make_tuple(Args{args}...);
-            return std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), argTup)).ToJava();
+            return std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), std::move(argTup))).ToJava();
         }
     };
 
@@ -456,12 +490,38 @@ namespace Easy::ScriptingEngine::MethodResolver {
     struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, void(JNIEnv *, jclass, Args...)> {
         static void Call(JNIEnv *env, jclass clazz, typename Args::JavaType... args) {
             auto argTup = std::make_tuple(Args{args}...);
-            std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), argTup));
+            std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), std::move(argTup)));
         }
     };
 
     export template<auto * func>
     consteval auto *WrapNativeToJNIStaticFunction() {
         return WrapNativeToJNIStaticFunctionImpl<func, std::remove_pointer_t<decltype(func)>>::Call;
+    }
+
+    template<auto *, typename>
+    struct WrapNativeToJNIInstanceFunctionImpl {
+        static_assert(false, "Function type mismatch");
+    };
+
+    template<auto *nativeFunc, typename Ret, typename... Args>
+    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, Ret(JNIEnv *, Args...)> {
+        static typename Ret::JavaType Call(JNIEnv *env, typename Args::JavaType... args) {
+            auto argTup = std::make_tuple(Args{args}...);
+            return std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env), std::move(argTup))).ToJava();
+        }
+    };
+
+    template<auto *nativeFunc, typename... Args>
+    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, void(JNIEnv *, Args...)> {
+        static void Call(JNIEnv *env, typename Args::JavaType... args) {
+            auto argTup = std::make_tuple(Args{args}...);
+            std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env), std::move(argTup)));
+        }
+    };
+
+    template<auto * func>
+    consteval auto *WrapNativeToJNIInstanceFunction() {
+        return WrapNativeToJNIInstanceFunctionImpl<func, std::remove_pointer_t<decltype(func)>>::Call;
     }
 }
