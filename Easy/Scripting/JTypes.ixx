@@ -195,9 +195,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
         constexpr static Class Definition{
             SimpleName.Data,
-            Constructor{jint{}},
             Method{
                 "intValue", Return{jint{}}, Params{}
+            }
+        };
+
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jint{}}}
             }
         };
 
@@ -206,7 +212,7 @@ namespace Easy::ScriptingEngine::JTypes {
 
         JInteger(int value)
             : m_ObjectProvider(
-                  Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+                  Owned{}, static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jint{value}))),
               m_Value(value) {}
 
         JInteger(Owned, jobject obj)
@@ -278,9 +284,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
         static constexpr Class Definition{
             SimpleName.Data,
-            Constructor{jfloat{}},
             Method{
                 "floatValue", Return{jfloat{}}, Params{}
+            }
+        };
+
+        static constexpr Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jfloat{}}}
             }
         };
 
@@ -288,7 +300,8 @@ namespace Easy::ScriptingEngine::JTypes {
         JFloat() = default;
 
         explicit JFloat(float value)
-            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+            : m_ObjectProvider(
+                  Owned{}, static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jfloat{value}))),
               m_Value(value) {}
 
         explicit JFloat(Owned, jobject obj)
@@ -358,9 +371,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
         constexpr static Class Definition{
             SimpleName.Data,
-            Constructor{jdouble{}},
             Method{
                 "doubleValue", Return{jdouble{}}, Params{}
+            }
+        };
+
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jdouble{}}}
             }
         };
 
@@ -368,7 +387,8 @@ namespace Easy::ScriptingEngine::JTypes {
         JDouble() = default;
 
         JDouble(double value)
-            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+            : m_ObjectProvider(
+                  Owned{}, static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jdouble{value}))),
               m_Value(value) {}
 
         JDouble(Owned, jobject obj)
@@ -440,9 +460,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
         constexpr static Class Definition{
             SimpleName.Data,
-            Constructor{jlong{}},
             Method{
                 "longValue", Return{jlong{}}, Params{}
+            }
+        };
+
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jlong{}}}
             }
         };
 
@@ -450,7 +476,8 @@ namespace Easy::ScriptingEngine::JTypes {
         JLong() = default;
 
         explicit JLong(int64_t value) : m_ObjectProvider(
-                                            Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+                                            Owned{}, static_cast<jobject>(
+                                                StaticRef<StaticDefinition>().Call<"valueOf">(jlong{value}))),
                                         m_Value(value) {}
 
 
@@ -522,9 +549,15 @@ namespace Easy::ScriptingEngine::JTypes {
 
         constexpr static Class Definition{
             SimpleName.Data,
-            Constructor{jboolean{}},
             Method{
                 "booleanValue", Return{jboolean{}}, Params{}
+            }
+        };
+
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jboolean{}}}
             }
         };
 
@@ -532,7 +565,10 @@ namespace Easy::ScriptingEngine::JTypes {
         JBoolean() = default;
 
         explicit JBoolean(bool value)
-            : m_ObjectProvider(Owned{}, static_cast<jobject>(LocalObject<Definition>{value})),
+            : m_ObjectProvider(Owned{}, static_cast<jobject>(
+                                   StaticRef<StaticDefinition>().Call<"valueOf">(jboolean{
+                                       static_cast<jboolean>(value)
+                                   }))),
               m_Value(value) {}
 
         explicit JBoolean(Owned, jobject obj)

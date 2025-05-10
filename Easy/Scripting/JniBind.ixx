@@ -183,4 +183,132 @@ namespace Easy::ScriptingEngine {
     static_assert("Hello"_sl + "World"_sl == "HelloWorld"_sl, "String Literal Test");
     static_assert("Hellow"_sl + 'w' == "Helloww"_sl, "String Literal Test");
     static_assert('w' + "Hello"_sl == "wHello"_sl, "String Literal Test");
+
+    export template<const auto & Def>
+    class JavaGlobalArc {
+    public:
+        constexpr static const auto &Definition = Def;
+
+        JavaGlobalArc() = default;
+
+        JavaGlobalArc(jobject obj) : m_Arc(obj
+                                               ? std::make_shared<GlobalObject<Definition>>(PromoteToGlobal{}, obj)
+                                               : nullptr) {}
+
+        JavaGlobalArc(const LocalObject<Definition> &obj) : JavaGlobalArc(static_cast<jobject>(obj)) {}
+
+        void Set(jobject obj) {
+            *this = JavaGlobalArc(obj);
+        }
+
+        void Set(const LocalObject<Definition> &obj) {
+            *this = JavaGlobalArc(static_cast<jobject>(obj));
+        }
+
+        template<typename T>
+        void SetFrom(const T& obj) {
+            Set(static_cast<jobject>(obj));
+        }
+
+        explicit operator bool() const {
+            return m_Arc != nullptr;
+        }
+
+        bool NotNull() const {
+            return static_cast<bool>(*this);
+        }
+
+        bool IsNull() const {
+            return !static_cast<bool>(*this);
+        }
+
+        explicit operator jobject() const {
+            return static_cast<jobject>(*m_Arc);
+        }
+
+        explicit operator LocalObject<Definition>() const {
+            return LocalObject<Definition>(static_cast<jobject>(*m_Arc));
+        }
+
+        GlobalObject<Definition> *operator->() const {
+            return m_Arc.get();
+        }
+
+        [[nodiscard]] jobject GetRawObject() const {
+            return static_cast<jobject>(*m_Arc);
+        }
+
+        template<typename T>
+        [[nodiscard]] T GetObjectAs() const {
+            return static_cast<T>(GetRawObject());
+        }
+
+        LocalObject<Definition> Borrow() const {
+            return LocalObject<Definition>(GetRawObject());
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return LocalObject<Definition>(GetRawObject());
+        }
+
+    private:
+        std::shared_ptr<GlobalObject<Definition>> m_Arc{nullptr};
+    };
+
+    export template<typename>
+    class JConstructor {
+        static_assert(false, "JConstructor is not specialized");
+    };
+
+    // constructor hold a methodId
+    export template<typename ClassType, typename... Args>
+    class JConstructor<ClassType(Args...)> {
+    public:
+        JConstructor() = default;
+
+        JConstructor(jmethodID id) : id(id) {}
+
+        JConstructor(const char *className) {
+            auto clazz = Lib::GetClass(className);
+            id = ScriptingEngine::GetEnv()->GetMethodID(
+                static_cast<jclass>(static_cast<jobject>(clazz)),
+                "<init>", GetSignature().Data
+            );
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+        }
+
+        JConstructor(jclass clazz) {
+            id = ScriptingEngine::GetEnv()->GetMethodID(
+                static_cast<jclass>(static_cast<jobject>(clazz)),
+                "<init>", GetSignature().Data
+            );
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+        }
+
+        void Init(jclass clazz) {
+            *this = JConstructor(clazz);
+        }
+
+        void Init(const char *className) {
+            *this = JConstructor(className);
+        }
+
+        jobject Invoke(JNIEnv *env, jclass cls, Args... args) {
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+
+            std::array<jvalue, sizeof...(Args)> jniArgs{
+                jvalue{args.ToJvalue()}...
+            };
+
+            return env->NewObjectA(
+                cls, id,
+                jniArgs.data());
+        }
+
+        consteval static auto GetSignature() {
+            return ScriptingEngine::MethodResolver::ResolveSigExact<void(Args...)>();
+        }
+
+        jmethodID id = nullptr;
+    };
 }
