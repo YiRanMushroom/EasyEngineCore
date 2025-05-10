@@ -246,8 +246,8 @@ namespace Easy {
     };
 
     StringLiteral(char) -> StringLiteral<2>;
-
-
+    template<typename... Args>
+    StringLiteral(Args...) -> StringLiteral<sizeof...(Args) + 1>;
 }
 
 using namespace Easy;
@@ -284,4 +284,13 @@ consteval auto operator+(char lhs, StringLiteral<MySize> rhs) {
 export template<size_t MySize>
 consteval auto operator+(StringLiteral<MySize> lhs, char rhs) {
     return lhs + StringLiteral{rhs};
+}
+
+export template<size_t value>
+consteval auto ToStringLiteral() {
+    constexpr size_t length = StringLenOf<value>;
+    StringLiteral<length + 1> result{};
+    constexpr auto stringRes = SizeTToString<value>;
+    std::copy_n(stringRes.data(), length + 1, result.Data);
+    return result;
 }

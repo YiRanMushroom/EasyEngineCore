@@ -133,7 +133,10 @@ namespace Easy::ScriptingEngine {
         export inline bool UnBoxOrDefault(const LocalObject<JTBoolean> &obj) {
             return StaticRef().Call<"UnBoxOrDefault">(obj);
         }
+
+        export void CallGC();
     }
+
 
     export inline Box<jni::JvmRef<jni::kDefaultJvm>> jvm = nullptr;
 

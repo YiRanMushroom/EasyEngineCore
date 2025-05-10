@@ -2,7 +2,7 @@ export module Easy.Scripting.JTypes;
 
 import Easy.Core.Basic;
 import Easy.Core.Util;
-import Easy.Scripting.JniBindBasic;
+export import Easy.Scripting.JniBindBasic;
 
 using namespace jni;
 

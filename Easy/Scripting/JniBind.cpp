@@ -6,6 +6,8 @@ module;
 
 module Easy.Scripting.JniBind;
 
+import Easy.Scripting.NativeBuffer;
+
 namespace Easy::ScriptingEngine {
     namespace Lib {
         void NativePrintlnImpl(JNIEnv *, jclass, ScriptingEngine::JTypes::
@@ -25,6 +27,7 @@ namespace Easy::ScriptingEngine {
                 NativePrintlnImpl>("com/easy/Lib", "NativePrintlnImpl");
 
             RegisterImGuiNativeFunctions();
+            RegisterNativeBufferRelease();
         }
 
         void RegisterImGuiNativeFunctions() {
@@ -101,11 +104,27 @@ namespace Easy::ScriptingEngine {
                          const LocalArray<jobject, 1, JTObject> &paraArray) {
             return StaticRef().Call<"CallStaticMethod">(method, paraArray);
         }
+
+        void CallGC() {
+            constexpr static Class SystemDef {
+                "java/lang/System",
+                Static{
+                    Method{"gc", Return{}, Params{}}
+                }
+            };
+
+            jni::StaticRef<SystemDef>().Call<"gc">();
+        }
     }
+
+
 
     void Shutdown() {
         Lib::Shutdown();
+        Lib::CallGC();
         jvm.reset();
+        pjvm->DestroyJavaVM();
+        ReleaseAllNativeBufferAfterJVMClose();
     }
 
     bool RegisterNativeMethodDynamicRaw(jclass clazz, const char *methodName, const char *methodSig, void *methodPtr) {
