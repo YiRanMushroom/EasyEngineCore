@@ -7,7 +7,7 @@ import Easy.Scripting.JniBindBasic;
 using namespace jni;
 
 namespace Easy::ScriptingEngine::JTypes {
-    template<size_t N>
+    export template<size_t N>
     consteval auto MakeFullName(StringLiteral<N> SimpleName) {
         return 'L' + SimpleName + ';';
     }
@@ -162,16 +162,18 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static StringLiteral SimpleName = "java/lang/String";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
 
-        JString() = default;
+        constexpr static jobject(JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue*) = &JNIEnv::CallObjectMethodA;
+        constexpr static jobject(JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue*) = &JNIEnv::CallStaticObjectMethodA;
 
+        JString() = default;
 
         JString(Owned, jobject obj)
             : m_ObjectProvider(Owned{}, obj),
-              m_NativeCopy(std::make_shared<std::string>(LocalString{static_cast<jstring>(obj)}.Pin().ToString())) {}
+              m_NativeCopy(std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
 
         JString(Borrowed, jobject obj)
             : m_ObjectProvider(Borrowed{}, obj),
-              m_NativeCopy(std::make_shared<std::string>(LocalString{static_cast<jstring>(obj)}.Pin().ToString())) {}
+              m_NativeCopy(std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
 
         explicit JString(std::string_view str)
             : m_ObjectProvider(Owned{}, static_cast<jobject>(static_cast<jstring>(LocalString{str}))),
@@ -187,6 +189,10 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] const char *CStr() const {
             return m_NativeCopy->c_str();
+        }
+
+        [[nodiscard]] const std::string& Get() const {
+            return *m_NativeCopy;
         }
 
         auto begin() const {
@@ -361,6 +367,7 @@ namespace Easy::ScriptingEngine::JTypes {
     };
 
     export class Jdouble {
+    public:
         constexpr static StringLiteral SimpleName = 'D';
         constexpr static StringLiteral FullName = 'D';
         using JavaType = jdouble;

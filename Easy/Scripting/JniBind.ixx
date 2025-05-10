@@ -206,7 +206,7 @@ namespace Easy::ScriptingEngine {
         }
 
         template<typename T>
-        void SetFrom(const T& obj) {
+        void SetFrom(const T &obj) {
             Set(static_cast<jobject>(obj));
         }
 
@@ -313,8 +313,13 @@ namespace Easy::ScriptingEngine {
         jmethodID id = nullptr;
     };
 
-    export template<typename Ret, typename Self, typename... Args>
+    export template<typename>
     class JInstanceMethod {
+        static_assert(false, "JConstructor is not specialized");
+    };
+
+    export template<typename Ret, typename Self, typename... Args>
+    class JInstanceMethod<Ret(Self, Args...)> {
     public:
         JInstanceMethod() = default;
 
@@ -324,7 +329,7 @@ namespace Easy::ScriptingEngine {
             auto clazz = Lib::GetClass(className);
             id = ScriptingEngine::GetEnv()->GetMethodID(
                 static_cast<jclass>(static_cast<jobject>(clazz)),
-                "<init>", GetSignature().Data
+                "methodName", GetSignature().Data
             );
             EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
         }
@@ -345,15 +350,79 @@ namespace Easy::ScriptingEngine {
             *this = JInstanceMethod(className, methodName);
         }
 
-        jobject Invoke(JNIEnv *env, Self self, Args... args) {
+        decltype(auto) Invoke(JNIEnv *env, Self self,
+                              Args... args) {
             EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
 
-            std::array<jvalue, sizeof... (Args)> jniArgs{
-                jvalue{args.ToJvalue()}...
+            std::array<jvalue, sizeof...(Args)> jniArgs{
+                JTypes::CastToJvalue(args.ToJava())...
             };
 
-            return env->CallObjectMethodA(
-                static_cast<jobject>(self), id,
+            return (env->*Ret::CallInstanceMethodA)(
+                self.ToJava(),
+                id,
+                jniArgs.data());
+        }
+
+        consteval static auto GetSignature() {
+            return ScriptingEngine::MethodResolver::ResolveSigExact<Ret(Args...)>();
+        }
+
+    private:
+        jmethodID id = nullptr;
+    };
+
+    export template<typename>
+    class JStaticMethod {
+        static_assert(false, "JConstructor is not specialized");
+    };
+
+    export template<typename Ret, typename... Args>
+    class JStaticMethod<Ret(Args...)> {
+    public:
+        JStaticMethod() = default;
+
+        JStaticMethod(jmethodID id) : id(id) {}
+
+        JStaticMethod(const char *className, const char *methodName) {
+            auto clazz = Lib::GetClass(className);
+            id = ScriptingEngine::GetEnv()->GetStaticMethodID(
+                static_cast<jclass>(static_cast<jobject>(clazz)),
+                methodName, GetSignature().Data
+            );
+            EZ_CORE_ASSERT(id != nullptr, "Method not found");
+        }
+
+        JStaticMethod(jclass clazz, const char *methodName) {
+            id = ScriptingEngine::GetEnv()->GetStaticMethodID(
+                clazz,
+                methodName, GetSignature().Data
+            );
+
+            std::cout << "Signature is: " << GetSignature().Data << std::endl;
+
+            EZ_CORE_ASSERT(id != nullptr, "Method not found");
+        }
+
+        void Init(jclass clazz, const char *methodName) {
+            *this = JStaticMethod(clazz, methodName);
+        }
+
+        void Init(const char *className, const char *methodName) {
+            *this = JStaticMethod(className, methodName);
+        }
+
+        decltype(auto) Invoke(JNIEnv *env, jclass cls,
+                              Args... args) {
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+
+            std::array<jvalue, sizeof...(Args)> jniArgs{
+                JTypes::CastToJvalue(args.ToJava())...
+            };
+
+            return (env->*Ret::CallStaticMethodA)(
+                cls,
+                id,
                 jniArgs.data());
         }
 
