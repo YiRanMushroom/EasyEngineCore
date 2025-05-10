@@ -150,6 +150,47 @@ namespace Easy::ScriptingEngine {
         Lib::Init();
     }
 
+    export void Init() {
+        EZ_ASSERT(create_directory("./Java/lib"));
+        EZ_ASSERT(create_directory("./Java/mods"));
+
+        std::vector<std::string> jars{};
+
+        auto fs1 = std::filesystem::current_path() / "Java" / "lib";
+
+        for (const auto &entry: std::filesystem::directory_iterator(fs1)) {
+            if (entry.path().extension() == ".jar") {
+                EZ_CORE_INFO("Found jar: {0}", entry.path().string());
+                jars.push_back(entry.path().string());
+            }
+        }
+
+        auto fs2 = std::filesystem::current_path() / "Java" / "mods";
+
+        for (const auto &entry: std::filesystem::directory_iterator(fs2)) {
+            if (entry.path().extension() == ".jar") {
+                EZ_CORE_INFO("Found jar: {0}", entry.path().string());
+                jars.push_back(entry.path().string());
+            }
+        }
+
+        std::stringstream ss{};
+        for (auto it = jars.begin(); it != jars.end(); ++it) {
+            ss << *it;
+            if (it + 1 != jars.end()) {
+                ss << ":";
+            }
+        }
+
+        std::string allJarStringArgs = std::format("-Djava.class.path={}", ss.str());
+
+        JavaVMOption options[1];
+        options[0].optionString = allJarStringArgs.data();
+
+        ScriptingEngine::Init({.version = JNI_VERSION_1_6},
+                              options);
+    }
+
     export void Shutdown();
 
     export bool RegisterNativeMethodDynamicRaw(jclass clazz, const char *methodName, const char *methodSig,
