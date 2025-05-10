@@ -74,7 +74,8 @@ namespace Easy::ScriptingEngine::JTypes {
     template<const auto &Def>
     class LocalObjectProvider {
     public:
-        LocalObjectProvider() : m_ObjectProvider(nullptr) {}
+        LocalObjectProvider() : m_ObjectProvider(NullObjectProvider<
+            Def>{}) {}
 
         LocalObjectProvider(Owned, jobject obj) : m_ObjectProvider(OwnedLocalObjectProvider<Def>{obj}) {}
 
@@ -95,7 +96,7 @@ namespace Easy::ScriptingEngine::JTypes {
         m_ObjectProvider;
     };
 
-    export jvalue CastToJvalue(const auto&) = delete;
+    export jvalue CastToJvalue(const auto &) = delete;
 
     export jvalue CastToJvalue(jint value) {
         jvalue jv{};
@@ -151,29 +152,42 @@ namespace Easy::ScriptingEngine::JTypes {
         return jv;
     }
 
-    export class JString {
+    export struct InjectJObject {
+        constexpr static jobject (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticObjectMethodA;
+
+        constexpr static jobject (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticObjectMethodA;
+
+        using JavaType = jobject;
+    };
+
+    export class JString : public InjectJObject {
     public:
         constexpr static Class Definition{
             "java/lang/String",
         };
 
-        using JavaType = jobject;
-
         constexpr static StringLiteral SimpleName = "java/lang/String";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
 
-        constexpr static jobject(JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue*) = &JNIEnv::CallObjectMethodA;
-        constexpr static jobject(JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue*) = &JNIEnv::CallStaticObjectMethodA;
+        constexpr static jobject (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallObjectMethodA;
+
+        constexpr static jobject (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticObjectMethodA;
 
         JString() = default;
 
         JString(Owned, jobject obj)
             : m_ObjectProvider(Owned{}, obj),
-              m_NativeCopy(std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
+              m_NativeCopy(
+                  std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
 
         JString(Borrowed, jobject obj)
             : m_ObjectProvider(Borrowed{}, obj),
-              m_NativeCopy(std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
+              m_NativeCopy(
+                  std::make_shared<std::string>(LocalString{m_ObjectProvider.GetRawObject()}.Pin().ToString())) {}
 
         explicit JString(std::string_view str)
             : m_ObjectProvider(Owned{}, static_cast<jobject>(static_cast<jstring>(LocalString{str}))),
@@ -191,7 +205,7 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_NativeCopy->c_str();
         }
 
-        [[nodiscard]] const std::string& Get() const {
+        [[nodiscard]] const std::string &Get() const {
             return *m_NativeCopy;
         }
 
@@ -219,10 +233,19 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static StringLiteral SimpleName = 'I';
         constexpr static StringLiteral FullName = 'I';
 
+        constexpr static jint (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticIntMethodA;
+
+        constexpr static jint (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticIntMethodA;
+
     public:
         Jint() = default;
 
         Jint(jint value) : m_Value(value) {}
+
+        Jint(Borrowed, jint value) : m_Value(value) {}
+        Jint(Owned, jint value) : m_Value(value) {}
 
         int Get() const {
             return m_Value;
@@ -236,11 +259,10 @@ namespace Easy::ScriptingEngine::JTypes {
         int m_Value{};
     };
 
-    export class JInteger {
+    export class JInteger : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Integer";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
-        using JavaType = jobject;
 
         constexpr static Class Definition{
             SimpleName.Data,
@@ -294,12 +316,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         constexpr static StringLiteral SimpleName = 'F';
         constexpr static StringLiteral FullName = 'F';
+
         using JavaType = jfloat;
+
+        constexpr static jfloat (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticFloatMethodA;
+
+        constexpr static jfloat (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticFloatMethodA;
 
     public:
         Jfloat() = default;
 
         Jfloat(jfloat value) : m_Value(value) {}
+        Jfloat(Borrowed, jfloat value) : m_Value(value) {}
+        Jfloat(Owned, jfloat value) : m_Value(value) {}
 
         float Get() const {
             return m_Value;
@@ -313,11 +344,10 @@ namespace Easy::ScriptingEngine::JTypes {
         float m_Value{};
     };
 
-    export class JFloat {
+    export class JFloat : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Float";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
-        using JavaType = jobject;
 
         static constexpr Class Definition{
             SimpleName.Data,
@@ -370,12 +400,22 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         constexpr static StringLiteral SimpleName = 'D';
         constexpr static StringLiteral FullName = 'D';
+
         using JavaType = jdouble;
+
+        constexpr static jdouble (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticDoubleMethodA;
+
+        constexpr static jdouble (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticDoubleMethodA;
 
     public:
         Jdouble() = default;
 
         Jdouble(jdouble value) : m_Value(value) {}
+        Jdouble(Borrowed, jdouble value) : m_Value(value) {}
+        Jdouble(Owned, jdouble value) : m_Value(value) {}
+
 
         double Get() const {
             return m_Value;
@@ -389,7 +429,7 @@ namespace Easy::ScriptingEngine::JTypes {
         double m_Value{};
     };
 
-    export class JDouble {
+    export class JDouble : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Double";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
@@ -447,12 +487,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         constexpr static StringLiteral SimpleName = 'J';
         constexpr static StringLiteral FullName = 'J';
+
         using JavaType = jlong;
+
+        constexpr static jlong (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticLongMethodA;
+
+        constexpr static jlong (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticLongMethodA;
 
     public:
         Jlong() = default;
 
         Jlong(jlong value) : m_Value(value) {}
+        Jlong(Borrowed, jlong value) : m_Value(value) {}
+        Jlong(Owned, jlong value) : m_Value(value) {}
 
         [[nodiscard]] int64_t Get() const {
             return m_Value;
@@ -466,11 +515,10 @@ namespace Easy::ScriptingEngine::JTypes {
         int64_t m_Value{};
     };
 
-    export class JLong {
+    export class JLong : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Long";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
-        using JavaType = jobject;
 
         constexpr static Class Definition{
             SimpleName.Data,
@@ -524,12 +572,21 @@ namespace Easy::ScriptingEngine::JTypes {
     public:
         constexpr static StringLiteral SimpleName = 'Z';
         constexpr static StringLiteral FullName = 'Z';
+
         using JavaType = jboolean;
+
+        constexpr static jboolean (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticBooleanMethodA;
+
+        constexpr static jboolean (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticBooleanMethodA;
 
     public:
         Jboolean() = default;
 
         Jboolean(jboolean value) : m_Value(value) {}
+        Jboolean(Borrowed, jboolean value) : m_Value(value) {}
+        Jboolean(Owned, jboolean value) : m_Value(value) {}
 
         [[nodiscard]] bool Get() const {
             return m_Value;
@@ -543,11 +600,10 @@ namespace Easy::ScriptingEngine::JTypes {
         bool m_Value{};
     };
 
-    export class JBoolean {
+    export class JBoolean : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Boolean";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
-        using JavaType = jobject;
 
         constexpr static Class Definition{
             SimpleName.Data,
@@ -597,6 +653,83 @@ namespace Easy::ScriptingEngine::JTypes {
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const bool> m_Value{};
     };
+
+    export class JObject : public InjectJObject {
+    public:
+        constexpr static StringLiteral SimpleName = "java/lang/Object";
+        constexpr static StringLiteral FullName = MakeFullName(SimpleName);
+
+        constexpr static Class Definition{
+            SimpleName.Data
+        };
+
+        JObject() = default;
+
+        JObject(Borrowed, jobject obj) : m_ObjectProvider(Borrowed{}, obj) {}
+        JObject(Owned, jobject obj) : m_ObjectProvider(Owned{}, obj) {}
+
+        [[nodiscard]] jobject ToJava() const {
+            return m_ObjectProvider.GetRawObject();
+        }
+
+        [[nodiscard]] LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
+        }
+
+    private:
+        LocalObjectProvider<Definition> m_ObjectProvider{};
+    };
+
+
+    export template<typename InnerType>
+    class JObjRef : public InjectJObject {
+        static_assert(std::is_same_v<typename InnerType::JavaType, jobject>,
+                      "InnerType must be a jobject type");
+
+    public:
+        constexpr static StringLiteral SimpleName = "com/easy/ObjRef";
+        constexpr static StringLiteral FullName = MakeFullName(SimpleName);
+
+        constexpr static Class Definition{
+            "com/easy/ObjRef",
+            Constructor{},
+            Constructor{jobject{}},
+            Method{"Get", Return{JObject::Definition}, Params{}},
+            Method{"Set", Return{}, Params{JObject::Definition}},
+        };
+
+        JObjRef() = default;
+
+        JObjRef(Borrowed, jobject obj) : m_ObjectProvider(Borrowed{}, obj) {}
+
+        JObjRef(Owned, jobject obj) : m_ObjectProvider(Owned{}, obj) {}
+
+        JObjRef(const InnerType &obj) : m_ObjectProvider(Owned{}, obj.ToJava()) {}
+
+        jobject ToJava() const {
+            return m_ObjectProvider.GetRawObject();
+        }
+
+        InnerType Get() const {
+            LocalObject<Definition> localObj = m_ObjectProvider.GetObject();
+            return InnerType{Borrowed{}, static_cast<jobject>(localObj.template Call<"Get">())};
+        }
+
+        void Set(const InnerType &obj) {
+            m_ObjectProvider.GetObject().template Call<"Set">(obj.ToJava());
+        }
+
+        jobject GetRawObject() const {
+            return m_ObjectProvider.GetRawObject();
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
+        }
+
+    private:
+        LocalObjectProvider<Definition> m_ObjectProvider{};
+    };
 }
 
 namespace Easy::ScriptingEngine::MethodResolver {
@@ -641,7 +774,7 @@ namespace Easy::ScriptingEngine::MethodResolver {
 
     template<typename>
     struct ResolveSigStaticImpl {
-        static_assert(false, "Not a function type");
+        static_assert(false, "Function Parameter Type Mismatch");
     };
 
     template<typename Ret, typename... Args>

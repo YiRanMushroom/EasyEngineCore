@@ -2,14 +2,18 @@ module;
 
 #include <Core/MacroUtils.hpp>
 
+#include "imgui.h"
+
 module Easy.Scripting.JniBind;
 
 namespace Easy::ScriptingEngine {
     namespace Lib {
-        void NativePrintlnImpl(JNIEnv *, jclass cls, ScriptingEngine::JTypes::
+        void NativePrintlnImpl(JNIEnv *, jclass, ScriptingEngine::JTypes::
                                JString str) {
             std::cout << str.CStr() << std::endl;
         }
+
+        void RegisterImGuiNativeFunctions();
 
         void Init() {
             StaticRef().Call<"Init">();
@@ -19,7 +23,56 @@ namespace Easy::ScriptingEngine {
 
             ScriptingEngine::RegisterNativeStaticMethodStatic<
                 NativePrintlnImpl>("com/easy/Lib", "NativePrintlnImpl");
+
+            RegisterImGuiNativeFunctions();
         }
+
+        void RegisterImGuiNativeFunctions() {
+            EZ_CORE_ASSERT(
+                ScriptingEngine::RegisterNativeStaticMethodStatic<+[](JNIEnv *, jclass, JTypes::JString jstr) {
+                ImGui::Begin(jstr.Get().c_str());
+                }>("com/easy/ImGui", "Begin"));
+            EZ_CORE_ASSERT(ScriptingEngine::RegisterNativeStaticMethodStatic<+[](JNIEnv *, jclass) {
+                ImGui::End();
+                }>("com/easy/ImGui", "End"));
+            EZ_CORE_ASSERT(
+                ScriptingEngine::RegisterNativeStaticMethodStatic<+[](JNIEnv *, jclass, JTypes::JString jstr) {
+                ImGui::Text("%s", jstr.Get().c_str());
+                }>("com/easy/ImGui", "Text"));
+
+            EZ_CORE_ASSERT(ScriptingEngine::RegisterNativeStaticMethodStatic<
+                +[](JNIEnv*, jclass, JTypes::JString label, JTypes::JObjRef<JTypes::JFloat> value_ref, JTypes::Jfloat
+                    min, JTypes::Jfloat max, JTypes::JString format, JTypes::Jint flags) -> JTypes::Jboolean {
+                float value = value_ref.Get().Get().value();
+                bool ret = ImGui::SliderFloat(label.Get().c_str(), &value, min.Get(), max.Get(),
+                    format.Get().c_str(), flags.Get());
+                value_ref.Set(JTypes::JFloat{value});
+                return ret;
+                }
+                >("com/easy/ImGui", "SliderFloat"));
+
+            EZ_CORE_ASSERT(ScriptingEngine::RegisterNativeStaticMethodStatic<
+                +[](JNIEnv*, jclass, JTypes::JString label, JTypes::JObjRef<JTypes::JString> value_ref, JTypes::Jint
+                    size, JTypes::Jint flags) -> JTypes::Jboolean {
+                std::string value = value_ref.Get().Get();
+                value.reserve(size.Get());
+                bool ret = ImGui::InputText(label.Get().c_str(), value.data(), size.Get(), flags.Get());
+                value_ref.Set(JTypes::JString{value});
+                return ret;
+                }
+                >("com/easy/ImGui", "InputText"));
+
+            EZ_CORE_ASSERT(ScriptingEngine::RegisterNativeStaticMethodStatic<
+                +[](JNIEnv*, jclass, JTypes::JString label, JTypes::JObjRef<JTypes::JBoolean> value_ref) -> JTypes::
+                Jboolean {
+                bool value = value_ref.Get().Get().value();
+                bool ret = ImGui::Checkbox(label.Get().c_str(), &value);
+                value_ref.Set(JTypes::JBoolean{value});
+                return ret;
+                }
+                >("com/easy/ImGui", "CheckBox"));
+        }
+
 
         void Shutdown() {
             Lib::LibClassObj.reset();
