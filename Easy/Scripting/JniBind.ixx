@@ -297,7 +297,7 @@ namespace Easy::ScriptingEngine {
             EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
 
             std::array<jvalue, sizeof...(Args)> jniArgs{
-                jvalue{args.ToJvalue()}...
+                JTypes::CastToJvalue(args.ToJava())...
             };
 
             return env->NewObjectA(
@@ -309,6 +309,59 @@ namespace Easy::ScriptingEngine {
             return ScriptingEngine::MethodResolver::ResolveSigExact<void(Args...)>();
         }
 
+    private:
+        jmethodID id = nullptr;
+    };
+
+    export template<typename Ret, typename Self, typename... Args>
+    class JInstanceMethod {
+    public:
+        JInstanceMethod() = default;
+
+        JInstanceMethod(jmethodID id) : id(id) {}
+
+        JInstanceMethod(const char *className, const char *methodName) {
+            auto clazz = Lib::GetClass(className);
+            id = ScriptingEngine::GetEnv()->GetMethodID(
+                static_cast<jclass>(static_cast<jobject>(clazz)),
+                "<init>", GetSignature().Data
+            );
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+        }
+
+        JInstanceMethod(jclass clazz, const char *methodName) {
+            id = ScriptingEngine::GetEnv()->GetMethodID(
+                static_cast<jclass>(static_cast<jobject>(clazz)),
+                methodName, GetSignature().Data
+            );
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+        }
+
+        void Init(jclass clazz, const char *methodName) {
+            *this = JInstanceMethod(clazz, methodName);
+        }
+
+        void Init(const char *className, const char *methodName) {
+            *this = JInstanceMethod(className, methodName);
+        }
+
+        jobject Invoke(JNIEnv *env, Self self, Args... args) {
+            EZ_CORE_ASSERT(id != nullptr, "Constructor not found");
+
+            std::array<jvalue, sizeof... (Args)> jniArgs{
+                jvalue{args.ToJvalue()}...
+            };
+
+            return env->CallObjectMethodA(
+                static_cast<jobject>(self), id,
+                jniArgs.data());
+        }
+
+        consteval static auto GetSignature() {
+            return ScriptingEngine::MethodResolver::ResolveSigExact<Ret(Args...)>();
+        }
+
+    private:
         jmethodID id = nullptr;
     };
 }

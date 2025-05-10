@@ -95,6 +95,61 @@ namespace Easy::ScriptingEngine::JTypes {
         m_ObjectProvider;
     };
 
+    export jvalue CastToJvalue(const auto&) = delete;
+
+    export jvalue CastToJvalue(jint value) {
+        jvalue jv{};
+        jv.i = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jfloat value) {
+        jvalue jv{};
+        jv.f = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jdouble value) {
+        jvalue jv{};
+        jv.d = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jlong value) {
+        jvalue jv{};
+        jv.j = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jshort value) {
+        jvalue jv{};
+        jv.s = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jbyte value) {
+        jvalue jv{};
+        jv.b = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jchar value) {
+        jvalue jv{};
+        jv.c = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jboolean value) {
+        jvalue jv{};
+        jv.z = value;
+        return jv;
+    }
+
+    export jvalue CastToJvalue(jobject value) {
+        jvalue jv{};
+        jv.l = value;
+        return jv;
+    }
 
     export class JString {
     public:
@@ -146,12 +201,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
-        }
-
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::shared_ptr<const std::string> m_NativeCopy{};
@@ -175,12 +224,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jint ToJava() const {
             return m_Value;
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.i = ToJava();
-            return value;
         }
 
     private:
@@ -235,12 +278,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
-        }
-
     private:
         // std::shared_ptr<ILocalObjectProvider<JInteger>> m_ObjectProvider{};
         LocalObjectProvider<Definition> m_ObjectProvider{};
@@ -264,12 +301,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jfloat ToJava() const {
             return m_Value;
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.f = ToJava();
-            return value;
         }
 
     private:
@@ -324,12 +355,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
-        }
-
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const float> m_Value{};
@@ -351,12 +376,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jdouble ToJava() const {
             return m_Value;
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.d = ToJava();
-            return value;
         }
 
     private:
@@ -411,12 +430,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
-        }
-
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const double> m_Value{};
@@ -440,12 +453,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jlong ToJava() const {
             return m_Value;
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.j = ToJava();
-            return value;
         }
 
     private:
@@ -501,12 +508,6 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
-        }
-
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const int64_t> m_Value{};
@@ -529,12 +530,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jboolean ToJava() const {
             return m_Value;
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.z = ToJava();
-            return value;
         }
 
     private:
@@ -589,12 +584,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jobject ToJava() const {
             return m_ObjectProvider.GetRawObject();
-        }
-
-        [[nodiscard]] jvalue ToJvalue() const {
-            jvalue value{};
-            value.l = ToJava();
-            return value;
         }
 
     private:
