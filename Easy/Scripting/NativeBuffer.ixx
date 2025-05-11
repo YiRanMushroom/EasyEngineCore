@@ -10,9 +10,13 @@ import Easy.Core.Basic;
 namespace Easy::ScriptingEngine {
     export class AutoManagedBufferBase {
     public:
-        AutoManagedBufferBase() = default;
+        AutoManagedBufferBase() {
+            std::cout << "AutoManagedBufferBase constructor called" << std::endl;
+        }
 
-        virtual ~AutoManagedBufferBase() = default;
+        virtual ~AutoManagedBufferBase() {
+            std::cout << "AutoManagedBufferBase destructor called" << std::endl;
+        }
     };
 
     inline std::unordered_set<AutoManagedBufferBase *> g_NativeBuffers;

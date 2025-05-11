@@ -12,7 +12,7 @@ namespace Easy::ScriptingEngine {
     namespace Lib {
         void NativePrintlnImpl(JNIEnv *, jclass, ScriptingEngine::JTypes::
                                JString str) {
-            std::cout << str.CStr() << std::endl;
+            std::cout << str.Get() << std::endl;
         }
 
         void RegisterImGuiNativeFunctions();
