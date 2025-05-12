@@ -320,7 +320,7 @@ namespace Easy::ScriptingEngine {
             };
 
             LocalObject<JObject::Definition> Invoke(decltype(std::declval<Args>(), jobject{})... args) {
-                return m_Function(args...);
+                return {AdoptLocal{}, m_Function(args...)};
             }
         };
 
