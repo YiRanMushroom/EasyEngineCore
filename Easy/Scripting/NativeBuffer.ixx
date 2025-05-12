@@ -10,20 +10,16 @@ import Easy.Core.Basic;
 namespace Easy::ScriptingEngine {
     export class AutoManagedBufferBase {
     public:
-        AutoManagedBufferBase() {
-            std::cout << "AutoManagedBufferBase constructor called" << std::endl;
-        }
+        AutoManagedBufferBase() {}
 
-        virtual ~AutoManagedBufferBase() {
-            std::cout << "AutoManagedBufferBase destructor called" << std::endl;
-        }
+        virtual ~AutoManagedBufferBase() {}
     };
 
     inline std::unordered_set<AutoManagedBufferBase *> g_NativeBuffers;
 
     export void ReleaseAllNativeBufferAfterJVMClose() {
         EZ_CORE_INFO("{} Native Buffers to be released", g_NativeBuffers.size());
-        for (auto *buffer : g_NativeBuffers) {
+        for (auto *buffer: g_NativeBuffers) {
             delete buffer;
         }
     }
