@@ -1,9 +1,16 @@
+module;
+
+#include <stdlib.h>
+
+#include "Core/MacroUtils.hpp"
+
 export module Easy.Scripting.KNativeFunctions;
 
 import Easy.Scripting.JniBind;
 import Easy.Scripting.JTypes;
 import Easy.Core.Basic;
 import Easy.Core.Util;
+import Easy.Scripting.NativeBuffer;
 
 using namespace jni;
 
@@ -27,11 +34,8 @@ namespace Easy::ScriptingEngine {
 
             JUnit() = default;
 
-            JUnit(NewRef, jobject) {}
-
-            JUnit(PromoteToGlobal, jobject) {}
-
-            JUnit(AdoptGlobal, jobject) {}
+            template<typename T>
+            explicit JUnit(T, jobject obj) {}
 
             [[nodiscard]] jobject ToJava() const {
                 return static_cast<jobject>(StaticRef<StaticDefinition>().Access<"INSTANCE">().Get());
@@ -81,6 +85,11 @@ namespace Easy::ScriptingEngine {
             return '(' + []<size_t... idx>(std::index_sequence<idx...>) {
                 return (((void) idx, javaObjectSig) + ...);
             }(std::make_index_sequence<N>()) + ')' + javaObjectSig;
+        }
+
+        export template<>
+        consteval auto GetObjectFunctionTypeSignatureOfArgLength<0>() {
+            return "()Ljava/lang/Object;"_sl;
         }
 
         static_assert(GetObjectFunctionTypeSignatureOfArgLength<1>() == "(Ljava/lang/Object;)Ljava/lang/Object;"_sl,
@@ -252,5 +261,196 @@ namespace Easy::ScriptingEngine {
                 Get().value()(args...);
             }
         };
+
+        template<size_t N>
+        class KNativeFunctionImplSized : ScriptingEngine::AutoManagedBufferBase {
+            static_assert(N <= KNativeFunctions::MaxArgCount, "N must be less than or equal to MaxArgCount");
+
+        public:
+            constexpr static StringLiteral SimpleName = "com/easy/NativeFunction"_sl + ToStringLiteral<N>();
+            constexpr static StringLiteral FullName = ScriptingEngine::JTypes::MakeFullName(SimpleName);
+
+            constexpr static Class Definition{
+                SimpleName.Data,
+                Constructor{jlong{}},
+                Method{
+                    "CastToInterface", Return{KNativeFunctions::KNativeFunctionInterface<N>::Definition},
+                    Params{}
+                },
+                Method{
+                    "invoke", Return{JObject::Definition}, GetParamsOfArgLength<N>()
+                },
+                Method{
+                    "GetNativeAddress", Return{jlong{}}, Params{}
+                }
+            };
+
+            template<typename>
+            struct ImplType {
+                static_assert(false, "Incorrect specialization");
+            };
+
+            template<size_t... idx>
+            struct ImplType<std::index_sequence<idx...>> {
+                using Type = std::remove_pointer_t<jni::LocalObject<JObject::Definition>((
+                    std::remove_cvref_t<decltype((void) idx, jobject{})>...))>;
+            };
+
+        public:
+            using FunctionType = typename ImplType<std::make_index_sequence<N>>::Type;
+            using StandardFunctionType = std::function<FunctionType>;
+
+            explicit KNativeFunctionImplSized(StandardFunctionType function) : m_Function(std::move(function)) {}
+
+            template<typename... Args>
+            LocalObject<JObject::Definition> Invoke(Args... args) {
+                static_assert((std::is_same_v<jobject, Args> && ...), "All arguments must be jobject");
+                auto result = m_Function(args...);
+                return result;
+            }
+
+            StandardFunctionType &GetFunction() {
+                return m_Function;
+            }
+
+        protected:
+            StandardFunctionType m_Function;
+        };
+
+        template<typename>
+        class KNativeFunctionImpl {
+            static_assert(false, "Incorrect specialization");
+        };
+
+        template<typename Ret, typename... Args>
+            requires std::is_same_v<jobject, typename Ret::JavaType> &&
+                     (std::is_same_v<jobject, typename Args::JavaType> && ...)
+        class KNativeFunctionImpl<Ret(Args...)> : public KNativeFunctionImplSized<sizeof...(Args)> {
+        public:
+            using Base = KNativeFunctionImplSized<sizeof...(Args)>;
+
+        public:
+            virtual ~KNativeFunctionImpl() override = default;
+
+            KNativeFunctionImpl() = default;
+
+            explicit KNativeFunctionImpl(auto &&fn) : Base{
+                typename Base::StandardFunctionType(
+                    [stored = std::forward<decltype(fn)>(fn)]<typename... Objs>(
+                Objs... objects) -> LocalObject<JObject::Definition> {
+                        static_assert(( std::is_same_v<Objs, jobject> && ...), "All arguments must be jobject");
+                        auto res = stored(Args{AdoptLocal{}, objects}...);
+                        return LocalObject<JObject::Definition>{NewRef{}, res.ToJava()};
+                    })
+            } {}
+        };
+
+        export template<typename>
+        class KNativeFunction {
+            static_assert(false, "Incorrect specialization");
+        };
+
+        export template<typename Ret, typename... Args>
+            requires std::is_same_v<jobject, typename Ret::JavaType> &&
+                     (std::is_same_v<jobject, typename Args::JavaType> && ...)
+        class KNativeFunction<Ret(Args...)> {
+        public:
+            constexpr static StringLiteral SimpleName =
+                    "com/easy/NativeFunction"_sl + ToStringLiteral<sizeof...(Args)>();
+            constexpr static StringLiteral FullName = ScriptingEngine::JTypes::MakeFullName(SimpleName);
+
+            constexpr static const auto &Definition = KNativeFunctionImplSized<sizeof...(Args)>::Definition;
+
+        public:
+            KNativeFunction(std::unique_ptr<KNativeFunctionImplSized<sizeof...(Args)>> fn) {
+                auto local = LocalObject<Definition>{reinterpret_cast<jlong>(fn.release())};
+                m_ObjectProvider = {
+                    AdoptLocal{}, local.Release()
+                };
+            }
+
+            template<typename T>
+            explicit KNativeFunction(T &&fn) : KNativeFunction{
+                static_cast<std::unique_ptr<KNativeFunctionImplSized<sizeof...(Args)>>>(std::make_unique<
+                    KNativeFunctionImpl<Ret
+                        (Args...)>>(std::forward<T>(fn)))
+            } {}
+
+            KNativeFunction(const KNativeFunction &) = default;
+
+            KNativeFunction(KNativeFunction &&) = default;
+
+            template<typename T>
+            KNativeFunction(T, jobject obj) : m_ObjectProvider{
+                T{}, obj
+            } {}
+
+            jobject ToJava() const {
+                return m_ObjectProvider.GetRawObject();
+            }
+
+            [[nodiscard]] LocalObject<Definition> Get() const {
+                return m_ObjectProvider.GetObject();
+            }
+
+            Ret operator()(Args... args) {
+                auto localRef = Get().template Call<"invoke">(args.ToJava()...);
+                Ret result{AdoptLocal{}, localRef.Release()};
+                return result;
+            }
+
+            SpecializedKNativeFunctionInterface<Ret(Args...)> CastToInterface() {
+                return {AdoptLocal{}, Get().template Call<"CastToInterface">().Release()};
+            }
+
+        private:
+            LocalObjectProvider<Definition> m_ObjectProvider;
+        };
+
+        // template<size_t N>
+        // jobject NativeInvokeFunction(JNIEnv *, jobject func, jobject arg1) {
+        //     LocalObject<KNativeFunctionImplSized<N>::Definition> function{AdoptLocal{}, func};
+        //
+        //     auto nativeFunction = reinterpret_cast<KNativeFunctionImplSized<N> *>(function.template Call<
+        //         "GetNativeAddress">());
+        //
+        //     return nativeFunction->Invoke(arg1).Release();
+        // }
+
+        namespace Impl {
+            template<typename>
+            struct NativeInvokeFunctionImpl {
+                static_assert(false, "Incorrect specialization");
+            };
+
+            template<size_t... idx>
+            struct NativeInvokeFunctionImpl<std::index_sequence<idx...>> {
+                static jobject NativeInvokeFunction(
+                    JNIEnv *env, jobject func, decltype((void)idx, jobject{})... args) {
+                    LocalObject<KNativeFunctionImplSized<sizeof...(idx)>::Definition> function{AdoptLocal{}, func};
+
+                    auto nativeFunction = reinterpret_cast<KNativeFunctionImplSized<sizeof...(idx)> *>(function.template Call<
+                        "GetNativeAddress">());
+
+                    return nativeFunction->Invoke(args...).Release();
+                }
+            };
+        }
+
+        template<size_t N>
+        void RegisterNativeInvokeFunctionFor() {
+            EZ_CORE_ASSERT(RegisterNativeMethodDynamicRaw(
+                static_cast<jclass>(static_cast<jobject>(Lib::GetClass(KNativeFunctionImplSized<N>::SimpleName.Data))),
+                "NativeInvoke",
+                GetObjectFunctionTypeSignatureOfArgLength<N>().Data,
+                (void *)&Impl::NativeInvokeFunctionImpl<std::make_index_sequence<N>>::NativeInvokeFunction));
+        }
+
+        export void RegisterAllNativeInvokeFunction() {
+            constexpr size_t maxArgCount = KNativeFunctions::MaxArgCount;
+            []<size_t ... idx>(std::index_sequence<idx...>) {
+                (RegisterNativeInvokeFunctionFor<idx>(), ...);
+            }(std::make_index_sequence<maxArgCount + 1>{});
+        }
     }
 }

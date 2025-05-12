@@ -294,3 +294,8 @@ consteval auto ToStringLiteral() {
     std::copy_n(stringRes.data(), length + 1, result.Data);
     return result;
 }
+
+export template<>
+consteval auto ToStringLiteral<0>() {
+    return "0"_sl;
+}

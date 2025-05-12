@@ -289,16 +289,9 @@ namespace Easy::ScriptingEngine::JTypes {
                   PromoteToGlobal{}, static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jint{value}))),
               m_Value(value) {}
 
-        JInteger(PromoteToGlobal, jobject obj)
-            : m_ObjectProvider(PromoteToGlobal{}, obj),
-              m_Value(std::make_optional<int>(m_ObjectProvider.GetObject().Call<"intValue">())) {}
-
-        JInteger(NewRef, jobject obj)
-            : m_ObjectProvider(NewRef{}, obj),
-              m_Value(std::make_optional<int>(m_ObjectProvider.GetObject().Call<"intValue">())) {}
-
-        JInteger(AdoptGlobal, jobject obj)
-            : m_ObjectProvider(AdoptGlobal{}, obj),
+        template<typename T>
+        explicit JInteger(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
               m_Value(std::make_optional<int>(m_ObjectProvider.GetObject().Call<"intValue">())) {}
 
         [[nodiscard]] int GetOrDefault() const {
@@ -378,16 +371,9 @@ namespace Easy::ScriptingEngine::JTypes {
                   static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jfloat{value}))),
               m_Value(value) {}
 
-        explicit JFloat(PromoteToGlobal, jobject obj)
-            : m_ObjectProvider(PromoteToGlobal{}, obj),
-              m_Value(std::make_optional<float>(m_ObjectProvider.GetObject().Call<"floatValue">())) {}
-
-        explicit JFloat(NewRef, jobject obj)
-            : m_ObjectProvider(NewRef{}, obj),
-              m_Value(std::make_optional<float>(m_ObjectProvider.GetObject().Call<"floatValue">())) {}
-
-        explicit JFloat(AdoptGlobal, jobject obj)
-            : m_ObjectProvider(AdoptGlobal{}, obj),
+        template<typename T>
+        explicit JFloat(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
               m_Value(std::make_optional<float>(m_ObjectProvider.GetObject().Call<"floatValue">())) {}
 
         [[nodiscard]] float GetOrDefault() const {
@@ -469,16 +455,9 @@ namespace Easy::ScriptingEngine::JTypes {
                   static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jdouble{value}))),
               m_Value(value) {}
 
-        JDouble(PromoteToGlobal, jobject obj)
-            : m_ObjectProvider(PromoteToGlobal{}, obj),
-              m_Value(std::make_optional<double>(m_ObjectProvider.GetObject().Call<"doubleValue">())) {}
-
-        JDouble(NewRef, jobject obj)
-            : m_ObjectProvider(NewRef{}, obj),
-              m_Value(std::make_optional<double>(m_ObjectProvider.GetObject().Call<"doubleValue">())) {}
-
-        JDouble(AdoptGlobal, jobject obj)
-            : m_ObjectProvider(AdoptGlobal{}, obj),
+        template<typename T>
+        explicit JDouble(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
               m_Value(std::make_optional<double>(m_ObjectProvider.GetObject().Call<"doubleValue">())) {}
 
         [[nodiscard]] double GetOrDefault() const {
@@ -559,16 +538,9 @@ namespace Easy::ScriptingEngine::JTypes {
                                         m_Value(value) {}
 
 
-        explicit JLong(PromoteToGlobal, jobject obj)
-            : m_ObjectProvider(PromoteToGlobal{}, obj),
-              m_Value(std::make_optional<int64_t>(m_ObjectProvider.GetObject().Call<"longValue">())) {}
-
-        explicit JLong(NewRef, jobject obj)
-            : m_ObjectProvider(NewRef{}, obj),
-              m_Value(std::make_optional<int64_t>(m_ObjectProvider.GetObject().Call<"longValue">())) {}
-
-        explicit JLong(AdoptGlobal, jobject obj)
-            : m_ObjectProvider(AdoptGlobal{}, obj),
+        template<typename T>
+        explicit JLong(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
               m_Value(std::make_optional<int64_t>(m_ObjectProvider.GetObject().Call<"longValue">())) {}
 
         [[nodiscard]] int64_t GetOrDefault() const {
@@ -649,16 +621,9 @@ namespace Easy::ScriptingEngine::JTypes {
                                    }))),
               m_Value(value) {}
 
-        explicit JBoolean(PromoteToGlobal, jobject obj)
-            : m_ObjectProvider(PromoteToGlobal{}, obj),
-              m_Value(std::make_optional<bool>(m_ObjectProvider.GetObject().Call<"booleanValue">())) {}
-
-        explicit JBoolean(NewRef, jobject obj)
-            : m_ObjectProvider(NewRef{}, obj),
-              m_Value(std::make_optional<bool>(m_ObjectProvider.GetObject().Call<"booleanValue">())) {}
-
-        explicit JBoolean(AdoptGlobal, jobject obj)
-            : m_ObjectProvider(AdoptGlobal{}, obj),
+        template<typename T>
+        explicit JBoolean(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
               m_Value(std::make_optional<bool>(m_ObjectProvider.GetObject().Call<"booleanValue">())) {}
 
         [[nodiscard]] bool GetOrDefault() const {
@@ -689,8 +654,8 @@ namespace Easy::ScriptingEngine::JTypes {
 
         JObject() = default;
 
-        JObject(NewRef, jobject obj) : m_ObjectProvider(NewRef{}, obj) {}
-        JObject(PromoteToGlobal, jobject obj) : m_ObjectProvider(PromoteToGlobal{}, obj) {}
+        template<typename T>
+        explicit JObject(T, jobject obj) : m_ObjectProvider(T{}, obj) {}
 
         [[nodiscard]] jobject ToJava() const {
             return m_ObjectProvider.GetRawObject();
@@ -724,11 +689,8 @@ namespace Easy::ScriptingEngine::JTypes {
 
         JObjRef() = default;
 
-        JObjRef(NewRef, jobject obj) : m_ObjectProvider(NewRef{}, obj) {}
-
-        JObjRef(PromoteToGlobal, jobject obj) : m_ObjectProvider(PromoteToGlobal{}, obj) {}
-
-        JObjRef(AdoptGlobal, jobject obj) : m_ObjectProvider(AdoptGlobal{}, obj) {}
+        template<typename T>
+        explicit JObjRef(T, jobject obj) : m_ObjectProvider(T{}, obj) {}
 
         JObjRef(const InnerType &obj) : m_ObjectProvider(PromoteToGlobal{}, obj.ToJava()) {}
 

@@ -7,6 +7,7 @@ module;
 module Easy.Scripting.JniBind;
 
 import Easy.Scripting.NativeBuffer;
+import Easy.Scripting.KNativeFunctions;
 
 namespace Easy::ScriptingEngine {
     namespace Lib {
@@ -28,6 +29,7 @@ namespace Easy::ScriptingEngine {
 
             RegisterImGuiNativeFunctions();
             RegisterNativeBufferRelease();
+            ScriptingEngine::KNativeFunctions::RegisterAllNativeInvokeFunction();
         }
 
         void RegisterImGuiNativeFunctions() {
@@ -106,7 +108,7 @@ namespace Easy::ScriptingEngine {
         }
 
         void CallGC() {
-            constexpr static Class SystemDef {
+            constexpr static Class SystemDef{
                 "java/lang/System",
                 Static{
                     Method{"gc", Return{}, Params{}}
@@ -116,7 +118,6 @@ namespace Easy::ScriptingEngine {
             jni::StaticRef<SystemDef>().Call<"gc">();
         }
     }
-
 
 
     void Shutdown() {
