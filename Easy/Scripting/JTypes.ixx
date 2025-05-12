@@ -306,6 +306,10 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
+        }
+
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const int> m_Value{};
@@ -386,6 +390,10 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jobject ToJava() const {
             return m_ObjectProvider.GetRawObject();
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
         }
 
     private:
@@ -472,6 +480,10 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
+        }
+
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const double> m_Value{};
@@ -553,6 +565,10 @@ namespace Easy::ScriptingEngine::JTypes {
 
         [[nodiscard]] jobject ToJava() const {
             return m_ObjectProvider.GetRawObject();
+        }
+
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
         }
 
     private:
@@ -638,6 +654,10 @@ namespace Easy::ScriptingEngine::JTypes {
             return m_ObjectProvider.GetRawObject();
         }
 
+        LocalObject<Definition> GetObject() const {
+            return m_ObjectProvider.GetObject();
+        }
+
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
         std::optional<const bool> m_Value{};
@@ -705,10 +725,6 @@ namespace Easy::ScriptingEngine::JTypes {
 
         void Set(const InnerType &obj) {
             m_ObjectProvider.GetObject().template Call<"Set">(obj.ToJava());
-        }
-
-        jobject GetRawObject() const {
-            return m_ObjectProvider.GetRawObject();
         }
 
         LocalObject<Definition> GetObject() const {
