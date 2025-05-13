@@ -12,26 +12,34 @@ namespace Easy::ScriptingEngine {
     public:
         AutoManagedBufferBase() {}
 
-        virtual ~AutoManagedBufferBase() {}
+        virtual ~AutoManagedBufferBase() {
+
+        }
     };
 
     inline std::unordered_set<AutoManagedBufferBase *> g_NativeBuffers;
+    inline std::mutex g_NativeBufferMutex;
 
     export void ReleaseAllNativeBufferAfterJVMClose() {
+        std::lock_guard lg(g_NativeBufferMutex);
         EZ_CORE_INFO("{} Native Buffers to be released", g_NativeBuffers.size());
         for (auto *buffer: g_NativeBuffers) {
             delete buffer;
         }
     }
 
-    void NativeReleaseFn(JNIEnv *, jclass, JTypes::Jlong bufferPtr) {
+    void NativeReleaseFn(JTypes::Jlong bufferPtr) {
         auto *buffer = reinterpret_cast<AutoManagedBufferBase *>(bufferPtr.Get());
-        g_NativeBuffers.erase(buffer);
+        {
+            std::lock_guard lg(g_NativeBufferMutex);
+            g_NativeBuffers.erase(buffer);
+        }
         delete buffer;
     }
 
-    void NotifyCreateFunction(JNIEnv *, jclass, JTypes::Jlong bufferPtr) {
+    void NotifyCreateFunction(JTypes::Jlong bufferPtr) {
         auto *buffer = reinterpret_cast<AutoManagedBufferBase *>(bufferPtr.Get());
+        std::lock_guard lg(g_NativeBufferMutex);
         g_NativeBuffers.insert(buffer);
     }
 
