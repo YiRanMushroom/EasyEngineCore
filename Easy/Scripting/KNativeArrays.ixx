@@ -1,5 +1,7 @@
 module;
+
 #include "Core/MacroUtils.hpp"
+
 export module Easy.Scripting.KNativeArrays;
 
 import Easy.Core.Basic;

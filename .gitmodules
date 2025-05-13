@@ -69,3 +69,7 @@
 	path = vendor/jni-bind
 	url = https://github.com/YiRanMushroom/jni-bind
 	branch = main
+[submodule "vendor/libcuckoo"]
+	path = vendor/libcuckoo
+	url = https://github.com/efficient/libcuckoo
+	branch = master

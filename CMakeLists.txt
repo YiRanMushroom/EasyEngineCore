@@ -255,6 +255,7 @@ set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
 add_subdirectory(vendor/shaderc)
 
 add_subdirectory(vendor/msdf-atlas-gen)
+add_subdirectory(vendor/libcuckoo)
 
 #target_precompile_headers(${PROJECT_NAME}
 #        PUBLIC
@@ -299,4 +300,5 @@ target_link_libraries(${PROJECT_NAME}
         libluajit
         sol2
         jni_bind
+
 )
