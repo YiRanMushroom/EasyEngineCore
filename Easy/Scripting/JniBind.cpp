@@ -2,13 +2,12 @@ module;
 
 #include <Core/MacroUtils.hpp>
 
-#include "imgui.h"
-
 module Easy.Scripting.JniBind;
 
 import Easy.Scripting.NativeBuffer;
 import Easy.Scripting.KNativeFunctions;
 import Easy.Scripting.KNativeArrays;
+import Easy.ImGui.ImGui;
 
 namespace Easy::ScriptingEngine {
     namespace Lib {
