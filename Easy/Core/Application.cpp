@@ -51,6 +51,7 @@ namespace Easy {
     }
 
     Application::~Application() {
+        m_LayerStack.clear();
         Renderer::Shutdown();
         ScriptingEngine::Shutdown();
     }

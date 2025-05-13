@@ -62,6 +62,18 @@ namespace Easy {
         [[nodiscard]] auto rbegin() const { return m_Layers.rbegin(); }
         [[nodiscard]] auto rend() const { return m_Layers.rend(); }
 
+        void clear() {
+            while (!m_Layers.empty()) {
+                m_Layers.back()->OnDetach();
+                m_Layers.pop_back();
+            }
+            m_OverlayStartIndex = 0;
+        }
+
+        [[nodiscard]] size_t size() const { return m_Layers.size(); }
+
+        [[nodiscard]] bool empty() const { return m_Layers.empty(); }
+
     private:
         container_type m_Layers;
         long long m_OverlayStartIndex = 0;

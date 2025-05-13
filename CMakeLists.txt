@@ -300,5 +300,5 @@ target_link_libraries(${PROJECT_NAME}
         libluajit
         sol2
         jni_bind
-
+        libcuckoo::libcuckoo
 )
