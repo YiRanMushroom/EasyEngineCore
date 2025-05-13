@@ -179,8 +179,8 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jobject (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticObjectMethodA;
 
-        constexpr static jobject (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticObjectMethodA;
+        constexpr static jobject (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallObjectMethodA;
 
         using JavaType = jobject;
     };
@@ -194,11 +194,11 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static StringLiteral SimpleName = "java/lang/String";
         constexpr static StringLiteral FullName = MakeFullName(SimpleName);
 
+        constexpr static jobject (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+        JNIEnv::CallStaticObjectMethodA;
+
         constexpr static jobject (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
                 JNIEnv::CallObjectMethodA;
-
-        constexpr static jobject (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticObjectMethodA;
 
         JString() = default;
 
@@ -239,16 +239,16 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jint (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticIntMethodA;
 
-        constexpr static jint (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticIntMethodA;
+        constexpr static jint (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallIntMethodA;
 
     public:
         Jint() = default;
 
         Jint(jint value) : m_Value(value) {}
 
-        Jint(NewRef, jint value) : m_Value(value) {}
-        Jint(PromoteToGlobal, jint value) : m_Value(value) {}
+        template<typename T>
+        Jint(T, jint value) : m_Value(value) {}
 
         int Get() const {
             return m_Value;
@@ -325,15 +325,16 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jfloat (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticFloatMethodA;
 
-        constexpr static jfloat (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticFloatMethodA;
+        constexpr static jfloat (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallFloatMethodA;
 
     public:
         Jfloat() = default;
 
         Jfloat(jfloat value) : m_Value(value) {}
-        Jfloat(NewRef, jfloat value) : m_Value(value) {}
-        Jfloat(PromoteToGlobal, jfloat value) : m_Value(value) {}
+
+        template<typename T>
+        Jfloat(T, jfloat value) : m_Value(value) {}
 
         float Get() const {
             return m_Value;
@@ -411,16 +412,16 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jdouble (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticDoubleMethodA;
 
-        constexpr static jdouble (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticDoubleMethodA;
+        constexpr static jdouble (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallDoubleMethodA;
 
     public:
         Jdouble() = default;
 
         Jdouble(jdouble value) : m_Value(value) {}
-        Jdouble(NewRef, jdouble value) : m_Value(value) {}
-        Jdouble(PromoteToGlobal, jdouble value) : m_Value(value) {}
 
+        template<typename T>
+        Jdouble(T, jdouble value) : m_Value(value) {}
 
         double Get() const {
             return m_Value;
@@ -500,15 +501,16 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jlong (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticLongMethodA;
 
-        constexpr static jlong (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticLongMethodA;
+        constexpr static jlong (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallLongMethodA;
 
     public:
         Jlong() = default;
 
         Jlong(jlong value) : m_Value(value) {}
-        Jlong(NewRef, jlong value) : m_Value(value) {}
-        Jlong(PromoteToGlobal, jlong value) : m_Value(value) {}
+
+        template<typename T>
+        Jlong(T, jlong value) : m_Value(value) {}
 
         [[nodiscard]] int64_t Get() const {
             return m_Value;
@@ -586,15 +588,16 @@ namespace Easy::ScriptingEngine::JTypes {
         constexpr static jboolean (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
                 JNIEnv::CallStaticBooleanMethodA;
 
-        constexpr static jboolean (JNIEnv::*CallInstanceMethodA)(jclass, jmethodID, const jvalue *) = &
-                JNIEnv::CallStaticBooleanMethodA;
+        constexpr static jboolean (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallBooleanMethodA;
 
     public:
         Jboolean() = default;
 
         Jboolean(jboolean value) : m_Value(value) {}
-        Jboolean(NewRef, jboolean value) : m_Value(value) {}
-        Jboolean(PromoteToGlobal, jboolean value) : m_Value(value) {}
+
+        template<typename T>
+        Jboolean(T, jboolean value) : m_Value(value) {}
 
         [[nodiscard]] bool Get() const {
             return m_Value;
@@ -663,6 +666,166 @@ namespace Easy::ScriptingEngine::JTypes {
         std::optional<const bool> m_Value{};
     };
 
+    export class Jchar {
+    public:
+        constexpr static StringLiteral SimpleName = 'C';
+        constexpr static StringLiteral FullName = 'C';
+        using JavaType = jchar;
+        constexpr static jchar (JNIEnv::*CallStaticMethodA)(jclass, jmethodID, const jvalue *) = &
+                JNIEnv::CallStaticCharMethodA;
+        constexpr static jchar (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID, const jvalue *) = &
+                JNIEnv::CallCharMethodA;
+
+    public:
+        Jchar() = default;
+
+        Jchar(jchar value) : m_Value(value) {}
+
+        template<typename T>
+        Jchar(T, jchar value) : m_Value(value) {}
+
+        [[nodiscard]] uint16_t Get() const {
+            return m_Value;
+        }
+
+        [[nodiscard]] jchar ToJava() const {
+            return m_Value;
+        }
+
+    private:
+        uint16_t m_Value{};
+    };
+
+    export class JChar : public InjectJObject {
+    public:
+        constexpr static StringLiteral SimpleName = "java/lang/Character";
+        constexpr static StringLiteral FullName = MakeFullName(SimpleName);
+        constexpr static Class Definition{
+            SimpleName.Data,
+            Method{
+                "charValue", Return{jchar{}}, Params{}
+            }
+        };
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jchar{}}}
+            }
+        };
+
+    public:
+        JChar() = default;
+
+        explicit JChar(uint16_t value)
+            : m_ObjectProvider(
+                  PromoteToGlobal{},
+                  static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(value))),
+              m_Value(value) {}
+
+        template<typename T>
+        explicit JChar(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
+              m_Value(std::make_optional<const uint16_t>(
+                  static_cast<uint16_t>(m_ObjectProvider.GetObject().Call<"charValue">()))) {
+
+        }
+
+        [[nodiscard]] uint16_t GetOrDefault() const {
+            return m_Value.value_or(0);
+        }
+
+        [[nodiscard]] std::optional<uint16_t> Get() const {
+            return m_Value;
+        }
+
+        [[nodiscard]] jobject ToJava() const {
+            return m_ObjectProvider.GetRawObject();
+        }
+
+    private:
+        LocalObjectProvider<Definition> m_ObjectProvider{};
+        std::optional<const uint16_t> m_Value{};
+    };
+
+    export class Jbyte {
+    public:
+        constexpr static StringLiteral SimpleName = 'B';
+        constexpr static StringLiteral FullName = 'B';
+        using JavaType = jbyte;
+
+        constexpr static jbyte (JNIEnv::*CallStaticMethodA)(jclass, jmethodID,
+                const jvalue *) = &JNIEnv::CallStaticByteMethodA;
+
+        constexpr static jbyte (JNIEnv::*CallInstanceMethodA)(jobject, jmethodID,
+                const jvalue *) = &JNIEnv::CallByteMethodA;
+
+    public:
+        Jbyte() = default;
+        Jbyte(jbyte value) : m_Value(value) {}
+        template<typename T>
+        Jbyte(T, jbyte value) : m_Value(value) {}
+
+        [[nodiscard]] int8_t Get() const {
+            return m_Value;
+        }
+
+        [[nodiscard]] jbyte ToJava() const {
+            return m_Value;
+        }
+
+    private:
+        unsigned char m_Value{};
+    };
+
+    export class JByte : public InjectJObject {
+    public:
+        constexpr static StringLiteral SimpleName = "java/lang/Byte";
+        constexpr static StringLiteral FullName = MakeFullName(SimpleName);
+
+        constexpr static Class Definition{
+            SimpleName.Data,
+            Method{
+                "byteValue", Return{jbyte{}}, Params{}
+            }
+        };
+
+        constexpr static Class StaticDefinition{
+            SimpleName.Data,
+            Static{
+                Method{"valueOf", Return{Definition}, Params{jbyte{}}}
+            }
+        };
+
+    public:
+        JByte() = default;
+        explicit JByte(int8_t value)
+            : m_ObjectProvider(
+                  PromoteToGlobal{},
+                  static_cast<jobject>(StaticRef<StaticDefinition>().Call<"valueOf">(jbyte{value}))),
+              m_Value(value) {}
+
+        template<typename T>
+        explicit JByte(T, jobject obj)
+            : m_ObjectProvider(T{}, obj),
+              m_Value(std::make_optional<int8_t>(m_ObjectProvider.GetObject().Call<"byteValue">())) {}
+
+        [[nodiscard]] int8_t GetOrDefault() const {
+            return m_Value.value_or(0);
+        }
+
+        [[nodiscard]] std::optional<int8_t> Get() const {
+            return m_Value;
+        }
+
+        [[nodiscard]] jobject ToJava() const {
+            return m_ObjectProvider.GetRawObject();
+        }
+
+    private:
+        LocalObjectProvider<Definition> m_ObjectProvider{};
+        std::optional<const int8_t> m_Value{};
+    };
+
     export class JObject : public InjectJObject {
     public:
         constexpr static StringLiteral SimpleName = "java/lang/Object";
@@ -688,7 +851,6 @@ namespace Easy::ScriptingEngine::JTypes {
     private:
         LocalObjectProvider<Definition> m_ObjectProvider{};
     };
-
 
     export template<typename InnerType>
     class JObjRef : public InjectJObject {
@@ -782,7 +944,7 @@ namespace Easy::ScriptingEngine::MethodResolver {
     };
 
     template<typename Ret, typename... Args>
-    struct ResolveSigStaticImpl<Ret(JNIEnv *, jclass, Args...)> {
+    struct ResolveSigStaticImpl<Ret(Args...)> {
         static consteval auto Get() {
             return ResolveSigExact<Ret(Args...)>();
         }
@@ -798,14 +960,14 @@ namespace Easy::ScriptingEngine::MethodResolver {
         static_assert(false, "Not a function type");
     };
 
-    template<typename Ret, typename... Args>
-    struct ResolveSigInstanceImpl<Ret(JNIEnv *, Args...)> : ResolveSigExactImpl<Ret(Args...)> {
+    template<typename Ret, typename First, typename... Args>
+    struct ResolveSigInstanceImpl<Ret(First, Args...)> : ResolveSigExactImpl<Ret(Args...)> {
         static consteval auto Get() {
             return ResolveSigExactImpl<Ret(Args...)>::Get();
         }
     };
 
-    template<typename T>
+    export template<typename T>
     consteval auto ResolveSigInstance() {
         return ResolveSigInstanceImpl<T>::Get();
     }
@@ -815,31 +977,31 @@ namespace Easy::ScriptingEngine::MethodResolver {
         static_assert(false, "Not a function type");
     };
 
-    template<typename Ret, typename... RArgs>
-    struct ResolveJNIFuncTypeStaticImpl<Ret(JNIEnv *, jclass, RArgs...)> {
-        using Type = typename Ret::JavaType(JNIEnv *, jclass, typename RArgs::JavaType...);
-    };
+    // template<typename Ret, typename... RArgs>
+    // struct ResolveJNIFuncTypeStaticImpl<Ret(JNIEnv *, jclass, RArgs...)> {
+    //     using Type = typename Ret::JavaType(JNIEnv *, jclass, typename RArgs::JavaType...);
+    // };
+    //
+    // template<typename... RArgs>
+    // struct ResolveJNIFuncTypeStaticImpl<void(JNIEnv *, jclass, RArgs...)> {
+    //     using Type = void(JNIEnv *, jclass, typename RArgs::JavaType...);
+    // };
+    //
+    // export template<typename T>
+    // using ResolveJNIFuncTypeStatic = typename ResolveJNIFuncTypeStaticImpl<T>::Type;
 
-    template<typename... RArgs>
-    struct ResolveJNIFuncTypeStaticImpl<void(JNIEnv *, jclass, RArgs...)> {
-        using Type = void(JNIEnv *, jclass, typename RArgs::JavaType...);
-    };
-
-    export template<typename T>
-    using ResolveJNIFuncTypeStatic = typename ResolveJNIFuncTypeStaticImpl<T>::Type;
-
-    template<typename>
-    struct ResolveJNIFuncTypeInstanceImpl {
-        static_assert(false, "Not a function type");
-    };
-
-    template<typename Ret, typename... RArgs>
-    struct ResolveJNIFuncTypeInstanceImpl<Ret(JNIEnv *, RArgs...)> {
-        using Type = typename Ret::JavaType(JNIEnv *, typename RArgs::JavaType...);
-    };
-
-    export template<typename T>
-    using ResolveJNIFuncTypeInstance = typename ResolveJNIFuncTypeInstanceImpl<T>::Type;
+    // template<typename>
+    // struct ResolveJNIFuncTypeInstanceImpl {
+    //     static_assert(false, "Not a function type");
+    // };
+    //
+    // template<typename Ret, typename... RArgs>
+    // struct ResolveJNIFuncTypeInstanceImpl<Ret(JNIEnv *, RArgs...)> {
+    //     using Type = typename Ret::JavaType(JNIEnv *, typename RArgs::JavaType...);
+    // };
+    //
+    // export template<typename T>
+    // using ResolveJNIFuncTypeInstance = typename ResolveJNIFuncTypeInstanceImpl<T>::Type;
 
     // Wrap Native Func into JNI Function
     template<auto *, typename>
@@ -848,18 +1010,18 @@ namespace Easy::ScriptingEngine::MethodResolver {
     };
 
     template<auto *nativeFunc, typename Ret, typename... Args>
-    struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, Ret(JNIEnv *, jclass, Args...)> {
-        static typename Ret::JavaType Call(JNIEnv *env, jclass clazz, typename Args::JavaType... args) {
-            auto argTup = std::make_tuple(Args{NewRef{}, args}...);
-            return std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), std::move(argTup))).ToJava();
+    struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, Ret(Args...)> {
+        static typename Ret::JavaType Call(JNIEnv*, jclass, typename Args::JavaType... args) {
+            auto argTup = std::make_tuple(Args{AdoptLocal{}, args}...);
+            return std::apply(nativeFunc, std::move(argTup)).ToJava();
         }
     };
 
     template<auto *nativeFunc, typename... Args>
-    struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, void(JNIEnv *, jclass, Args...)> {
-        static void Call(JNIEnv *env, jclass clazz, typename Args::JavaType... args) {
-            auto argTup = std::make_tuple(Args{NewRef{}, args}...);
-            std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env, clazz), std::move(argTup)));
+    struct WrapNativeToJNIStaticFunctionImpl<nativeFunc, void(Args...)> {
+        static void Call(JNIEnv*, jclass, typename Args::JavaType... args) {
+            auto argTup = std::make_tuple(Args{AdoptLocal{}, args}...);
+            std::apply(nativeFunc, std::move(argTup));
         }
     };
 
@@ -874,18 +1036,18 @@ namespace Easy::ScriptingEngine::MethodResolver {
     };
 
     template<auto *nativeFunc, typename Ret, typename... Args>
-    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, Ret(JNIEnv *, Args...)> {
-        static typename Ret::JavaType Call(JNIEnv *env, typename Args::JavaType... args) {
+    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, Ret(Args...)> {
+        static typename Ret::JavaType Call(JNIEnv*, typename Args::JavaType... args) {
             auto argTup = std::make_tuple(Args{NewRef{}, args}...);
-            return std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env), std::move(argTup))).ToJava();
+            return std::apply(nativeFunc, std::move(argTup)).ToJava();
         }
     };
 
     template<auto *nativeFunc, typename... Args>
-    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, void(JNIEnv *, Args...)> {
-        static void Call(JNIEnv *env, typename Args::JavaType... args) {
+    struct WrapNativeToJNIInstanceFunctionImpl<nativeFunc, void(Args...)> {
+        static void Call(JNIEnv*, typename Args::JavaType... args) {
             auto argTup = std::make_tuple(Args{NewRef{}, args}...);
-            std::apply(nativeFunc, std::tuple_cat(std::make_tuple(env), std::move(argTup)));
+            std::apply(nativeFunc, std::move(argTup));
         }
     };
 

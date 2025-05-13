@@ -224,6 +224,32 @@ namespace Easy::ScriptingEngine {
         );
     }
 
+    export template<auto * func>
+    bool RegisterNativeInstanceMethodStatic(jclass clazz, const char *methodName) {
+        using namespace ScriptingEngine::MethodResolver;
+        constexpr auto sig = ResolveSigInstance<std::remove_pointer_t<decltype(func)>>();
+        return ScriptingEngine::RegisterNativeMethodDynamicRaw(
+            static_cast<jclass>(static_cast<jobject>(clazz)),
+            methodName,
+            sig.Data,
+            reinterpret_cast<void *>(WrapNativeToJNIStaticFunction<func>())
+        );
+    }
+
+    export template<auto * func>
+    bool RegisterNativeInstanceMethodStatic(const char *className, const char *methodName) {
+        using namespace ScriptingEngine::MethodResolver;
+        auto clazz = Lib::GetClass(className);
+        constexpr auto sig = ResolveSigInstance<std::remove_pointer_t<decltype(func)>>();
+
+        return ScriptingEngine::RegisterNativeMethodDynamicRaw(
+            static_cast<jclass>(static_cast<jobject>(clazz)),
+            methodName,
+            sig.Data,
+            reinterpret_cast<void *>(WrapNativeToJNIStaticFunction<func>())
+        );
+    }
+
     static_assert("Hello"_sl + "World"_sl == "HelloWorld"_sl, "String Literal Test");
     static_assert("Hellow"_sl + 'w' == "Helloww"_sl, "String Literal Test");
     static_assert('w' + "Hello"_sl == "wHello"_sl, "String Literal Test");
