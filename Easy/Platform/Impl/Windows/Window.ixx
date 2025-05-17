@@ -6,6 +6,7 @@ module;
 export module Easy.Platform.Impl.Windows.Window;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Events.Event;
 import Easy.Core.Window;
 import Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;

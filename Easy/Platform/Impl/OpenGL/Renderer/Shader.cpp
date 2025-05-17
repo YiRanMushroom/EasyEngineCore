@@ -8,6 +8,9 @@ module;
 
 module Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
+import Easy.Core.Basic;
+import Easy.Core.Log;
+
 namespace Easy {
     namespace Utils {
         static GLenum ShaderTypeFromString(const std::string &type) {

@@ -2,9 +2,6 @@
 
 #include <cassert>
 
-import Easy.Core.Log;
-import Easy.Core.Profile;
-
 #define CONCAT(a, b) CONCAT_INNER(a, b)
 #define CONCAT_INNER(a, b) a ## b
 #define UNIQUE_NAME(base) CONCAT(base, __LINE__)

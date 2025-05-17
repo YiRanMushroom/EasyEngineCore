@@ -6,6 +6,7 @@ module;
 module Easy.Platform.Impl.OpenGL.Renderer.FrameBuffer;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.FrameBuffer;
 
 namespace Easy {

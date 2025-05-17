@@ -5,7 +5,7 @@ module;
 module Easy.Renderer.Buffer;
 
 import Easy.Core.Basic;
-
+import Easy.Core.Log;
 import Easy.Renderer.RendererAPI;
 
 #ifdef EZ_RENDERER_OPENGL

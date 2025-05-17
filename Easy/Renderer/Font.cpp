@@ -9,6 +9,8 @@ module;
 
 module Easy.Renderer.Font;
 
+import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.MSDFData;
 import Easy.Renderer.Texture;
 

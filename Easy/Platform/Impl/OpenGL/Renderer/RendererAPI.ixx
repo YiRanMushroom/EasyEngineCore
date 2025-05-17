@@ -1,5 +1,6 @@
 export module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
+import Easy.Core.Basic;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;

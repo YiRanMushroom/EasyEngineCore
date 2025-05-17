@@ -15,17 +15,14 @@ endif ()
 
 file(GLOB_RECURSE Core_MODULES
         Easy/Core/*.ixx
-        Easy/Core/*.cppm
 )
 
 file(GLOB_RECURSE Core_SOURCES
         Easy/Core/*.cpp
 )
 
-# Events
 file(GLOB_RECURSE Event_MODULES
         Easy/Events/*.ixx
-        Easy/Events/*.cppm
 )
 
 file(GLOB_RECURSE Event_SOURCES
@@ -35,7 +32,6 @@ file(GLOB_RECURSE Event_SOURCES
 # Generated
 file(GLOB_RECURSE Generated_MODULES
         Easy/Generated/*.ixx
-        Easy/Generated/*.cppm
 )
 file(GLOB_RECURSE Generated_SOURCES
         Easy/Generated/*.cpp
@@ -44,7 +40,6 @@ file(GLOB_RECURSE Generated_SOURCES
 # ImGui
 file(GLOB_RECURSE ImGui_MODULES
         Easy/ImGui/*.ixx
-        Easy/ImGui/*.cppm
 )
 file(GLOB_RECURSE ImGui_SOURCES
         Easy/ImGui/*.cpp
@@ -53,7 +48,6 @@ file(GLOB_RECURSE ImGui_SOURCES
 # Math
 file(GLOB_RECURSE Math_MODULES
         Easy/Math/*.ixx
-        Easy/Math/*.cppm
 )
 file(GLOB_RECURSE Math_SOURCES
         Easy/Math/*.cpp
@@ -62,7 +56,6 @@ file(GLOB_RECURSE Math_SOURCES
 # Physics
 file(GLOB_RECURSE Physics_MODULES
         Easy/Physics/*.ixx
-        Easy/Physics/*.cppm
 )
 file(GLOB_RECURSE Physics_SOURCES
         Easy/Physics/*.cpp
@@ -71,7 +64,6 @@ file(GLOB_RECURSE Physics_SOURCES
 # Platform
 file(GLOB_RECURSE Platform_MODULES
         Easy/Platform/*.ixx
-        Easy/Platform/*.cppm
 )
 file(GLOB_RECURSE Platform_SOURCES
         Easy/Platform/*.cpp
@@ -80,7 +72,6 @@ file(GLOB_RECURSE Platform_SOURCES
 # Renderer
 file(GLOB_RECURSE Renderer_MODULES
         Easy/Renderer/*.ixx
-        Easy/Renderer/*.cppm
 )
 file(GLOB_RECURSE Renderer_SOURCES
         Easy/Renderer/*.cpp
@@ -89,7 +80,6 @@ file(GLOB_RECURSE Renderer_SOURCES
 # Scene
 file(GLOB_RECURSE Scene_MODULES
         Easy/Scene/*.ixx
-        Easy/Scene/*.cppm
 )
 file(GLOB_RECURSE Scene_SOURCES
         Easy/Scene/*.cpp
@@ -98,7 +88,6 @@ file(GLOB_RECURSE Scene_SOURCES
 # Scripting
 file(GLOB_RECURSE Scripting_MODULES
         Easy/Scripting/*.ixx
-        Easy/Scripting/*.cppm
 )
 file(GLOB_RECURSE Scripting_SOURCES
         Easy/Scripting/*.cpp
@@ -107,7 +96,6 @@ file(GLOB_RECURSE Scripting_SOURCES
 # Vendor
 file(GLOB_RECURSE Vendor_MODULES
         Easy/Vendor/*.ixx
-        Easy/Vendor/*.cppm
 )
 file(GLOB_RECURSE Vendor_SOURCES
         Easy/Vendor/*.cpp
@@ -115,12 +103,12 @@ file(GLOB_RECURSE Vendor_SOURCES
 
 file(GLOB VendorFiles vendor/glad/src/glad.c)
 
-file(GLOB_RECURSE OPENGL_SOURCES
-        Easy/Platform/Impl/OpenGL/*.cpp
-)
-
 file(GLOB_RECURSE OPENGL_MODULES
         Easy/Platform/Impl/OpenGL/*.ixx
+)
+
+file(GLOB_RECURSE OPENGL_SOURCES
+        Easy/Platform/Impl/OpenGL/*.cpp
 )
 
 file(GLOB_RECURSE Windows_MODULES
@@ -134,7 +122,6 @@ file(GLOB_RECURSE Windows_SOURCES
 # Project
 file(GLOB_RECURSE Project_MODULES
         Easy/Project/*.ixx
-        Easy/Project/*.cppm
 )
 file(GLOB_RECURSE Project_SOURCES
         Easy/Project/*.cpp
@@ -164,8 +151,8 @@ add_library(${PROJECT_NAME}
         ${Physics_SOURCES}
         ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
-        ${Platform_MODULES}
-        ${Platform_SOURCES}
+        ${Windows_SOURCES}
+        ${Windows_MODULES}
         ${Project_MODULES}
         ${Project_SOURCES}
         ${Renderer_MODULES}
@@ -176,8 +163,6 @@ add_library(${PROJECT_NAME}
         ${Scripting_SOURCES}
         ${Vendor_MODULES}
         ${Vendor_SOURCES}
-        ${Windows_MODULES}
-        ${Windows_SOURCES}
         ${ImGuiGLFW_Sources}
         vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx

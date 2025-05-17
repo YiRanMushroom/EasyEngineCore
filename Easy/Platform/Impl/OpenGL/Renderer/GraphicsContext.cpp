@@ -5,6 +5,8 @@ module;
 
 module Easy.Platform.Impl.OpenGL.Renderer.GraphicsContext;
 
+import Easy.Core.Log;
+
 namespace Easy {
 
     OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)

@@ -6,6 +6,7 @@ module;
 module Easy.Platform.Impl.OpenGL.ImGuiLayer;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.ImGui.ImGui;
 import Easy.Core.Application;
 import Easy.Core.KeyCodes;

@@ -7,6 +7,7 @@ module;
 module Easy.Platform.Impl.OpenGL.Renderer.VertexArray;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 
 namespace Easy {
     OpenGLVertexArray::OpenGLVertexArray() {

@@ -5,6 +5,7 @@ module;
 module Easy.Renderer.Shader;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Vendor.glm;
 import Easy.Renderer.RendererAPI;
 

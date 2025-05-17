@@ -1,11 +1,10 @@
 module;
 
 #include "MacroUtils.hpp"
-#include <glad/glad.h>
-
-module Easy.Core.Application;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
+import Easy.Core.Profile;
 import Easy.Core.Window;
 import Easy.Core.Layer;
 import Easy.Core.LayerStack;
@@ -15,6 +14,11 @@ import Easy.Events.ApplicationEvents;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Renderer.Renderer;
 import Easy.Scripting;
+import Easy.Renderer.RenderCommand;
+
+module Easy.Core.Application;
+
+
 
 namespace Easy {
     Application::Application(AppInfo info) : m_Specification{
@@ -127,7 +131,7 @@ namespace Easy {
         }
 
         m_Minimized = false;
-        glViewport(0, 0, e.GetWidth(), e.GetHeight());
+        RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
         return false;
     }
