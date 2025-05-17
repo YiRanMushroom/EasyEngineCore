@@ -7,6 +7,12 @@ set(PROJECT_NAME EasyEngineCore)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+if (MSVC)
+    # use static runtime library
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+else ()
+endif ()
+
 file(GLOB_RECURSE Core_MODULES
         Easy/Core/*.ixx
         Easy/Core/*.cppm
@@ -109,25 +115,20 @@ file(GLOB_RECURSE Vendor_SOURCES
 
 file(GLOB VendorFiles vendor/glad/src/glad.c)
 
-file(GLOB_RECURSE PreCompiledHeaders
-        Easy/PCH/*.hpp
-)
-
 file(GLOB_RECURSE OPENGL_SOURCES
-        Easy/Platform/OpenGLEngineContext.cpp
+        Easy/Platform/Impl/OpenGL/*.cpp
 )
 
 file(GLOB_RECURSE OPENGL_MODULES
-        Easy/Platform/OpenGLEngineContext.ixx
+        Easy/Platform/Impl/OpenGL/*.ixx
 )
 
 file(GLOB_RECURSE Windows_MODULES
-        Easy/Platform/Windows/*.ixx
-        Easy/Platform/Windows/*.cppm
+        Easy/Platform/Impl/Windows/*.ixx
 )
 
 file(GLOB_RECURSE Windows_SOURCES
-        Easy/Platform/Windows/*.cpp
+        Easy/Platform/Impl/Windows/*.cpp
 )
 
 # Project
@@ -178,6 +179,7 @@ add_library(${PROJECT_NAME}
         ${Windows_MODULES}
         ${Windows_SOURCES}
         ${ImGuiGLFW_Sources}
+        vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx
 )
 
@@ -249,7 +251,6 @@ target_include_directories(${PROJECT_NAME}
         vendor/msdf-atlas-gen/msdf-atlas-gen
         vendor/msdf-atlas-gen/msdfgen
         vendor/msdf-atlas-gen/msdfgen/include
-#        vendor/mono/include
 )
 
 
@@ -257,6 +258,7 @@ target_link_libraries(${PROJECT_NAME}
         PUBLIC
         glfw
         spdlog::spdlog
+        imgui::imgui
         glm::glm
         shaderc
         SPIRV

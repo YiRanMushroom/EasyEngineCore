@@ -6,7 +6,7 @@ module;
 
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
-import Easy.Core;
+import Easy.Core.Application;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
