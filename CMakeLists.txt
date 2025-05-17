@@ -196,17 +196,17 @@ target_compile_definitions(${PROJECT_NAME}
         "_CRT_SECURE_NO_WARNINGS"
 )
 
-target_compile_options(${PROJECT_NAME}
-        PUBLIC
-        #        -pedantic
-        #        -Wall
-        #        -Wextra
-        #        -Wno-sign-conversion
-        #        -Wconversion
-        -Wno-macro-redefined
-        -Wno-deprecated-declarations
-        #        -Werror
-)
+#target_compile_options(${PROJECT_NAME}
+#        PUBLIC
+#        #        -pedantic
+#        #        -Wall
+#        #        -Wextra
+#        #        -Wno-sign-conversion
+#        #        -Wconversion
+#        -Wno-macro-redefined
+#        -Wno-deprecated-declarations
+#        #        -Werror
+#)
 
 target_sources(${PROJECT_NAME}
         PUBLIC
@@ -230,7 +230,6 @@ target_sources(${PROJECT_NAME}
         Easy/mod.ixx
 )
 
-add_subdirectory(vendor/std_module)
 add_subdirectory(vendor/glfw)
 add_subdirectory(vendor/spdlog)
 add_subdirectory(vendor/glm)
@@ -245,8 +244,6 @@ add_subdirectory(vendor/LuaJIT)
 set(SOL2_LUA_VERSION "luajit-2.1")
 add_subdirectory(vendor/sol2)
 
-add_subdirectory(vendor/jni-bind)
-
 set(BOX2D_BUILD_UNIT_TESTS OFF CACHE BOOL "Build the Box2D unit tests" FORCE)
 set(BOX2D_BUILD_TESTBED OFF CACHE BOOL "Build the Box2D testbed" FORCE)
 add_subdirectory(vendor/box2d)
@@ -255,7 +252,8 @@ set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
 add_subdirectory(vendor/shaderc)
 
 add_subdirectory(vendor/msdf-atlas-gen)
-add_subdirectory(vendor/libcuckoo)
+
+#add_subdirectory(vendor/libcuckoo)
 
 #target_precompile_headers(${PROJECT_NAME}
 #        PUBLIC
@@ -280,7 +278,6 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
-        std_module
         glfw
         spdlog::spdlog
         glm::glm
@@ -299,6 +296,4 @@ target_link_libraries(${PROJECT_NAME}
         box2d
         libluajit
         sol2
-        jni_bind
-        libcuckoo::libcuckoo
 )

@@ -1,6 +1,6 @@
 export module Easy.Core.KeyCodes;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 
 namespace Easy {
 	namespace Key {

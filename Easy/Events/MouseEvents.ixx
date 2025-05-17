@@ -4,7 +4,7 @@ module;
 
 export module Easy.Events.MouseEvents;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 export import Easy.Core.MouseCodes;
 export import Easy.Events.Event;
 

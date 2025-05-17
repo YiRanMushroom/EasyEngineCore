@@ -363,7 +363,7 @@ void main()
 )";
 
     void Init() {
-        Easy::create_directory("assets/shaders");
+        Easy::CreateDirectory("assets/shaders");
     	PeakFile("assets/shaders/FlatColor.glsl", FlatColorSrc);
     	PeakFile("assets/shaders/Renderer2D_Circle.glsl", Renderer2D_CircleSrc);
     	PeakFile("assets/shaders/Renderer2D_Line.glsl", Renderer2D_LineSrc);

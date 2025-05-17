@@ -1,6 +1,6 @@
 export module Easy.Core.MouseCodes;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 
 namespace Easy {
     namespace Mouse {

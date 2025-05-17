@@ -4,7 +4,7 @@ module;
 
 export module Easy.Events.ApplicationEvents;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 export import Easy.Events.Event;
 
 namespace Easy {
