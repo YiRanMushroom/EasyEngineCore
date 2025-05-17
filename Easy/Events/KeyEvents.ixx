@@ -4,7 +4,7 @@ module;
 
 export module Easy.Events.KeyEvents;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 export import Easy.Core.KeyCodes;
 export import Easy.Events.Event;
 

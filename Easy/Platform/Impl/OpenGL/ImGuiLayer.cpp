@@ -6,13 +6,13 @@ module;
 module Easy.Platform.Impl.OpenGL.ImGuiLayer;
 
 import Easy.Core.Basic;
+import Easy.ImGui.ImGui;
 import Easy.Core.Application;
 import Easy.Core.KeyCodes;
 import Easy.Events.KeyEvents;
 import Easy.Core.Layer;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Events.Event;
-import Easy.Platform.Impl.OpenGL.ImGui;
 
 namespace Easy {
     OpenGLImGuiLayer::OpenGLImGuiLayer() {}

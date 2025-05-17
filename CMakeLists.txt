@@ -140,13 +140,6 @@ file(GLOB_RECURSE Project_SOURCES
 )
 
 file(GLOB ImGuiGLFW_Sources
-        vendor/imgui/imgui.cpp
-        vendor/imgui/imgui_draw.cpp
-        vendor/imgui/imgui_widgets.cpp
-        vendor/imgui/imgui_demo.cpp
-        vendor/imgui/imgui_tables.cpp
-        vendor/imgui/backends/imgui_impl_glfw.cpp
-        vendor/imgui/backends/imgui_impl_opengl3.cpp
         vendor/ImGuizmo/GraphEditor.cpp
         vendor/ImGuizmo/ImCurveEdit.cpp
         vendor/ImGuizmo/ImGradient.cpp
@@ -196,18 +189,6 @@ target_compile_definitions(${PROJECT_NAME}
         "_CRT_SECURE_NO_WARNINGS"
 )
 
-#target_compile_options(${PROJECT_NAME}
-#        PUBLIC
-#        #        -pedantic
-#        #        -Wall
-#        #        -Wextra
-#        #        -Wno-sign-conversion
-#        #        -Wconversion
-#        -Wno-macro-redefined
-#        -Wno-deprecated-declarations
-#        #        -Werror
-#)
-
 target_sources(${PROJECT_NAME}
         PUBLIC
         FILE_SET cxx_modules
@@ -227,6 +208,7 @@ target_sources(${PROJECT_NAME}
         ${Scripting_MODULES}
         ${Vendor_MODULES}
         ${Windows_MODULES}
+        vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx
 )
 
@@ -236,8 +218,10 @@ add_subdirectory(vendor/glm)
 add_subdirectory(vendor/SPIRV-Headers)
 add_subdirectory(vendor/SPIRV-Tools)
 add_subdirectory(vendor/SPIRV-Cross)
+set(ENABLE_PCH OFF)
 add_subdirectory(vendor/glslang)
 add_subdirectory(vendor/yaml-cpp)
+add_subdirectory(vendor/imgui)
 
 add_subdirectory(vendor/LuaJIT)
 
@@ -252,13 +236,6 @@ set(SHADERC_ENABLE_TESTS OFF CACHE BOOL "Enable Shaderc tests")
 add_subdirectory(vendor/shaderc)
 
 add_subdirectory(vendor/msdf-atlas-gen)
-
-#add_subdirectory(vendor/libcuckoo)
-
-#target_precompile_headers(${PROJECT_NAME}
-#        PUBLIC
-#        ${PreCompiledHeaders}
-#)
 
 target_include_directories(${PROJECT_NAME}
         PUBLIC

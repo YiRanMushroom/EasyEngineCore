@@ -33,8 +33,6 @@ namespace Easy {
         // ScriptEngine::Init();
         Log::Init();
 
-        ScriptingEngine::Init();
-
         if (!m_Specification.WorkingDirectory.empty())
             std::filesystem::current_path(m_Specification.WorkingDirectory);
 
@@ -53,7 +51,6 @@ namespace Easy {
     Application::~Application() {
         m_LayerStack.clear();
         Renderer::Shutdown();
-        ScriptingEngine::Shutdown();
     }
 
     void Application::PushLayer(Arc<Layer> layer) {
