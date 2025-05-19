@@ -1,11 +1,11 @@
 #pragma once
 
-#include "SceneInternal.h"
-#include "ComponentsInternal.h"
+import <Core/MacroUtils.hpp>;
+import "SceneInternal.h";
+import "ComponentsInternal.h";
 
 import Easy.Vendor.entt;
 import Easy.Core.UUID;
-import <Core/MacroUtils.hpp>;
 
 namespace Easy {
 

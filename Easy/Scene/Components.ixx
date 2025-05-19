@@ -1,7 +1,7 @@
 module;
 
-#include "ComponentsInternal.h"
-#include "ScriptableEntityInternal.h"
+export import "ComponentsInternal.h";
+export import "ScriptableEntityInternal.h";
 
 namespace Easy {
     template<typename T>

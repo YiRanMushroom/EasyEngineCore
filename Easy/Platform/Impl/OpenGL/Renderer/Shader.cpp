@@ -1,10 +1,10 @@
 module;
 
-#include <shaderc/shaderc.hpp>
-#include <spirv_cross.hpp>
-#include <spirv_glsl.hpp>
-#include <glad/glad.h>
-#include <Core/MacroUtils.hpp>
+import <shaderc/shaderc.hpp>;
+import <spirv_cross.hpp>;
+import <spirv_glsl.hpp>;
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 
 module Easy.Platform.Impl.OpenGL.Renderer.Shader;
 

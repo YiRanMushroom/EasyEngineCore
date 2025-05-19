@@ -1,6 +1,6 @@
 module;
 
-#include "SceneInternal.h"
+import "SceneInternal.h";
 
 export module Easy.Scene.Scene;
 

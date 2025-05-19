@@ -1,12 +1,12 @@
 module;
 
+import <Core/MacroUtils.hpp>;
+
 module Easy.Renderer.Shader;
 
-import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Vendor.glm;
-
 import Easy.Renderer.RendererAPI;
 
 #if defined(EZ_RENDERER_OPENGL)

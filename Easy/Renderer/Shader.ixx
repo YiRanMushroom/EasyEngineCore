@@ -1,6 +1,12 @@
 export module Easy.Renderer.Shader;
 
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
+import <shaderc/shaderc.hpp>;
+import <spirv_cross.hpp>;
+import <spirv_glsl.hpp>;
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Vendor.glm;
 
 namespace Easy {

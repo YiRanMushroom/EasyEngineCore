@@ -1,6 +1,3 @@
-module;
-
-
 module Easy.Scene.SceneCamera;
 
 import <Core/MacroUtils.hpp>;

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "SceneInternal.h"
-
+import "SceneInternal.h";
 import Easy.Core.Basic;
 
 namespace Easy {

@@ -1,6 +1,6 @@
 module;
 
-#include "EntityInternal.h"
+import "EntityInternal.h";
 
 export module Easy.Scene.Entity;
 
