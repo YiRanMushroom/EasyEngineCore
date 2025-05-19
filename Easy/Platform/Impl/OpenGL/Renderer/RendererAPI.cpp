@@ -1,9 +1,15 @@
 module;
 
-module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
-
 import <Core/MacroUtils.hpp>;
 import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
+
+module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
+
+import Easy.Core.Application;
+import Easy.Core.Basic;
+import Easy.Renderer.Shader;
+import Easy.Renderer.VertexArray;
+import Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
 namespace Easy {
     void OpenGLMessageCallback(

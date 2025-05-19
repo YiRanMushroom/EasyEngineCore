@@ -119,6 +119,13 @@ file(GLOB_RECURSE Windows_SOURCES
         Easy/Platform/Impl/Windows/*.cpp
 )
 
+# Platform
+file(GLOB_RECURSE Platform_SOURCES
+)
+file(GLOB_RECURSE Platform_MODULES
+        Easy/Platform/mod.ixx
+)
+
 # Project
 file(GLOB_RECURSE Project_MODULES
         Easy/Project/*.ixx
@@ -153,6 +160,8 @@ add_library(${PROJECT_NAME}
         ${OPENGL_MODULES}
         ${Windows_SOURCES}
         ${Windows_MODULES}
+        ${Platform_MODULES}
+        ${Platform_SOURCES}
         ${Project_MODULES}
         ${Project_SOURCES}
         ${Renderer_MODULES}
@@ -186,19 +195,34 @@ target_sources(${PROJECT_NAME}
         TYPE CXX_MODULES
         FILES
         ${Core_MODULES}
+        ${Core_SOURCES}
         ${Event_MODULES}
+        ${Event_SOURCES}
         ${Generated_MODULES}
+        ${Generated_SOURCES}
         ${ImGui_MODULES}
+        ${ImGui_SOURCES}
         ${Math_MODULES}
+        ${Math_SOURCES}
         ${Physics_MODULES}
+        ${Physics_SOURCES}
+        ${OPENGL_SOURCES}
         ${OPENGL_MODULES}
-        ${Platform_MODULES}
-        ${Project_MODULES}
-        ${Renderer_MODULES}
-        ${Scene_MODULES}
-        ${Scripting_MODULES}
-        ${Vendor_MODULES}
+        ${Windows_SOURCES}
         ${Windows_MODULES}
+        ${Platform_MODULES}
+        ${Platform_SOURCES}
+        ${Project_MODULES}
+        ${Project_SOURCES}
+        ${Renderer_MODULES}
+        ${Renderer_SOURCES}
+        ${Scene_MODULES}
+        ${Scene_SOURCES}
+        ${Scripting_MODULES}
+        ${Scripting_SOURCES}
+        ${Vendor_MODULES}
+        ${Vendor_SOURCES}
+        ${ImGuiGLFW_Sources}
         vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx
 )

@@ -1,19 +1,10 @@
 export module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
-import <Core/MacroUtils.hpp>;
-import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
-
-import Easy.Core.Application;
-import Easy.Core.Basic;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
 import Easy.Core.Basic;
 import Easy.Vendor.glm;
-
-import Easy.Renderer.Shader;
-import Easy.Renderer.VertexArray;
-import Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
 namespace Easy {
     export class OpenGLRendererAPI : public RendererAPI {
