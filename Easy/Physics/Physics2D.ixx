@@ -4,7 +4,7 @@ module;
 
 export module Easy.Physics.Physics2D;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 
 namespace Easy::Utils {
     export b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType) {

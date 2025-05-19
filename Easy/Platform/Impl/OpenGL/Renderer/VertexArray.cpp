@@ -2,10 +2,9 @@ module;
 
 #include <glad/glad.h>
 
-#include "Core/MacroUtils.hpp"
-
 module Easy.Platform.Impl.OpenGL.Renderer.VertexArray;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 

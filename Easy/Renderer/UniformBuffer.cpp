@@ -2,7 +2,7 @@ module;
 
 module Easy.Renderer.UniformBuffer;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 
 #ifdef EZ_RENDERER_OPENGL
 import Easy.Platform.Impl.OpenGL.Renderer.UniformBuffer;

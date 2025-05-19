@@ -6,7 +6,7 @@ module Easy.Renderer.Renderer2D;
 
 import Easy.Vendor.glm;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;

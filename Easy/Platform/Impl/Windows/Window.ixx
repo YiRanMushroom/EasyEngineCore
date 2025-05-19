@@ -1,10 +1,9 @@
 module;
-
-#include "Core/MacroUtils.hpp"
 #include "GLFW/glfw3.h"
 
 export module Easy.Platform.Impl.Windows.Window;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Events.Event;

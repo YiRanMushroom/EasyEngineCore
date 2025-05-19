@@ -1,7 +1,5 @@
 module;
 
-// #include "MacroUtils.hpp"
-
 export module Easy.Core.Application;
 
 import Easy.Core.Basic;

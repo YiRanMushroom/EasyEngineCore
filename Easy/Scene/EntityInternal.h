@@ -5,7 +5,7 @@
 
 import Easy.Vendor.entt;
 import Easy.Core.UUID;
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 
 namespace Easy {
 

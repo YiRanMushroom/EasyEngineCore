@@ -4,7 +4,7 @@ module;
 
 export module Easy.Platform.Impl.OpenGL.Renderer.FrameBuffer;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Renderer.FrameBuffer;
 

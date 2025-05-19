@@ -2,7 +2,7 @@ module;
 
 export module Easy.Project.Project;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 
 namespace Easy {

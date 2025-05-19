@@ -1,7 +1,7 @@
 module;
 export module Easy.Core.Input;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.KeyCodes;
 import Easy.Core.MouseCodes;

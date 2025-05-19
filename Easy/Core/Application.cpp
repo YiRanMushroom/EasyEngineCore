@@ -1,7 +1,8 @@
 module;
 
-#include "MacroUtils.hpp"
+module Easy.Core.Application;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Core.Profile;
@@ -15,10 +16,6 @@ import Easy.ImGui.ImGuiLayer;
 import Easy.Renderer.Renderer;
 import Easy.Scripting;
 import Easy.Renderer.RenderCommand;
-
-module Easy.Core.Application;
-
-
 
 namespace Easy {
     Application::Application(AppInfo info) : m_Specification{

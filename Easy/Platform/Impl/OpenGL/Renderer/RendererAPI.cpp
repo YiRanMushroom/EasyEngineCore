@@ -1,11 +1,7 @@
-module;
-
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 import Easy.Core.Application;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;

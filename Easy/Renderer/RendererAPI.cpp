@@ -1,8 +1,7 @@
 module;
-#include "Core/MacroUtils.hpp"
-
 module Easy.Renderer.RendererAPI;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Core.ApplicationContext;

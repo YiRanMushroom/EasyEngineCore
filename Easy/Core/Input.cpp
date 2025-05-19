@@ -1,9 +1,8 @@
 module;
 
-#include "MacroUtils.hpp"
-
 module Easy.Core.Input;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Window;
 import Easy.Core.Basic;
 

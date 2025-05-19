@@ -3,7 +3,7 @@ module;
 
 module Easy.Scene.SceneCamera;
 
-import <Core/MacroUtils.hu>;
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;
 import Easy.Vendor.glm;
