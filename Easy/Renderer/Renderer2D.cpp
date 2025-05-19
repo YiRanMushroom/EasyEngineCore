@@ -1,13 +1,9 @@
-module;
-
-#include <cstring>
-
 module Easy.Renderer.Renderer2D;
 
-import Easy.Vendor.glm;
-
+import <cstring>;
 import <Core/MacroUtils.hpp>;
 
+import Easy.Vendor.glm;
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;
 import Easy.Renderer.OrthographicCamera;
