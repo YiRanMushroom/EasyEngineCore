@@ -256,6 +256,8 @@ namespace Easy {
     }
 
     void OpenGLShader::CreateProgram() {
+        GLint isLinked = GL_FALSE;
+
         GLuint program = glCreateProgram();
 
         std::vector<GLuint> shaderIDs;
@@ -268,7 +270,6 @@ namespace Easy {
 
         glLinkProgram(program);
 
-        GLint isLinked;
         glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
         if (isLinked == GL_FALSE) {
             GLint maxLength;
@@ -282,14 +283,14 @@ namespace Easy {
 
             for (auto id: shaderIDs)
                 glDeleteShader(id);
-        }
+        } else {
+            for (auto id: shaderIDs) {
+                glDetachShader(program, id);
+                glDeleteShader(id);
+            }
 
-        for (auto id: shaderIDs) {
-            glDetachShader(program, id);
-            glDeleteShader(id);
+            m_RendererID = program;
         }
-
-        m_RendererID = program;
     }
 
     void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t> &shaderData) {
