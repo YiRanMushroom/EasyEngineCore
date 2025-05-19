@@ -1,9 +1,9 @@
 module;
 
-#include <Core/MacroUtils.hpp>
 
 module Easy.Scene.SceneCamera;
 
+import <Core/MacroUtils.hu>;
 import Easy.Core.Basic;
 import Easy.Renderer.Camera;
 import Easy.Vendor.glm;

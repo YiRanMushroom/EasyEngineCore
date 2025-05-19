@@ -6,8 +6,9 @@ module;
 #include "glm/fwd.hpp"
 
 module Easy.Platform.Impl.OpenGL.Renderer.Texture;
-import Easy.Core.Log;
 import Easy.Core.Basic;
+import Easy.Core.Log;
+
 
 namespace Easy {
     namespace Utils {

@@ -1,9 +1,8 @@
 module;
 
-#include <Core/MacroUtils.hpp>
-
 export module Easy.Renderer.Buffer;
 
+import <Core/MacroUtils.hu>;
 import Easy.Core.Basic;
 
 namespace Easy {

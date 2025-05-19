@@ -1,9 +1,8 @@
 module;
 
-#include <Core/MacroUtils.hpp>
-
 module Easy.Renderer.Shader;
 
+import <Core/MacroUtils.hu>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Vendor.glm;

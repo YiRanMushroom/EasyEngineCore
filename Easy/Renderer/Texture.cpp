@@ -1,9 +1,8 @@
 module;
 
-#include "Core/MacroUtils.hpp"
-
 module Easy.Renderer.Texture;
 
+import <Core/MacroUtils.hu>;
 import Easy.Core.Basic;
 import Easy.Renderer.RendererAPI;
 #ifdef EZ_RENDERER_OPENGL

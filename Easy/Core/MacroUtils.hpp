@@ -36,10 +36,24 @@
 #define EZ_CRITICAL(...)      ::Easy::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 #if EZ_ENABLE_ASSERTS
-// #define EZ_CORE_ASSERT(x, ...) { if(!(x)) { EZ_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); EZ_DEBUGBREAK(); } }
-#define EZ_CORE_ASSERT(...) assert(__VA_ARGS__)
-// #define EZ_ASSERT(x, ...) { if(!(x)) { EZ_ERROR("Assertion Failed: {0}", __VA_ARGS__); } }
-#define EZ_ASSERT(...) assert(__VA_ARGS__)
+#ifdef __clang__
+    #define EZ_CORE_ASSERT_MESSAGE_INTERNAL(...) EZ_CORE_ERROR("Assertion Failed", ##__VA_ARGS__)
+    #define EZ_ASSERT_MESSAGE_INTERNAL(...)      EZ_ERROR("Assertion Failed", ##__VA_ARGS__)
+#else
+    #define EZ_CORE_ASSERT_MESSAGE_INTERNAL(...) EZ_CORE_ERROR("Assertion Failed" __VA_OPT__(,) __VA_ARGS__)
+    #define EZ_ASSERT_MESSAGE_INTERNAL(...)      EZ_ERROR("Assertion Failed" __VA_OPT__(,) __VA_ARGS__)
+#endif
+
+#ifdef EZ_ENABLE_ASSERTS
+    #define EZ_CORE_ASSERT(x, ...) \
+    do { if (!(x)) { EZ_CORE_ASSERT_MESSAGE_INTERNAL(__VA_ARGS__); EZ_DEBUGBREAK(); } } while(0)
+    #define EZ_ASSERT(x, ...) \
+    do { if (!(x)) { EZ_ASSERT_MESSAGE_INTERNAL(__VA_ARGS__); EZ_DEBUGBREAK(); } } while(0)
+#else
+    #define EZ_CORE_ASSERT(x, ...)
+    #define EZ_ASSERT(x, ...)
+#endif
+
 #else
 #define EZ_CORE_ASSERT(x, ...)
 #define EZ_ASSERT(x, ...)

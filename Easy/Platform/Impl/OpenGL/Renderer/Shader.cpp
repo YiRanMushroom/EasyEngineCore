@@ -316,7 +316,7 @@ namespace Easy {
 
     void OpenGLShader::ShaderDeleter::operator()(uint32_t shader) const {
         EZ_CORE_INFO("Deleting shader {0}", shader);
-        glDeleteShader(shader);
+        glDeleteProgram(shader);
     }
 
     void OpenGLShader::Bind() const {

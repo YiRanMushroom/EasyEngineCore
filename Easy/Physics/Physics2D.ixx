@@ -1,9 +1,10 @@
 module;
-#include "Core/MacroUtils.hpp"
 #include "box2d/b2_body.h"
 #include "Scene/ComponentsInternal.h"
 
 export module Easy.Physics.Physics2D;
+
+import <Core/MacroUtils.hu>;
 
 namespace Easy::Utils {
     export b2BodyType Rigidbody2DTypeToBox2DBody(Rigidbody2DComponent::BodyType bodyType) {

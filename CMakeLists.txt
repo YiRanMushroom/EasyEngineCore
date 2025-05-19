@@ -168,6 +168,10 @@ add_library(${PROJECT_NAME}
         Easy/mod.ixx
 )
 
+if (MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor)
+endif ()
+
 target_compile_definitions(${PROJECT_NAME}
         PUBLIC
         "EZ_DEBUG=1"

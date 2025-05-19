@@ -2,12 +2,10 @@ module;
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <Core/MacroUtils.hpp>
 
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
-import Easy.Core.Log;
-import Easy.Core.Basic;
+import <Core/MacroUtils.hu>;
 import Easy.Core.Application;
 import Easy.Renderer.RendererAPI;
 import Easy.Renderer.Shader;
