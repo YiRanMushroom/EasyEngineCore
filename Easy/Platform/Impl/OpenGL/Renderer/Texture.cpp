@@ -1,15 +1,9 @@
 module;
 
-#include <stb_image.h>
-#include <OpenGL.hpp>
-#include "glm/fwd.hpp"
-
 module Easy.Platform.Impl.OpenGL.Renderer.Texture;
 
 import <Core/MacroUtils.hpp>;
-import Easy.Core.Basic;
-import Easy.Core.Log;
-
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 
 namespace Easy {
     namespace Utils {

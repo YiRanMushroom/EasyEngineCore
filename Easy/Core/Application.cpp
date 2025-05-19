@@ -1,8 +1,7 @@
 module;
-
+import <Core/MacroUtils.hpp>;
 module Easy.Core.Application;
 
-import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Core.Profile;

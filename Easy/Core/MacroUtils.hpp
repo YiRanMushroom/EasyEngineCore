@@ -1,7 +1,5 @@
-#pragma once
-
-import Easy.Core.Basic;
-import Easy.Core.Log;
+#ifndef EZ_CORE_MACRO_UTILS_HPP
+#define EZ_CORE_MACRO_UTILS_HPP
 
 #define CONCAT(a, b) CONCAT_INNER(a, b)
 #define CONCAT_INNER(a, b) a ## b
@@ -101,3 +99,8 @@ ms \
 #define EZ_PROFILE_FRAME_END()
 #define EZ_PROFILE_FUNCTION()
 #endif
+
+import Easy.Core.Basic;
+import Easy.Core.Log;
+
+#endif // EZ_CORE_MACRO_UTILS_HPP

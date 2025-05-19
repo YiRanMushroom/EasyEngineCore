@@ -169,7 +169,7 @@ add_library(${PROJECT_NAME}
 )
 
 if (MSVC)
-    target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor)
+    target_compile_options(${PROJECT_NAME} PRIVATE /Zc:preprocessor /Wv:19.23)
 endif ()
 
 target_compile_definitions(${PROJECT_NAME}
