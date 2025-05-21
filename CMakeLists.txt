@@ -145,34 +145,34 @@ file(GLOB ImGuiGLFW_Sources
 add_library(${PROJECT_NAME}
         ${VendorFiles}
         ${Core_MODULES}
-        ${Core_SOURCES}
+#        ${Core_SOURCES}
         ${Event_MODULES}
-        ${Event_SOURCES}
+#        ${Event_SOURCES}
         ${Generated_MODULES}
-        ${Generated_SOURCES}
+#        ${Generated_SOURCES}
         ${ImGui_MODULES}
-        ${ImGui_SOURCES}
+#        ${ImGui_SOURCES}
         ${Math_MODULES}
-        ${Math_SOURCES}
+#        ${Math_SOURCES}
         ${Physics_MODULES}
-        ${Physics_SOURCES}
-        ${OPENGL_SOURCES}
+#        ${Physics_SOURCES}
         ${OPENGL_MODULES}
-        ${Windows_SOURCES}
+#        ${OPENGL_SOURCES}
         ${Windows_MODULES}
+        #${Windows_SOURCES}
         ${Platform_MODULES}
-        ${Platform_SOURCES}
+#        ${Platform_SOURCES}
         ${Project_MODULES}
-        ${Project_SOURCES}
+#        ${Project_SOURCES}
         ${Renderer_MODULES}
-        ${Renderer_SOURCES}
+#        ${Renderer_SOURCES}
         ${Scene_MODULES}
-        ${Scene_SOURCES}
+#        ${Scene_SOURCES}
         ${Scripting_MODULES}
-        ${Scripting_SOURCES}
+#        ${Scripting_SOURCES}
         ${Vendor_MODULES}
-        ${Vendor_SOURCES}
-        ${ImGuiGLFW_Sources}
+#        ${Vendor_SOURCES}
+#        ${ImGuiGLFW_Sources}
         vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx
 )
@@ -195,34 +195,34 @@ target_sources(${PROJECT_NAME}
         TYPE CXX_MODULES
         FILES
         ${Core_MODULES}
-        ${Core_SOURCES}
+        #        ${Core_SOURCES}
         ${Event_MODULES}
-        ${Event_SOURCES}
+        #        ${Event_SOURCES}
         ${Generated_MODULES}
-        ${Generated_SOURCES}
+        #        ${Generated_SOURCES}
         ${ImGui_MODULES}
-        ${ImGui_SOURCES}
+        #        ${ImGui_SOURCES}
         ${Math_MODULES}
-        ${Math_SOURCES}
+        #        ${Math_SOURCES}
         ${Physics_MODULES}
-        ${Physics_SOURCES}
+        #        ${Physics_SOURCES}
         ${OPENGL_MODULES}
-        ${OPENGL_SOURCES}
+        #        ${OPENGL_SOURCES}
         ${Windows_MODULES}
-        ${Windows_SOURCES}
+        #${Windows_SOURCES}
         ${Platform_MODULES}
-        ${Platform_SOURCES}
+        #        ${Platform_SOURCES}
         ${Project_MODULES}
-        ${Project_SOURCES}
+        #        ${Project_SOURCES}
         ${Renderer_MODULES}
-        ${Renderer_SOURCES}
+        #        ${Renderer_SOURCES}
         ${Scene_MODULES}
-        ${Scene_SOURCES}
+        #        ${Scene_SOURCES}
         ${Scripting_MODULES}
-        ${Scripting_SOURCES}
+        #        ${Scripting_SOURCES}
         ${Vendor_MODULES}
-        ${Vendor_SOURCES}
-        ${ImGuiGLFW_Sources}
+        #        ${Vendor_SOURCES}
+        #        ${ImGuiGLFW_Sources}
         vendor/imgui/imgui_opengl3.ixx
         Easy/mod.ixx
 )
