@@ -24,7 +24,7 @@ namespace Easy {
     };
 
     export struct ApplicationSpecification {
-        std::string Name = "Hazel Application";
+        std::string Name = "Easy Application";
         std::string WorkingDirectory;
         ApplicationCommandLineArgs CommandLineArgs;
     };
