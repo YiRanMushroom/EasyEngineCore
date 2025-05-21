@@ -13,10 +13,10 @@ extern "C" {
     struct _MonoString;
 }
 
-#include <cstring>
+import <cstring>;
 
-#include "Scene/SceneInternal.h"
-#include "Scene/EntityInternal.h"
+import "Scene/SceneInternal.h";
+import "Scene/EntityInternal.h";
 
 export module Easy.Script.ScriptingEngine;
 

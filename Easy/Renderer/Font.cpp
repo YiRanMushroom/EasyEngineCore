@@ -2,10 +2,10 @@ module;
 
 #undef INFINITE
 
-#include "msdf-atlas-gen.h"
-#include "FontGeometry.h"
-#include "GlyphGeometry.h"
-#include "Core/MacroUtils.hpp"
+import "msdf-atlas-gen.h";
+import "FontGeometry.h";
+import "GlyphGeometry.h";
+import "Core/MacroUtils.hpp";
 
 module Easy.Renderer.Font;
 

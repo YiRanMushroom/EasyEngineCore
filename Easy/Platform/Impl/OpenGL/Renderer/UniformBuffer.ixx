@@ -1,5 +1,3 @@
-module;
-
 export module Easy.Platform.Impl.OpenGL.Renderer.UniformBuffer;
 
 import Easy.Core.Basic;

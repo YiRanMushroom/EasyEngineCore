@@ -1,9 +1,6 @@
-module;
-
-#include <OpenGL.hpp>
-
 export module Easy.Platform.Impl.OpenGL.Renderer.GraphicsContext;
 
+import "Platform/Impl/OpenGL/GLFW_OpenGL.hpp";
 import Easy.Core.Basic;
 import Easy.Renderer.GraphicsContext;
 

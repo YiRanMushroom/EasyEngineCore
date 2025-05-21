@@ -1,9 +1,9 @@
 module;
 
-module Easy.Platform.Impl.OpenGL.Renderer.Texture;
-
 import <Core/MacroUtils.hpp>;
 import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
+
+module Easy.Platform.Impl.OpenGL.Renderer.Texture;
 
 namespace Easy {
     namespace Utils {
