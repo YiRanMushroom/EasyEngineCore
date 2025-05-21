@@ -1,17 +1,14 @@
 module;
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-#include <Core/MacroUtils.hpp>
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 
 module Easy.Platform.Impl.OpenGL.Renderer.RendererAPI;
 
 import Easy.Core.Application;
-import Easy.Renderer.RendererAPI;
+import Easy.Core.Basic;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
-import Easy.Core.Basic;
-import Easy.Vendor.glm;
 import Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
 namespace Easy {

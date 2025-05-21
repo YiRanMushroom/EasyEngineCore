@@ -1,12 +1,15 @@
 module;
 
-#include <shaderc/shaderc.hpp>
-#include <spirv_cross.hpp>
-#include <spirv_glsl.hpp>
-#include <glad/glad.h>
-#include <Core/MacroUtils.hpp>
+import <shaderc/shaderc.hpp>;
+import <spirv_cross.hpp>;
+import <spirv_glsl.hpp>;
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 
 module Easy.Platform.Impl.OpenGL.Renderer.Shader;
+
+import Easy.Core.Basic;
+import Easy.Core.Log;
 
 namespace Easy {
     namespace Utils {
@@ -253,6 +256,8 @@ namespace Easy {
     }
 
     void OpenGLShader::CreateProgram() {
+        GLint isLinked = GL_FALSE;
+
         GLuint program = glCreateProgram();
 
         std::vector<GLuint> shaderIDs;
@@ -265,7 +270,6 @@ namespace Easy {
 
         glLinkProgram(program);
 
-        GLint isLinked;
         glGetProgramiv(program, GL_LINK_STATUS, &isLinked);
         if (isLinked == GL_FALSE) {
             GLint maxLength;
@@ -279,14 +283,14 @@ namespace Easy {
 
             for (auto id: shaderIDs)
                 glDeleteShader(id);
-        }
+        } else {
+            for (auto id: shaderIDs) {
+                glDetachShader(program, id);
+                glDeleteShader(id);
+            }
 
-        for (auto id: shaderIDs) {
-            glDetachShader(program, id);
-            glDeleteShader(id);
+            m_RendererID = program;
         }
-
-        m_RendererID = program;
     }
 
     void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t> &shaderData) {
@@ -313,7 +317,7 @@ namespace Easy {
 
     void OpenGLShader::ShaderDeleter::operator()(uint32_t shader) const {
         EZ_CORE_INFO("Deleting shader {0}", shader);
-        glDeleteShader(shader);
+        glDeleteProgram(shader);
     }
 
     void OpenGLShader::Bind() const {

@@ -4,7 +4,7 @@ module;
 
 export module Easy.Events.Event;
 
-import yrm.msvc.std.compat;
+import Easy.Core.Basic;
 
 namespace Easy {
     export enum class EventType : uint8_t {

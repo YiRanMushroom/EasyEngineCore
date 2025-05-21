@@ -1,11 +1,10 @@
-#include "box2d/b2_world.h"
-#include "box2d/b2_body.h"
-#include "box2d/b2_fixture.h"
-#include "box2d/b2_polygon_shape.h"
-#include "box2d/b2_circle_shape.h"
-
-#include "SceneInternal.h"
-#include "ScriptableEntityInternal.h"
+import "box2d/b2_world.h";
+import "box2d/b2_body.h";
+import "box2d/b2_fixture.h";
+import "box2d/b2_polygon_shape.h";
+import "box2d/b2_circle_shape.h";
+import "SceneInternal.h";
+import "ScriptableEntityInternal.h";
 
 import Easy.Physics.Physics2D;
 import Easy.Vendor.glm;

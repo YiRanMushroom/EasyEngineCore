@@ -1,6 +1,6 @@
 module;
 
-#include "SceneSerializerInternal.h"
+import "SceneSerializerInternal.h";
 
 export module Easy.Scene.SceneSerializer;
 

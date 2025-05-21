@@ -1,9 +1,10 @@
 module;
 
-#include <OpenGL.hpp>
-#include <Core/MacroUtils.hpp>
+import <Core/MacroUtils.hpp>;
+import "Platform/Impl/OpenGL/GLFW_OpenGL.hpp";
 
 module Easy.Platform.Impl.OpenGL.Renderer.GraphicsContext;
+import Easy.Core.Log;
 
 namespace Easy {
 

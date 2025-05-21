@@ -1,30 +1,30 @@
 module;
 
-#include <vector>
-#include <utility>
-#include <iterator>
-#include <algorithm>
-#include <functional>
-#include <cstdint>
-#include <cassert>
-#include <type_traits>
+import <vector>;
+import <utility>;
+import <iterator>;
+import <algorithm>;
+import <functional>;
+import <cstdint>;
+import <cassert>;
+import <type_traits>;
 
-#include <algorithm>
-#include <cstddef>
-#include <iterator>
-#include <memory>
-#include <tuple>
-#include <type_traits>
-#include <utility>
-#include <vector>
+import <algorithm>;
+import <cstddef>;
+import <iterator>;
+import <memory>;
+import <tuple>;
+import <type_traits>;
+import <utility>;
+import <vector>;
 
-#include <array>
-#include <vector>
-#include <cstddef>
-#include <utility>
-#include <iterator>
-#include <type_traits>
-#include <unordered_map>
+import <array>;
+import <vector>;
+import <cstddef>;
+import <utility>;
+import <iterator>;
+import <type_traits>;
+import <unordered_map>;
 
 export module Easy.Vendor.entt;
 

@@ -1,7 +1,7 @@
 module;
 
-#include <Core/MacroUtils.hpp>
-#include <GLFW/glfw3.h>
+import <Core/MacroUtils.hpp>;
+import <GLFW/glfw3.h>;
 
 module Easy.Renderer.GraphicsContext;
 
@@ -10,6 +10,7 @@ import Easy.Platform.Impl.OpenGL.Renderer.GraphicsContext;
 #endif
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.RendererAPI;
 
 namespace Easy {

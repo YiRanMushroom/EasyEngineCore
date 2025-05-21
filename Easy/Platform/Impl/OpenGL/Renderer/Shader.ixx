@@ -1,10 +1,8 @@
-
-
 export module Easy.Platform.Impl.OpenGL.Renderer.Shader;
 
+import Easy.Core.Basic;
 import Easy.Renderer.Shader;
 import Easy.Renderer.VertexArray;
-import Easy.Core.Basic;
 import Easy.Vendor.glm;
 import Easy.Core.Util;
 

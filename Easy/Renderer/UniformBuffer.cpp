@@ -1,6 +1,6 @@
 module;
 
-#include <Core/MacroUtils.hpp>
+import <Core/MacroUtils.hpp>;
 
 module Easy.Renderer.UniformBuffer;
 

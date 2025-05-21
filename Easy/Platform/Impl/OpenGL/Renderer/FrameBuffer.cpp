@@ -1,11 +1,12 @@
 module;
 
 #include <OpenGL.hpp>
-#include "Core/MacroUtils.hpp"
 
 module Easy.Platform.Impl.OpenGL.Renderer.FrameBuffer;
 
+import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.FrameBuffer;
 
 namespace Easy {

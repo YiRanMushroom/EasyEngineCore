@@ -7,8 +7,7 @@ module;
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
-
-#include "glm/gtx/quaternion.hpp"
+#include <glm/gtx/quaternion.hpp>
 
 export module Easy.Vendor.glm;
 

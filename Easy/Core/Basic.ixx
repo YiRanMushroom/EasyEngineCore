@@ -1,13 +1,6 @@
-module;
-
 export module Easy.Core.Basic;
 
-export import yrm.msvc.std.compat;
-
-export namespace std {
-    using std::pair;
-    using std::tuple;
-}
+export import std.compat;
 
 namespace Easy {
     export {

@@ -30,10 +30,6 @@
 	path = vendor/shaderc
 	url = https://github.com/YiRanMushroom/shaderc
 	branch = main
-[submodule "vendor/imgui"]
-	path = vendor/imgui
-	url = https://github.com/ocornut/imgui
-	branch = docking
 [submodule "vendor/spdlog"]
 	path = vendor/spdlog
 	url = https://github.com/gabime/spdlog
@@ -73,3 +69,7 @@
 	path = vendor/libcuckoo
 	url = https://github.com/efficient/libcuckoo
 	branch = master
+[submodule "vendor/imgui"]
+	path = vendor/imgui
+	url = https://github.com/YiRanMushroom/imgui
+	branch = docking-opengl

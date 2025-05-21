@@ -1,6 +1,6 @@
 module;
 
-#include "Core/MacroUtils.hpp"
+import "Core/MacroUtils.hpp";
 
 module Easy.Renderer.VertexArray;
 
@@ -9,6 +9,7 @@ import Easy.Platform.Impl.OpenGL.Renderer.VertexArray;
 #endif
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.RendererAPI;
 
 namespace Easy {

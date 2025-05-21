@@ -1,10 +1,6 @@
 module;
 
-#include "MacroUtils.hpp"
-
 export module Easy.Core.Application;
-
-export import Easy.Core.ApplicationContext;
 
 import Easy.Core.Basic;
 import Easy.Core.Window;
@@ -14,6 +10,7 @@ import Easy.Events.Event;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Events.ApplicationEvents;
 import Easy.Core.LayerStack;
+import Easy.Core.ApplicationContext;
 
 namespace Easy {
     export struct ApplicationCommandLineArgs {
@@ -21,7 +18,7 @@ namespace Easy {
         char **Args = nullptr;
 
         const char *operator[](int index) const {
-            EZ_CORE_ASSERT(index < Count);
+            // EZ_CORE_ASSERT(index < Count);
             return Args[index];
         }
     };
@@ -30,23 +27,6 @@ namespace Easy {
         std::string Name = "Hazel Application";
         std::string WorkingDirectory;
         ApplicationCommandLineArgs CommandLineArgs;
-
-        /*std::function<Arc<Window>(WindowProperties, bool, std::function<void(Event &)>)> WindowFactory;
-        std::function<Arc<ImGuiLayer>()> ImGuiLayerFactory;
-
-        template<typename WindowType, typename ImGuiLayerType>
-        static ApplicationSpecification Make(std::string name, std::string workingDirectory = "",
-                                             ApplicationCommandLineArgs commandLineArgs = {}) {
-            return {
-                std::move(name), std::move(workingDirectory), std::move(commandLineArgs),
-                [](WindowProperties prop, bool vSync, std::function<void(Event &)> eventCallback) {
-                    return Arc<Window>{new WindowType(prop, vSync, eventCallback)};
-                },
-                []() {
-                    return MakeArc<ImGuiLayerType>();
-                }
-            };
-        }*/
     };
 
     struct AppInfo {

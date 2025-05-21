@@ -1,8 +1,9 @@
 module;
-#include "Core/MacroUtils.hpp"
-
+import <Core/MacroUtils.hpp>;
 module Easy.Renderer.RendererAPI;
 
+import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Core.ApplicationContext;
 
 #ifdef EZ_RENDERER_OPENGL

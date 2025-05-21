@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/MacroUtils.hpp"
-#include "SceneInternal.h"
-#include "ComponentsInternal.h"
+import <Core/MacroUtils.hpp>;
+import "SceneInternal.h";
+import "ComponentsInternal.h";
 
 import Easy.Vendor.entt;
 import Easy.Core.UUID;

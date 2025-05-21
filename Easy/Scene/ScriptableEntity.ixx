@@ -1,6 +1,6 @@
 module;
 
-#include "ScriptableEntityInternal.h"
+import "ScriptableEntityInternal.h";
 
 export module Easy.Scene.ScriptableEntity;
 

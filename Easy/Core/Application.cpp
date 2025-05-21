@@ -1,11 +1,10 @@
 module;
-
-#include "MacroUtils.hpp"
-#include <glad/glad.h>
-
+import <Core/MacroUtils.hpp>;
 module Easy.Core.Application;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
+import Easy.Core.Profile;
 import Easy.Core.Window;
 import Easy.Core.Layer;
 import Easy.Core.LayerStack;
@@ -15,6 +14,7 @@ import Easy.Events.ApplicationEvents;
 import Easy.ImGui.ImGuiLayer;
 import Easy.Renderer.Renderer;
 import Easy.Scripting;
+import Easy.Renderer.RenderCommand;
 
 namespace Easy {
     Application::Application(AppInfo info) : m_Specification{
@@ -32,8 +32,6 @@ namespace Easy {
     void Application::Init(AppInfo info) {
         // ScriptEngine::Init();
         Log::Init();
-
-        ScriptingEngine::Init();
 
         if (!m_Specification.WorkingDirectory.empty())
             std::filesystem::current_path(m_Specification.WorkingDirectory);
@@ -53,7 +51,6 @@ namespace Easy {
     Application::~Application() {
         m_LayerStack.clear();
         Renderer::Shutdown();
-        ScriptingEngine::Shutdown();
     }
 
     void Application::PushLayer(Arc<Layer> layer) {
@@ -130,7 +127,7 @@ namespace Easy {
         }
 
         m_Minimized = false;
-        glViewport(0, 0, e.GetWidth(), e.GetHeight());
+        RenderCommand::SetViewport(0, 0, e.GetWidth(), e.GetHeight());
 
         return false;
     }

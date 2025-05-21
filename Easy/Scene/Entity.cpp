@@ -1,4 +1,4 @@
-#include "EntityInternal.h"
+import "EntityInternal.h";
 
 namespace Easy {
     Entity::Entity(entt::entity handle, Scene *scene)

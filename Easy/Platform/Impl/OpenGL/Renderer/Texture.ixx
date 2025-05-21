@@ -1,9 +1,10 @@
 module;
 
-#include <OpenGL.hpp>
-
 export module Easy.Platform.Impl.OpenGL.Renderer.Texture;
 
+import <Core/MacroUtils.hpp>;
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
+import <stb_image.h>;
 import Easy.Core.Basic;
 import Easy.Renderer.Texture;
 import Easy.Core.Util;

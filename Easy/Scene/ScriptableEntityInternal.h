@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EntityInternal.h"
+export import "EntityInternal.h";
 
 namespace Easy {
     class ScriptableEntity {

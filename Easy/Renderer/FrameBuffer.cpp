@@ -1,10 +1,11 @@
 module;
 
-#include "Core/MacroUtils.hpp"
+import <Core/MacroUtils.hpp>;
 
 module Easy.Renderer.FrameBuffer;
 
 import Easy.Core.Basic;
+import Easy.Core.Log;
 import Easy.Renderer.RendererAPI;
 
 #ifdef EZ_RENDERER_OPENGL
