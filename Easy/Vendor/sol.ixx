@@ -1,6 +1,6 @@
 module;
 
-#include <sol/sol.hpp>
+import <sol/sol.hpp>;
 
 export module Easy.Vendor.sol;
 

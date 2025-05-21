@@ -1,6 +1,6 @@
 module;
 
-#include <OpenGL.hpp>
+import <Platform/Impl/OpenGL/GLFW_OpenGL.hpp>;
 
 module Easy.Platform.Impl.OpenGL.Renderer.UniformBuffer;
 

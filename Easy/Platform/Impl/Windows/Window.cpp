@@ -1,7 +1,7 @@
 module;
 
-#include <OpenGL.hpp>
-#include "Core/MacroUtils.hpp"
+import <OpenGL.hpp>;
+import "Core/MacroUtils.hpp";
 
 module Easy.Platform.Impl.Windows.Window;
 

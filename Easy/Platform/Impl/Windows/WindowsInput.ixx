@@ -1,6 +1,6 @@
 module;
 
-#include <OpenGL.hpp>
+import <OpenGL.hpp>;
 
 export module Easy.Platform.Impl.Windows.WindowsInput;
 

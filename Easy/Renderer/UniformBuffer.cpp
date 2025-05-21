@@ -1,8 +1,8 @@
 module;
 
-module Easy.Renderer.UniformBuffer;
-
 import <Core/MacroUtils.hpp>;
+
+module Easy.Renderer.UniformBuffer;
 
 #ifdef EZ_RENDERER_OPENGL
 import Easy.Platform.Impl.OpenGL.Renderer.UniformBuffer;

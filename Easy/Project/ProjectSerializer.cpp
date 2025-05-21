@@ -1,7 +1,7 @@
 module;
 
-#include <yaml-cpp/yaml.h>
-#include <Core/MacroUtils.hpp>
+import <yaml-cpp/yaml.h>;
+import <Core/MacroUtils.hpp>;
 
 module Easy.Project.ProjectSerializer;
 

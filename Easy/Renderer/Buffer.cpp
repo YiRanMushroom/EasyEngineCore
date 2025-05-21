@@ -1,10 +1,9 @@
 module;
 
-
+import <Core/MacroUtils.hpp>;
 
 module Easy.Renderer.Buffer;
 
-import <Core/MacroUtils.hpp>;
 import Easy.Core.Basic;
 import Easy.Core.Log;
 import Easy.Renderer.RendererAPI;

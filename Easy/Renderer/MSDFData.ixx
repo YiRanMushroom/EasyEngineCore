@@ -1,7 +1,7 @@
 module;
 
 #undef INFINITE
-#include "msdf-atlas-gen.h"
+import "msdf-atlas-gen.h";
 
 export module Easy.Renderer.MSDFData;
 
