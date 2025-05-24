@@ -69,6 +69,8 @@ namespace Easy {
         {
             return !(*this == other);
         }
+
+        operator void*() const { return reinterpret_cast<void*>(static_cast<uint64_t>(m_EntityHandle)); }
     private:
         entt::entity m_EntityHandle{ entt::null };
         Scene* m_Scene = nullptr;

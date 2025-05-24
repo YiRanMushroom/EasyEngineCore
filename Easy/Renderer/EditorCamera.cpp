@@ -52,28 +52,39 @@ namespace Easy {
     }
 
     void EditorCamera::OnUpdate(float ts) {
-        if (Input::IsKeyPressed(Key::LeftAlt)) {
+        if (Input::IsKeyPressed(Key::R)) {
+            m_FocalPoint = {0.0f, 0.0f, 0.0f};
+            m_Distance = 5.0f;
+            m_Pitch = 0.0f;
+            m_Yaw = 0.0f;
+        } else if (Input::IsKeyPressed(Key::LeftAlt)) {
             const glm::vec2 &mouse{Input::GetMouseX(), Input::GetMouseY()};
             glm::vec2 delta = (mouse - m_InitialMousePosition) * 0.003f;
             m_InitialMousePosition = mouse;
 
             if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
                 MousePan(delta);
-            else if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
+
+            if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
                 MouseRotate(delta);
             else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
                 MouseZoom(delta.y);
         }
+
+        if (Input::IsKeyPressed(Key::W))
+            m_FocalPoint += GetForwardDirection() * 0.1f;
+        if (Input::IsKeyPressed(Key::S))
+            m_FocalPoint -= GetForwardDirection() * 0.1f;
+        if (Input::IsKeyPressed(Key::A))
+            m_FocalPoint -= GetRightDirection() * 0.1f;
+        if (Input::IsKeyPressed(Key::D))
+            m_FocalPoint += GetRightDirection() * 0.1f;
 
         UpdateView();
     }
 
     void EditorCamera::OnEvent(Event &e) {
         EventDispatcher dispatcher(e);
-        // dispatcher.Dispatch<MouseScrolledEvent>(HZ_BIND_EVENT_FN(EditorCamera::OnMouseScroll));
-        // dispatcher.Dispatch<MouseScrolledEvent>([this](MouseScrolledEvent &evt) {
-        //     return this->OnMouseScroll(evt);
-        // });
         dispatcher.Dispatch(&EditorCamera::OnMouseScroll, this);
     }
 
@@ -99,7 +110,7 @@ namespace Easy {
     void EditorCamera::MouseZoom(float delta) {
         m_Distance -= delta * ZoomSpeed();
         if (m_Distance < 1.0f) {
-            m_FocalPoint += GetForwardDirection();
+            // m_FocalPoint += GetForwardDirection();
             m_Distance = 1.0f;
         }
     }

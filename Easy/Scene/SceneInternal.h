@@ -54,6 +54,10 @@ namespace Easy {
         {
             return m_Registry.view<Components...>();
         }
+
+    public:
+        entt::registry& GetRegistry() { return m_Registry; }
+
     private:
         template<typename T>
         void OnComponentAdded(Entity entity, T& component);
@@ -75,7 +79,6 @@ namespace Easy {
 
         friend class Entity;
         friend class SceneSerializer;
-        friend class SceneHierarchyPanel;
     };
 
 }
